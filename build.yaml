@@ -1,0 +1,17 @@
+targets:
+  $default:
+    builders:
+      json_serializable:
+        options:
+          # Options configure how source code is generated for every
+          # `@JsonSerializable`-annotated class in the package.
+          #
+          # The default value for each is listed.
+          any_map: true
+      freezed:
+        options:
+          # copy_with: false
+          # equal: false
+          format: false
+          map: false
+          when: false
