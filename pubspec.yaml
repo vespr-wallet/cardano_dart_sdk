@@ -1,6 +1,6 @@
 name: cardano_flutter_sdk
 description: Targeting Flutter apps, the Cardano Wallet SDK is a high-level Dart library for parsing and signing transactions.
-version: 2.5.1
+version: 2.5.1+1
 homepage: https://github.com/vespr-wallet/cardano_dart_sdk
 repository: https://github.com/vespr-wallet/cardano_dart_sdk
 issue_tracker: https://github.com/vespr-wallet/cardano_dart_sdk/issues
@@ -23,7 +23,7 @@ dependencies:
   squadron: ^6.1.6 # to use squadron for parallel processing
   # dartz: ^0.10.1 # to return Either<success, error>
 
-dependency_overrides:
+# dependency_overrides:
   # cardano_dart_types:
   #   path: ../cardano_dart_types
 

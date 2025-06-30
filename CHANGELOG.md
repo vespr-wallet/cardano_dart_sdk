@@ -1,3 +1,11 @@
+## [2.5.1+1] - May 6, 2025
+
+Flutter 3.32.5
+
+- Updated flutter version
+- Re-generated JS files with latest flutter/dart
+- Improved readme
+
 ## [2.5.1] - May 6, 2025
 
 Flutter 3.29.3 • channel stable • https://github.com/flutter/flutter.git
