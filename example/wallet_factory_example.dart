@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import "dart:async";
 
 import "package:cardano_dart_types/cardano_dart_types.dart";

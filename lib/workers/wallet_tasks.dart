@@ -25,6 +25,7 @@ final WalletTasks cardanoWorker = WalletTasksWorkerPool(
     // --- [in squadrion 6.0.3]
     maxParallel: 3,
   ),
+// ignore: discarded_futures
 )..start();
 
 // @UseLogger(ConsoleSquadronLogger)
