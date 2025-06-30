@@ -6,21 +6,37 @@ import "../cardano_flutter_sdk.dart";
 
 const kIsWeb = true;
 
-class DataSignatureMarshaler implements SquadronMarshaler<DataSignature, Uint8List> {
-  const DataSignatureMarshaler();
+const dataSignatureMarshaler = _DataSignatureMarshaler();
+const utxoListMarshaler = _UtxoListMarshaler();
+const cardanoTransactionListMarshaler = _CardanoTransactionListMarshaler();
+const credentialTypeMarshaler = _CredentialTypeMarshaler();
+const cardanoAddressMarshaler = _CardanoAddressMarshaler();
+const bip32PublicKeyKeyMarshaler = _Bip32PublicKeyKeyMarshaler();
+const bip32PublicKeysKeyMarshaler = _Bip32PublicKeysKeyMarshaler();
+const walletMarshaler = _WalletMarshaler();
+const txSigningBundleMarshaler = _TxSigningBundleMarshaler();
+const txSignedBundleMarshaler = _TxSignedBundleMarshaler();
+const networkIdMarshaler = _NetworkIdMarshaler();
+const cardanoAddressKitMarshaler = _CardanoAddressKitMarshaler();
+const hdWalletMarshaler = _HdWalletMarshaler();
+const bip32KeyRoleMarshaler = _Bip32KeyRoleMarshaler();
+const stringListMarshaler = _StringListMarshaler();
+
+class _DataSignatureMarshaler implements GenericMarshaler<DataSignature> {
+  const _DataSignatureMarshaler();
 
   @override
-  Uint8List marshal(DataSignature data) => data.marshal();
+  dynamic marshal(DataSignature data, [MarshalingContext? context]) => data.marshal();
 
   @override
-  DataSignature unmarshal(Uint8List data) => DataSignature.unmarshal(data);
+  DataSignature unmarshal(dynamic data, [MarshalingContext? context]) => DataSignature.unmarshal(data as Uint8List);
 }
 
-class UtxoListMarshaler implements SquadronMarshaler<List<Utxo>, Uint8List> {
-  const UtxoListMarshaler();
+class _UtxoListMarshaler implements GenericMarshaler<List<Utxo>> {
+  const _UtxoListMarshaler();
 
   @override
-  Uint8List marshal(List<Utxo> data) {
+  dynamic marshal(List<Utxo> data, [MarshalingContext? context]) {
     final writer = BinaryWriterImpl();
     writer.writeBytesList(
       data.map((e) => e.serializeAsBytes()).toList(),
@@ -30,7 +46,7 @@ class UtxoListMarshaler implements SquadronMarshaler<List<Utxo>, Uint8List> {
   }
 
   @override
-  List<Utxo> unmarshal(Uint8List data) {
+  List<Utxo> unmarshal(dynamic data, [MarshalingContext? context]) {
     return BinaryReaderImpl(data)
         .readBytesList() //
         .map(Utxo.deserializeBytes)
@@ -38,11 +54,11 @@ class UtxoListMarshaler implements SquadronMarshaler<List<Utxo>, Uint8List> {
   }
 }
 
-class CardanoTransactionListMarshaler implements SquadronMarshaler<List<CardanoTransaction>, Uint8List> {
-  const CardanoTransactionListMarshaler();
+class _CardanoTransactionListMarshaler implements GenericMarshaler<List<CardanoTransaction>> {
+  const _CardanoTransactionListMarshaler();
 
   @override
-  Uint8List marshal(List<CardanoTransaction> data) {
+  dynamic marshal(List<CardanoTransaction> data, [MarshalingContext? context]) {
     final writer = BinaryWriterImpl();
     writer.writeBytesList(
       data.map((e) => e.serializeAsBytes()).toList(),
@@ -52,7 +68,7 @@ class CardanoTransactionListMarshaler implements SquadronMarshaler<List<CardanoT
   }
 
   @override
-  List<CardanoTransaction> unmarshal(Uint8List data) {
+  List<CardanoTransaction> unmarshal(dynamic data, [MarshalingContext? context]) {
     return BinaryReaderImpl(data)
         .readBytesList() //
         .map(CardanoTransaction.deserializeBytes)
@@ -60,124 +76,125 @@ class CardanoTransactionListMarshaler implements SquadronMarshaler<List<CardanoT
   }
 }
 
-class CredentialTypeMarshaler implements SquadronMarshaler<CredentialType, int> {
-  const CredentialTypeMarshaler();
+class _CredentialTypeMarshaler implements GenericMarshaler<CredentialType> {
+  const _CredentialTypeMarshaler();
 
   @override
-  int marshal(CredentialType data) => data.index;
+  int marshal(CredentialType data, [MarshalingContext? context]) => data.index;
 
   @override
-  CredentialType unmarshal(int data) => CredentialType.values[data];
+  CredentialType unmarshal(dynamic data, [MarshalingContext? context]) => CredentialType.values[data as int];
 }
 
-class CardanoAddressMarshaler implements SquadronMarshaler<CardanoAddress, String> {
-  const CardanoAddressMarshaler();
+class _CardanoAddressMarshaler implements GenericMarshaler<CardanoAddress> {
+  const _CardanoAddressMarshaler();
 
   @override
-  String marshal(CardanoAddress data) => data.marshal();
+  String marshal(CardanoAddress data, [MarshalingContext? context]) => data.marshal();
 
   @override
-  CardanoAddress unmarshal(String data) => CardanoAddress.unmarshal(data);
+  CardanoAddress unmarshal(dynamic data, [MarshalingContext? context]) => CardanoAddress.unmarshal(data as String);
 }
 
-class Bip32PublicKeyKeyMarshaler implements SquadronMarshaler<Bip32PublicKey, Uint8List> {
-  const Bip32PublicKeyKeyMarshaler();
+class _Bip32PublicKeyKeyMarshaler implements GenericMarshaler<Bip32PublicKey> {
+  const _Bip32PublicKeyKeyMarshaler();
 
   @override
-  Uint8List marshal(Bip32PublicKey data) => Uint8List.fromList(data);
+  dynamic marshal(Bip32PublicKey data, [MarshalingContext? context]) => Uint8List.fromList(data);
 
   @override
-  Bip32PublicKey unmarshal(Uint8List data) => Bip32VerifyKey(data);
+  Bip32PublicKey unmarshal(dynamic data, [MarshalingContext? context]) => Bip32VerifyKey(data as Uint8List);
 }
 
-class Bip32PublicKeysKeyMarshaler implements SquadronMarshaler<List<Bip32PublicKey>, Uint8List> {
-  const Bip32PublicKeysKeyMarshaler();
+class _Bip32PublicKeysKeyMarshaler implements GenericMarshaler<List<Bip32PublicKey>> {
+  const _Bip32PublicKeysKeyMarshaler();
 
   @override
-  Uint8List marshal(List<Bip32PublicKey> data) => (BinaryWriterImpl() //
+  dynamic marshal(List<Bip32PublicKey> data, [MarshalingContext? context]) => (BinaryWriterImpl() //
         ..writeBytesList(data.map(Uint8List.fromList).toList())) //
       .toBytes();
 
   @override
-  List<Bip32PublicKey> unmarshal(Uint8List data) =>
-      BinaryReaderImpl(data).readBytesList().map(Bip32VerifyKey.new).toList();
+  List<Bip32PublicKey> unmarshal(dynamic data, [MarshalingContext? context]) =>
+      BinaryReaderImpl(data as Uint8List).readBytesList().map(Bip32VerifyKey.new).toList();
 }
 
-class WalletMarshaler implements SquadronMarshaler<CardanoWallet, Uint8List> {
-  const WalletMarshaler();
+class _WalletMarshaler implements GenericMarshaler<CardanoWallet> {
+  const _WalletMarshaler();
 
   @override
-  Uint8List marshal(CardanoWallet data) => data.marshal();
+  dynamic marshal(CardanoWallet data, [MarshalingContext? context]) => data.marshal();
 
   @override
-  CardanoWallet unmarshal(Uint8List data) => CardanoWalletImpl.unmarshal(data);
+  CardanoWallet unmarshal(dynamic data, [MarshalingContext? context]) => CardanoWalletImpl.unmarshal(data as Uint8List);
 }
 
-class TxSigningBundleMarshaler implements SquadronMarshaler<TxSigningBundle, Uint8List> {
-  const TxSigningBundleMarshaler();
+class _TxSigningBundleMarshaler implements GenericMarshaler<TxSigningBundle> {
+  const _TxSigningBundleMarshaler();
 
   @override
-  Uint8List marshal(TxSigningBundle data) => data.marshal();
+  dynamic marshal(TxSigningBundle data, [MarshalingContext? context]) => data.marshal();
 
   @override
-  TxSigningBundle unmarshal(Uint8List data) => TxSigningBundle.unmarshal(data);
+  TxSigningBundle unmarshal(dynamic data, [MarshalingContext? context]) => TxSigningBundle.unmarshal(data as Uint8List);
 }
 
-class TxSignedBundleMarshaler implements SquadronMarshaler<TxSignedBundle, Uint8List> {
-  const TxSignedBundleMarshaler();
+class _TxSignedBundleMarshaler implements GenericMarshaler<TxSignedBundle> {
+  const _TxSignedBundleMarshaler();
 
   @override
-  Uint8List marshal(TxSignedBundle data) => data.marshal();
+  dynamic marshal(TxSignedBundle data, [MarshalingContext? context]) => data.marshal();
 
   @override
-  TxSignedBundle unmarshal(Uint8List data) => TxSignedBundle.unmarshal(data);
+  TxSignedBundle unmarshal(dynamic data, [MarshalingContext? context]) => TxSignedBundle.unmarshal(data as Uint8List);
 }
 
-class NetworkIdMarshaler implements SquadronMarshaler<NetworkId, int> {
-  const NetworkIdMarshaler();
+class _NetworkIdMarshaler implements GenericMarshaler<NetworkId> {
+  const _NetworkIdMarshaler();
 
   @override
-  int marshal(NetworkId data) => data.intValue;
+  int marshal(NetworkId data, [MarshalingContext? context]) => data.intValue;
 
   @override
-  NetworkId unmarshal(int data) => NetworkId.fromIntValue(data);
+  NetworkId unmarshal(dynamic data, [MarshalingContext? context]) => NetworkId.fromIntValue(data as int);
 }
 
-class HdWalletMarshaler implements SquadronMarshaler<HdWallet, Uint8List> {
-  const HdWalletMarshaler();
+class _HdWalletMarshaler implements GenericMarshaler<HdWallet> {
+  const _HdWalletMarshaler();
 
   @override
-  Uint8List marshal(HdWallet data) => data.marshal();
+  dynamic marshal(HdWallet data, [MarshalingContext? context]) => data.marshal();
 
   @override
-  HdWallet unmarshal(Uint8List data) => HdWallet.unmarshal(data);
+  HdWallet unmarshal(dynamic data, [MarshalingContext? context]) => HdWallet.unmarshal(data as Uint8List);
 }
 
-class Bip32KeyRoleMarshaler implements SquadronMarshaler<Bip32KeyRole, int> {
-  const Bip32KeyRoleMarshaler();
+class _Bip32KeyRoleMarshaler implements SquadronMarshaler<Bip32KeyRole, int> {
+  const _Bip32KeyRoleMarshaler();
 
   @override
-  int marshal(Bip32KeyRole data) => data.derivationIndex;
+  int marshal(Bip32KeyRole data, [MarshalingContext? context]) => data.derivationIndex;
 
   @override
-  Bip32KeyRole unmarshal(int data) => Bip32KeyRole.fromDerivationIndex(data);
+  Bip32KeyRole unmarshal(dynamic data, [MarshalingContext? context]) => Bip32KeyRole.fromDerivationIndex(data as int);
 }
 
-class CardanoAddressKitMarshaler implements SquadronMarshaler<CardanoAddressKit, Uint8List> {
-  const CardanoAddressKitMarshaler();
+class _CardanoAddressKitMarshaler implements GenericMarshaler<CardanoAddressKit> {
+  const _CardanoAddressKitMarshaler();
 
   @override
-  Uint8List marshal(CardanoAddressKit data) => data.marshal();
+  dynamic marshal(CardanoAddressKit data, [MarshalingContext? context]) => data.marshal();
 
   @override
-  CardanoAddressKit unmarshal(Uint8List data) => CardanoAddressKit.unmarshal(data);
+  CardanoAddressKit unmarshal(dynamic data, [MarshalingContext? context]) =>
+      CardanoAddressKit.unmarshal(data as Uint8List);
 }
 
-class StringListMarshaler implements SquadronMarshaler<List<String>, Uint8List> {
-  const StringListMarshaler();
+class _StringListMarshaler implements GenericMarshaler<List<String>> {
+  const _StringListMarshaler();
 
   @override
-  Uint8List marshal(List<String> data) {
+  dynamic marshal(List<String> data, [MarshalingContext? context]) {
     final writer = BinaryWriterImpl();
     writer.writeStringList(data);
 
@@ -185,8 +202,8 @@ class StringListMarshaler implements SquadronMarshaler<List<String>, Uint8List> 
   }
 
   @override
-  List<String> unmarshal(Uint8List data) {
-    final reader = BinaryReaderImpl(data);
+  List<String> unmarshal(dynamic data, [MarshalingContext? context]) {
+    final reader = BinaryReaderImpl(data as Uint8List);
     return reader.readStringList();
   }
 }

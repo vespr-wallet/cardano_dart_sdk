@@ -6,72 +6,28 @@ import "../cardano_flutter_sdk.dart";
 
 const kIsWeb = false;
 
-class IdentityMarshaler<T> implements SquadronMarshaler<T, T> {
-  const IdentityMarshaler();
+class GenericIdentityMarshaler<T> implements GenericMarshaler<T> {
+  const GenericIdentityMarshaler();
 
   @override
-  T marshal(T data) => data;
+  T marshal(T data, [MarshalingContext? context]) => data;
 
   @override
-  T unmarshal(T data) => data;
+  T unmarshal(dynamic data, [MarshalingContext? context]) => data as T;
 }
 
-class DataSignatureMarshaler extends IdentityMarshaler<DataSignature> {
-  const DataSignatureMarshaler();
-}
-
-class UtxoListMarshaler extends IdentityMarshaler<List<Utxo>> {
-  const UtxoListMarshaler();
-}
-
-class CardanoTransactionListMarshaler extends IdentityMarshaler<List<CardanoTransaction>> {
-  const CardanoTransactionListMarshaler();
-}
-
-class CredentialTypeMarshaler extends IdentityMarshaler<CredentialType> {
-  const CredentialTypeMarshaler();
-}
-
-class CardanoAddressMarshaler extends IdentityMarshaler<CardanoAddress> {
-  const CardanoAddressMarshaler();
-}
-
-class Bip32PublicKeyKeyMarshaler extends IdentityMarshaler<Bip32PublicKey> {
-  const Bip32PublicKeyKeyMarshaler();
-}
-
-class Bip32PublicKeysKeyMarshaler extends IdentityMarshaler<List<Bip32PublicKey>> {
-  const Bip32PublicKeysKeyMarshaler();
-}
-
-class WalletMarshaler extends IdentityMarshaler<CardanoWallet> {
-  const WalletMarshaler();
-}
-
-class TxSigningBundleMarshaler extends IdentityMarshaler<TxSigningBundle> {
-  const TxSigningBundleMarshaler();
-}
-
-class TxSignedBundleMarshaler extends IdentityMarshaler<TxSignedBundle> {
-  const TxSignedBundleMarshaler();
-}
-
-class NetworkIdMarshaler extends IdentityMarshaler<NetworkId> {
-  const NetworkIdMarshaler();
-}
-
-class CardanoAddressKitMarshaler extends IdentityMarshaler<CardanoAddressKit> {
-  const CardanoAddressKitMarshaler();
-}
-
-class HdWalletMarshaler extends IdentityMarshaler<HdWallet> {
-  const HdWalletMarshaler();
-}
-
-class Bip32KeyRoleMarshaler extends IdentityMarshaler<Bip32KeyRole> {
-  const Bip32KeyRoleMarshaler();
-}
-
-class StringListMarshaler extends IdentityMarshaler<List<String>> {
-  const StringListMarshaler();
-}
+const dataSignatureMarshaler = GenericIdentityMarshaler<DataSignature>();
+const utxoListMarshaler = GenericIdentityMarshaler<List<Utxo>>();
+const cardanoTransactionListMarshaler = GenericIdentityMarshaler<List<CardanoTransaction>>();
+const credentialTypeMarshaler = GenericIdentityMarshaler<CredentialType>();
+const cardanoAddressMarshaler = GenericIdentityMarshaler<CardanoAddress>();
+const bip32PublicKeyKeyMarshaler = GenericIdentityMarshaler<Bip32PublicKey>();
+const bip32PublicKeysKeyMarshaler = GenericIdentityMarshaler<List<Bip32PublicKey>>();
+const walletMarshaler = GenericIdentityMarshaler<CardanoWallet>();
+const txSigningBundleMarshaler = GenericIdentityMarshaler<TxSigningBundle>();
+const txSignedBundleMarshaler = GenericIdentityMarshaler<TxSignedBundle>();
+const networkIdMarshaler = GenericIdentityMarshaler<NetworkId>();
+const cardanoAddressKitMarshaler = GenericIdentityMarshaler<CardanoAddressKit>();
+const hdWalletMarshaler = GenericIdentityMarshaler<HdWallet>();
+const bip32KeyRoleMarshaler = GenericIdentityMarshaler<Bip32KeyRole>();
+const stringListMarshaler = GenericIdentityMarshaler<List<String>>();

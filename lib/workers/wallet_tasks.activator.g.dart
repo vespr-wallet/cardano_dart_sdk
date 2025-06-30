@@ -2,7 +2,7 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
 // **************************************************************************
-// Generator: WorkerGenerator 6.2.0
+// Generator: WorkerGenerator 7.1.4 (Squadron 7.1.1)
 // **************************************************************************
 
 import 'wallet_tasks.stub.g.dart'

@@ -18,7 +18,7 @@ dependencies:
   fast_base58: ^0.2.1 # to/from base58 string conversion (used for byron addresses)
   hex: ^0.2.0 # to/from hex string conversion
   pinenacl: ^0.6.0 # for cryptographic signatures and hashing
-  squadron: ^6.1.6 # to use squadron for parallel processing
+  squadron: ^7.1.1 # to use squadron for parallel processing
   # dartz: ^0.10.1 # to return Either<success, error>
 
 # dependency_overrides:
@@ -28,7 +28,7 @@ dependencies:
 dev_dependencies:
   build_runner:
   lints: ^5.1.1
-  squadron_builder: ^6.2.0
+  squadron_builder: ^7.1.4
   test: ^1.25.5
   # dependency_validator: ^4.0.0
   #  mockito: ^5.4.2

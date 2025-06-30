@@ -34,13 +34,13 @@ final WalletTasks cardanoWorker = WalletTasksWorkerPool(
 )
 class WalletTasks {
   @SquadronMethod()
-  @CardanoAddressMarshaler()
+  @cardanoAddressMarshaler
   Future<CardanoAddress> toCardanoBaseAddress(
-    @Bip32PublicKeyKeyMarshaler() Bip32PublicKey spend,
-    @Bip32PublicKeyKeyMarshaler() Bip32PublicKey stake,
-    @NetworkIdMarshaler() NetworkId networkId, {
-    @CredentialTypeMarshaler() CredentialType paymentType = CredentialType.key,
-    @CredentialTypeMarshaler() CredentialType stakeType = CredentialType.key,
+    @bip32PublicKeyKeyMarshaler Bip32PublicKey spend,
+    @bip32PublicKeyKeyMarshaler Bip32PublicKey stake,
+    @networkIdMarshaler NetworkId networkId, {
+    @credentialTypeMarshaler CredentialType paymentType = CredentialType.key,
+    @credentialTypeMarshaler CredentialType stakeType = CredentialType.key,
   }) async =>
       CardanoAddress.toBaseAddress(
         spend: spend,
@@ -51,11 +51,11 @@ class WalletTasks {
       );
 
   @SquadronMethod()
-  @CardanoAddressMarshaler()
+  @cardanoAddressMarshaler
   Future<CardanoAddress> toCardanoRewardAddress(
-    @Bip32PublicKeyKeyMarshaler() Bip32PublicKey spend,
-    @NetworkIdMarshaler() NetworkId networkId, {
-    @CredentialTypeMarshaler() CredentialType paymentType = CredentialType.key,
+    @bip32PublicKeyKeyMarshaler Bip32PublicKey spend,
+    @networkIdMarshaler NetworkId networkId, {
+    @credentialTypeMarshaler CredentialType paymentType = CredentialType.key,
   }) async =>
       CardanoAddress.toRewardAddress(
         spend: spend,
@@ -64,19 +64,19 @@ class WalletTasks {
       );
 
   @SquadronMethod()
-  @Bip32PublicKeyKeyMarshaler()
+  @bip32PublicKeyKeyMarshaler
   Future<Bip32PublicKey> ckdPubBip32Ed25519KeyDerivation(
     // verify key is the public key
-    @Bip32PublicKeyKeyMarshaler() Bip32PublicKey pubKey,
+    @bip32PublicKeyKeyMarshaler Bip32PublicKey pubKey,
     int index,
   ) async =>
       Bip32Ed25519KeyDerivation.instance.ckdPub(pubKey, index);
 
   @SquadronMethod()
-  @Bip32PublicKeysKeyMarshaler()
+  @bip32PublicKeysKeyMarshaler
   Future<List<Bip32PublicKey>> ckdPubBip32Ed25519KeyDerivations(
     // verify key is the public key
-    @Bip32PublicKeyKeyMarshaler() Bip32PublicKey pubKey,
+    @bip32PublicKeyKeyMarshaler Bip32PublicKey pubKey,
     int startIndexInclusive,
     int endIndexExclusive,
   ) async =>
@@ -86,10 +86,10 @@ class WalletTasks {
       );
 
   @SquadronMethod()
-  @StringListMarshaler()
+  @stringListMarshaler
   Future<List<String>> hexCredentialsDerivation(
     // verify key is the public key
-    @Bip32PublicKeyKeyMarshaler() Bip32PublicKey pubKey,
+    @bip32PublicKeyKeyMarshaler Bip32PublicKey pubKey,
     int startIndexInclusive,
     int endIndexExclusive,
   ) async =>
@@ -101,33 +101,33 @@ class WalletTasks {
       );
 
   @SquadronMethod()
-  @HdWalletMarshaler()
+  @hdWalletMarshaler
   Future<HdWallet> buildHdWalletFromMnemonic(
-    @StringListMarshaler() List<String> mnemonic,
+    @stringListMarshaler List<String> mnemonic,
     int accountIndex,
   ) async =>
       HdWallet.fromMnemonic(mnemonic.join(" "), accountIndex: accountIndex);
 
   @SquadronMethod()
-  @HdWalletMarshaler()
+  @hdWalletMarshaler
   Future<HdWallet> buildHdWalletFromSeed(Uint8List seed, int accountIndex) async =>
       HdWallet.fromSeed(seed, accountIndex: accountIndex);
 
   @SquadronMethod()
-  @CardanoAddressKitMarshaler()
+  @cardanoAddressKitMarshaler
   Future<CardanoAddressKit> deriveAddressKit(
-    @HdWalletMarshaler() HdWallet wallet,
-    @NetworkIdMarshaler() NetworkId networkId,
+    @hdWalletMarshaler HdWallet wallet,
+    @networkIdMarshaler NetworkId networkId,
     int index,
-    @Bip32KeyRoleMarshaler() Bip32KeyRole role,
+    @bip32KeyRoleMarshaler Bip32KeyRole role,
   ) async =>
       wallet.deriveBaseAddressKit(index: index, role: role, networkId: networkId);
 
   @SquadronMethod()
-  @WalletMarshaler()
+  @walletMarshaler
   Future<CardanoWallet> buildWalletFromHdWallet(
-    @HdWalletMarshaler() HdWallet hdWallet,
-    @NetworkIdMarshaler() NetworkId networkId,
+    @hdWalletMarshaler HdWallet hdWallet,
+    @networkIdMarshaler NetworkId networkId,
   ) async {
     final firstAddressKeyPair = hdWallet.deriveAddressKeys(role: Bip32KeyRole.payment, index: 0);
     final firstAddress = hdWallet.toBaseAddress(spendVerifyKey: firstAddressKeyPair.verifyKey, networkId: networkId);
@@ -138,15 +138,15 @@ class WalletTasks {
   }
 
   @SquadronMethod()
-  @TxSigningBundleMarshaler()
+  @txSigningBundleMarshaler
   Future<TxSigningBundle> prepareTxsForSigningImpl(
     String walletBech32Address,
     String drepCredential,
     String constitutionalCommitteeColdCredential,
     String constitutionalCommitteeHotCredential,
-    @NetworkIdMarshaler() NetworkId networkId,
-    @CardanoTransactionListMarshaler() List<CardanoTransaction> txs,
-    @UtxoListMarshaler() List<Utxo> utxos,
+    @networkIdMarshaler NetworkId networkId,
+    @cardanoTransactionListMarshaler List<CardanoTransaction> txs,
+    @utxoListMarshaler List<Utxo> utxos,
   ) async {
     final bech32Address = walletBech32Address;
 
@@ -228,10 +228,10 @@ class WalletTasks {
   }
 
   @SquadronMethod()
-  @TxSignedBundleMarshaler()
+  @txSignedBundleMarshaler
   Future<TxSignedBundle> signTransactionsBundle(
-    @WalletMarshaler() CardanoWallet wallet,
-    @TxSigningBundleMarshaler() TxSigningBundle bundle,
+    @walletMarshaler CardanoWallet wallet,
+    @txSigningBundleMarshaler TxSigningBundle bundle,
     int deriveMaxAddressCount,
   ) async {
     final txs = bundle.txsData;
@@ -464,18 +464,17 @@ class WalletTasks {
   }
 
   @SquadronMethod()
-  @DataSignatureMarshaler()
+  @dataSignatureMarshaler
   Future<DataSignature> signData(
-    @WalletMarshaler() CardanoWallet wallet,
+    @walletMarshaler CardanoWallet wallet,
     String payloadHex,
     String requestedSignerRaw,
     int deriveMaxAddressCount,
   ) async {
     // if it's a bech32, convert it to hex
-    final requestedSignerHex =
-        ["addr", "stake", "drep", "cc_hot", "cc_cold"].any(requestedSignerRaw.startsWith)
-            ? requestedSignerRaw.bech32ToHex()
-            : requestedSignerRaw;
+    final requestedSignerHex = ["addr", "stake", "drep", "cc_hot", "cc_cold"].any(requestedSignerRaw.startsWith)
+        ? requestedSignerRaw.bech32ToHex()
+        : requestedSignerRaw;
 
     final hdWallet = (wallet as CardanoWalletImpl).hdWallet;
     final networkId = wallet.networkId;
