@@ -1,3 +1,10 @@
+## 2.5.2
+
+Flutter 3.32.5
+
+- Updated squadron major version
+- Removed freezed deps
+
 ## [2.5.1+1] - May 6, 2025
 
 Flutter 3.32.5
@@ -8,10 +15,7 @@ Flutter 3.32.5
 
 ## [2.5.1] - May 6, 2025
 
-Flutter 3.29.3 • channel stable • https://github.com/flutter/flutter.git
-Framework • revision ea121f8859 (9 days ago) • 2025-04-11 19:10:07 +0000
-Engine • revision cf56914b32
-Tools • Dart 3.7.2 • DevTools 2.42.3
+Flutter 3.29.3
 
 New
 
@@ -19,10 +23,7 @@ New
 
 ## [2.5.0] - April 20, 2025
 
-Flutter 3.29.3 • channel stable • https://github.com/flutter/flutter.git
-Framework • revision ea121f8859 (9 days ago) • 2025-04-11 19:10:07 +0000
-Engine • revision cf56914b32
-Tools • Dart 3.7.2 • DevTools 2.42.3
+Flutter 3.29.3
 
 New
 
@@ -39,10 +40,7 @@ Important Changes
 
 ## [2.4.14] - January 3, 2025
 
-Flutter 3.27.1 • channel stable • https://github.com/flutter/flutter.git
-Framework • revision 17025dd882 (3 weeks ago) • 2024-12-17 03:23:09 +0900
-Engine • revision cb4b5fff73
-Tools • Dart 3.6.0 • DevTools 2.40.2
+Flutter 3.27.1
 
 Changes
 
@@ -51,10 +49,7 @@ Changes
 
 ## [2.4.13] - 9th of December, 2024
 
-Flutter 3.27.0-0.2.pre • channel beta • https://github.com/flutter/flutter.git
-Framework • revision fc011960a2 (5 days ago) • 2024-11-14 12:19:18 -0800
-Engine • revision 397deba30f
-Tools • Dart 3.6.0 (build 3.6.0-334.4.beta) • DevTools 2.40.1
+Flutter 3.27.0-0.2.pre
 
 # Changes
 
@@ -62,10 +57,7 @@ Tools • Dart 3.6.0 (build 3.6.0-334.4.beta) • DevTools 2.40.1
 
 ## [2.4.12] - 20th of November, 2024
 
-Flutter 3.27.0-0.2.pre • channel beta • https://github.com/flutter/flutter.git
-Framework • revision fc011960a2 (5 days ago) • 2024-11-14 12:19:18 -0800
-Engine • revision 397deba30f
-Tools • Dart 3.6.0 (build 3.6.0-334.4.beta) • DevTools 2.40.1
+Flutter 3.27.0-0.2.pre
 
 # Changes
 
@@ -73,10 +65,7 @@ Tools • Dart 3.6.0 (build 3.6.0-334.4.beta) • DevTools 2.40.1
 
 ## [2.4.11] - 19th of November, 2024
 
-Flutter 3.27.0-0.2.pre • channel beta • https://github.com/flutter/flutter.git
-Framework • revision fc011960a2 (5 days ago) • 2024-11-14 12:19:18 -0800
-Engine • revision 397deba30f
-Tools • Dart 3.6.0 (build 3.6.0-334.4.beta) • DevTools 2.40.1
+Flutter 3.27.0-0.2.pre
 
 # Changes
 
@@ -84,10 +73,7 @@ Tools • Dart 3.6.0 (build 3.6.0-334.4.beta) • DevTools 2.40.1
 
 ## [2.4.10] - 17th of November, 2024
 
-Flutter 3.27.0-0.1.pre • channel beta • https://github.com/flutter/flutter.git
-Framework • revision 2e2c358c9b • 2024-10-22 11:02:13 -0400
-Engine • revision af0f0d559c
-Tools • Dart 3.6.0 (build 3.6.0-334.3.beta) • DevTools 2.40.1
+Flutter 3.27.0-0.1.pre
 
 # Changes
 
@@ -96,10 +82,7 @@ Tools • Dart 3.6.0 (build 3.6.0-334.3.beta) • DevTools 2.40.1
 
 ## [2.4.9] - 5th of November, 2024
 
-Flutter 3.27.0-0.1.pre • channel beta • https://github.com/flutter/flutter.git
-Framework • revision 2e2c358c9b • 2024-10-22 11:02:13 -0400
-Engine • revision af0f0d559c
-Tools • Dart 3.6.0 (build 3.6.0-334.3.beta) • DevTools 2.40.1
+Flutter 3.27.0-0.1.pre
 
 # Changes
 
@@ -108,10 +91,7 @@ Tools • Dart 3.6.0 (build 3.6.0-334.3.beta) • DevTools 2.40.1
 
 ## [2.4.8] - 29th of October, 2024
 
-Flutter 3.27.0-0.1.pre • channel beta • https://github.com/flutter/flutter.git
-Framework • revision 2e2c358c9b (7 days ago) • 2024-10-22 11:02:13 -0400
-Engine • revision af0f0d559c
-Tools • Dart 3.6.0 (build 3.6.0-334.3.beta) • DevTools 2.40.1
+Flutter 3.27.0-0.1.pre
 
 # Changes
 
@@ -119,10 +99,7 @@ Tools • Dart 3.6.0 (build 3.6.0-334.3.beta) • DevTools 2.40.1
 
 ## [2.4.7] - 7th of October, 2024
 
-Flutter 3.26.0-0.1.pre • channel beta • https://github.com/flutter/flutter.git
-Framework • revision ee624bc4fd (3 weeks ago) • 2024-09-10 17:41:06 -0500
-Engine • revision 059e4e6d8f
-Tools • Dart 3.6.0 (build 3.6.0-216.1.beta) • DevTools 2.39.0
+Flutter 3.26.0-0.1.pre
 
 # Changes
 
