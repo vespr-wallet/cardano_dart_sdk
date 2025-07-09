@@ -6,7 +6,6 @@ import "package:collection/collection.dart";
 import "package:squadron/squadron.dart";
 
 import "../cardano_flutter_sdk.dart";
-import "../src/hd/util/blake2bhash.dart";
 import "../src/utils/iterable_extensions.dart";
 import "marshaler.vm.dart" //
     if (dart.library.js) "marshaler.web.dart"

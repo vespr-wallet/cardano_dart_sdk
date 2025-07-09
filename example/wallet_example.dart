@@ -3,7 +3,6 @@
 import "package:bip32_ed25519/api.dart";
 import "package:cardano_dart_types/cardano_dart_types.dart";
 import "package:cardano_flutter_sdk/cardano_flutter_sdk.dart";
-import "package:cardano_flutter_sdk/src/hd/util/blake2bhash.dart";
 import "package:cardano_flutter_sdk/src/utils/sugar.dart";
 
 void main() async {

@@ -1,3 +1,9 @@
+## 2.5.3
+
+- [Web workers] Built with Flutter 3.32.5
+- Exposed blake2b hashing utils
+- Updated cardano dart types version
+
 ## 2.5.2
 
 Flutter 3.32.5
