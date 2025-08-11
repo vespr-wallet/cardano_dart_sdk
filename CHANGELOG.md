@@ -1,3 +1,12 @@
+## 2.5.4
+
+Web workers Built with Flutter 3.32.8
+
+Changes
+
+- [CHORE] Updated Flutter version
+- [CHORE] Updated Cardano Dart Types version
+
 ## 2.5.3
 
 - [Web workers] Built with Flutter 3.32.5
