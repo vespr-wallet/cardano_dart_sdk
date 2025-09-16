@@ -6,35 +6,32 @@ repository: https://github.com/vespr-wallet/cardano_dart_sdk
 issue_tracker: https://github.com/vespr-wallet/cardano_dart_sdk/issues
 
 environment:
-  sdk: ">=3.6.0 <4.0.0"
-  flutter: ">=3.27.1"
+  sdk: ">=3.9.0 <4.0.0"
+  # flutter: ">=3.35.0"
 
 dependencies:
   bip32_ed25519: ^0.6.2 # for generating/deriving keys
   bip39_plus: ^1.1.1 # VESPR fork of bip39
-  cardano_dart_types: 2.9.4 # lock version because of web workers
+  cardano_dart_types: 2.9.5 # lock version because of web workers
   cbor: ^6.3.7 # to encode/decode cbor transactions
   collection: ^1.18.0 # to use collection extension methods
   fast_base58: ^0.2.1 # to/from base58 string conversion (used for byron addresses)
   hex: ^0.2.0 # to/from hex string conversion
   pinenacl: ^0.6.0 # for cryptographic signatures and hashing
-  squadron: ^7.1.2 # to use squadron for parallel processing
+  squadron: ^7.1.2+1 # to use squadron for parallel processing
   # dartz: ^0.10.1 # to return Either<success, error>
 
-# dependency_overrides:
-  # cardano_dart_types:
-  #   path: ../cardano_dart_types
-
 dev_dependencies:
-  build_runner:
+  build_runner: any
   lints: ^6.0.0
-  squadron_builder: ^7.1.4
-  test: ^1.25.5
+  squadron_builder: ^7.1.6
+  test: ^1.26.3
   # dependency_validator: ^4.0.0
   #  mockito: ^5.4.2
-  # dependency_overrides:
-  # bip32_ed25519:
-  #   path: ../bip32-ed25519-dart
+
+# dependency_overrides:
+#   cardano_dart_types:
+#     path: ../cardano_dart_types
 
 flutter:
   assets:
