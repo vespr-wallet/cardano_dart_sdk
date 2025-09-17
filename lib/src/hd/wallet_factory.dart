@@ -15,16 +15,15 @@ class WalletFactory {
     NetworkId networkId,
     List<String> mnemonic, {
     int accountIndex = defaultAccountIndex,
-  }) async =>
-      fromHdWallet(
-        networkId,
-        await HdWalletFactory.fromMnemonic(mnemonic, accountIndex: accountIndex),
-      );
+  }) async => fromHdWallet(
+    networkId,
+    await HdWalletFactory.fromMnemonic(mnemonic, accountIndex: accountIndex),
+  );
 
   static Future<CardanoWallet> fromSeed(NetworkId networkId, ByteList seed) async => fromHdWallet(
-        networkId,
-        await HdWalletFactory.fromSeed(seed),
-      );
+    networkId,
+    await HdWalletFactory.fromSeed(seed),
+  );
 
   static Future<CardanoWallet> fromHdWallet(NetworkId networkId, HdWallet hdWallet) async =>
       cardanoWorker.buildWalletFromHdWallet(hdWallet, networkId);

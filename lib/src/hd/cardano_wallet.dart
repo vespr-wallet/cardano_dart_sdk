@@ -21,11 +21,11 @@ class CardanoWalletImpl extends CardanoWallet {
 
   @override
   Lazy<CardanoDerivedAddress> get stakeDerivation => Lazy(
-        () => CardanoDerivedAddress(
-          type: AddressType.reward,
-          bytes: hdWallet.stakeKeys.value.verifyKey.rawKey,
-        ),
-      );
+    () => CardanoDerivedAddress(
+      type: AddressType.reward,
+      bytes: hdWallet.stakeKeys.value.verifyKey.rawKey,
+    ),
+  );
   // Using `verifyKey.rawKey` to get only the key bytes without chain code (the suffix)
   @override
   late final Lazy<DRepDerivation> drepId = Lazy(
@@ -100,35 +100,16 @@ class CardanoWalletImpl extends CardanoWallet {
     required CardanoTransaction tx,
     required Set<String> witnessBech32Addresses,
     int deriveMaxAddressCount = 1000,
-  }) =>
-      cardanoWorker
-          .signTransactionsBundle(
-              this,
-              TxSigningBundle(
-                txsData: [
-                  TxPreparedForSigning(
-                    tx: tx,
-                    txDiff: TxDiff(
-                      diff: Value.v0(lovelace: BigInt.zero),
-                      usedUtxos: [],
-                      dRepDeregistration: false,
-                      stakeDeregistration: false,
-                      stakeDelegationPoolId: null,
-                      authorizeConstitutionalCommitteeHot: null,
-                      dRepDelegation: null,
-                      dRepRegistration: null,
-                      dRepUpdate: null,
-                      resignConstitutionalCommitteeCold: null,
-                      votes: const [],
-                      proposals: const [],
-                    ),
-                    utxosBeforeTx: [],
-                    signingAddressesRequired: witnessBech32Addresses,
-                  )
-                ],
-                receiveAddressBech32: firstAddress.bech32Encoded,
-                networkId: networkId,
-                totalDiff: Value.v0(lovelace: BigInt.zero),
+  }) => cardanoWorker
+      .signTransactionsBundle(
+        this,
+        TxSigningBundle(
+          txsData: [
+            TxPreparedForSigning(
+              tx: tx,
+              txDiff: TxDiff(
+                diff: Value.v0(lovelace: BigInt.zero),
+                usedUtxos: [],
                 dRepDeregistration: false,
                 stakeDeregistration: false,
                 stakeDelegationPoolId: null,
@@ -140,8 +121,27 @@ class CardanoWalletImpl extends CardanoWallet {
                 votes: const [],
                 proposals: const [],
               ),
-              deriveMaxAddressCount)
-          .then((e) => e.txsData[0].nweSignatures);
+              utxosBeforeTx: [],
+              signingAddressesRequired: witnessBech32Addresses,
+            ),
+          ],
+          receiveAddressBech32: firstAddress.bech32Encoded,
+          networkId: networkId,
+          totalDiff: Value.v0(lovelace: BigInt.zero),
+          dRepDeregistration: false,
+          stakeDeregistration: false,
+          stakeDelegationPoolId: null,
+          authorizeConstitutionalCommitteeHot: null,
+          dRepDelegation: null,
+          dRepRegistration: null,
+          dRepUpdate: null,
+          resignConstitutionalCommitteeCold: null,
+          votes: const [],
+          proposals: const [],
+        ),
+        deriveMaxAddressCount,
+      )
+      .then((e) => e.txsData[0].nweSignatures);
 
   @override
   Future<TxSignedBundle> signTransactionsBundle(
@@ -169,8 +169,7 @@ class CardanoWalletImpl extends CardanoWallet {
     required String payloadHex,
     required String requestedSignerRaw,
     int deriveMaxAddressCount = 1000,
-  }) =>
-      cardanoWorker.signData(this, payloadHex, requestedSignerRaw, deriveMaxAddressCount);
+  }) => cardanoWorker.signData(this, payloadHex, requestedSignerRaw, deriveMaxAddressCount);
 
   // Contains root public key that can derive all payment/change/stake public keys / addresses
   @override

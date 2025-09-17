@@ -9,13 +9,12 @@ Future<TxSigningBundle> prepareTxsForSigning({
   required String constitutionalCommitteeColdCredential,
   required String constitutionalCommitteeHotCredential,
   required NetworkId networkId,
-}) =>
-    cardanoWorker.prepareTxsForSigningImpl(
-      walletReceiveAddressBech32,
-      drepCredential,
-      constitutionalCommitteeColdCredential,
-      constitutionalCommitteeHotCredential,
-      networkId,
-      txs,
-      walletUtxos,
-    );
+}) => cardanoWorker.prepareTxsForSigningImpl(
+  walletReceiveAddressBech32,
+  drepCredential,
+  constitutionalCommitteeColdCredential,
+  constitutionalCommitteeHotCredential,
+  networkId,
+  txs,
+  walletUtxos,
+);

@@ -185,26 +185,26 @@ class HdWallet {
 
   /// Create HdWallet from seed
   factory HdWallet.fromSeed(Uint8List seed, {int accountIndex = defaultAccountIndex}) => HdWallet(
-        rootSigningKey: DerivationUtils.seedToBip32signingKey(seed),
-        accountIndex: accountIndex,
-      );
+    rootSigningKey: DerivationUtils.seedToBip32signingKey(seed),
+    accountIndex: accountIndex,
+  );
 
   factory HdWallet.fromHexEntropy(String hexEntropy, {int accountIndex = defaultAccountIndex}) => HdWallet(
-        rootSigningKey: DerivationUtils.seedToBip32signingKey(hexEntropy.hexDecode().toUint8List()),
-        accountIndex: accountIndex,
-      );
+    rootSigningKey: DerivationUtils.seedToBip32signingKey(hexEntropy.hexDecode().toUint8List()),
+    accountIndex: accountIndex,
+  );
 
   factory HdWallet.fromMnemonic(String mnemonic, {int accountIndex = defaultAccountIndex}) =>
       HdWallet.fromHexEntropy(bip39.mnemonicToEntropy(mnemonic.trim()), accountIndex: accountIndex);
 
   Bip32KeyPair _roleDerivationKeys(Bip32KeyRole role) => switch (role) {
-        Bip32KeyRole.payment => _paymentRoleKeysDerivator.value,
-        Bip32KeyRole.change => _changeRoleKeysDerivator.value,
-        Bip32KeyRole.staking => _stakeRoleKeysDerivator.value,
-        Bip32KeyRole.drepCredential => _drepCredentialRoleKeysDerivator.value,
-        Bip32KeyRole.constitutionalCommitteeCold => _constitutionalCommitteeColdRoleKeysDerivator.value,
-        Bip32KeyRole.constitutionalCommitteeHot => _constitutionalCommitteeHotRoleKeysDerivator.value,
-      };
+    Bip32KeyRole.payment => _paymentRoleKeysDerivator.value,
+    Bip32KeyRole.change => _changeRoleKeysDerivator.value,
+    Bip32KeyRole.staking => _stakeRoleKeysDerivator.value,
+    Bip32KeyRole.drepCredential => _drepCredentialRoleKeysDerivator.value,
+    Bip32KeyRole.constitutionalCommitteeCold => _constitutionalCommitteeColdRoleKeysDerivator.value,
+    Bip32KeyRole.constitutionalCommitteeHot => _constitutionalCommitteeHotRoleKeysDerivator.value,
+  };
 
   /// return the root signing key
   Bip32VerifyKey get rootVerifyKey => rootSigningKey.verifyKey;
@@ -246,19 +246,17 @@ class HdWallet {
   CardanoAddress toBaseAddress({
     required Bip32PublicKey spendVerifyKey,
     required NetworkId networkId,
-  }) =>
-      CardanoAddress.toBaseAddress(
-        spend: spendVerifyKey,
-        stake: stakeKeys.value.verifyKey,
-        networkId: networkId,
-      );
+  }) => CardanoAddress.toBaseAddress(
+    spend: spendVerifyKey,
+    stake: stakeKeys.value.verifyKey,
+    networkId: networkId,
+  );
 
   /// construct a Shelley staking address give a public spend key and networkId
   CardanoAddress toRewardAddress({
     required NetworkId networkId,
-  }) =>
-      CardanoAddress.toRewardAddress(
-        spend: stakeKeys.value.verifyKey,
-        networkId: networkId,
-      );
+  }) => CardanoAddress.toRewardAddress(
+    spend: stakeKeys.value.verifyKey,
+    networkId: networkId,
+  );
 }
