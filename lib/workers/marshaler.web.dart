@@ -6,6 +6,7 @@ import "../cardano_flutter_sdk.dart";
 
 const kIsWeb = true;
 
+const cardanoSignerMarshaler = _CardanoSignerMarshaler();
 const dataSignatureMarshaler = _DataSignatureMarshaler();
 const utxoListMarshaler = _UtxoListMarshaler();
 const cardanoTransactionListMarshaler = _CardanoTransactionListMarshaler();
@@ -21,6 +22,16 @@ const cardanoAddressKitMarshaler = _CardanoAddressKitMarshaler();
 const hdWalletMarshaler = _HdWalletMarshaler();
 const bip32KeyRoleMarshaler = _Bip32KeyRoleMarshaler();
 const stringListMarshaler = _StringListMarshaler();
+
+class _CardanoSignerMarshaler implements GenericMarshaler<CardanoSigner> {
+  const _CardanoSignerMarshaler();
+
+  @override
+  dynamic marshal(CardanoSigner data, [MarshalingContext? context]) => data.marshal();
+
+  @override
+  CardanoSigner unmarshal(dynamic data, [MarshalingContext? context]) => CardanoSigner.unmarshal(data as Uint8List);
+}
 
 class _DataSignatureMarshaler implements GenericMarshaler<DataSignature> {
   const _DataSignatureMarshaler();
@@ -110,9 +121,10 @@ class _Bip32PublicKeysKeyMarshaler implements GenericMarshaler<List<Bip32PublicK
   const _Bip32PublicKeysKeyMarshaler();
 
   @override
-  dynamic marshal(List<Bip32PublicKey> data, [MarshalingContext? context]) => (BinaryWriterImpl() //
-        ..writeBytesList(data.map(Uint8List.fromList).toList())) //
-      .toBytes();
+  dynamic marshal(List<Bip32PublicKey> data, [MarshalingContext? context]) =>
+      (BinaryWriterImpl() //
+            ..writeBytesList(data.map(Uint8List.fromList).toList())) //
+          .toBytes();
 
   @override
   List<Bip32PublicKey> unmarshal(dynamic data, [MarshalingContext? context]) =>

@@ -12,6 +12,7 @@ import "marshaler.vm.dart" //
     if (dart.library.js_interop) "marshaler.web.dart"
     if (dart.library.html) "marshaler.web.dart";
 import "wallet_tasks.activator.g.dart";
+import "wallet_tasks_sign.dart";
 
 part "wallet_tasks.worker.g.dart";
 
@@ -22,9 +23,9 @@ final WalletTasks cardanoWorker = WalletTasksWorkerPool(
     // Temporary fix for the issue with the worker pool where nested worker tasks get scheduled on the same worker
     // --- using maxParallel to 1 would cause a deadlock for nested worker tasks
     // --- [in squadrion 6.0.3]
-    maxParallel: 3,
+    maxParallel: 4,
   ),
-// ignore: discarded_futures
+  // ignore: discarded_futures
 )..start();
 
 // @UseLogger(ConsoleSquadronLogger)
@@ -40,14 +41,13 @@ class WalletTasks {
     @networkIdMarshaler NetworkId networkId, {
     @credentialTypeMarshaler CredentialType paymentType = CredentialType.key,
     @credentialTypeMarshaler CredentialType stakeType = CredentialType.key,
-  }) async =>
-      CardanoAddress.toBaseAddress(
-        spend: spend,
-        stake: stake,
-        networkId: networkId,
-        paymentType: paymentType,
-        stakeType: stakeType,
-      );
+  }) async => CardanoAddress.toBaseAddress(
+    spend: spend,
+    stake: stake,
+    networkId: networkId,
+    paymentType: paymentType,
+    stakeType: stakeType,
+  );
 
   @SquadronMethod()
   @cardanoAddressMarshaler
@@ -55,12 +55,11 @@ class WalletTasks {
     @bip32PublicKeyKeyMarshaler Bip32PublicKey spend,
     @networkIdMarshaler NetworkId networkId, {
     @credentialTypeMarshaler CredentialType paymentType = CredentialType.key,
-  }) async =>
-      CardanoAddress.toRewardAddress(
-        spend: spend,
-        networkId: networkId,
-        paymentType: paymentType,
-      );
+  }) async => CardanoAddress.toRewardAddress(
+    spend: spend,
+    networkId: networkId,
+    paymentType: paymentType,
+  );
 
   @SquadronMethod()
   @bip32PublicKeyKeyMarshaler
@@ -68,8 +67,7 @@ class WalletTasks {
     // verify key is the public key
     @bip32PublicKeyKeyMarshaler Bip32PublicKey pubKey,
     int index,
-  ) async =>
-      Bip32Ed25519KeyDerivation.instance.ckdPub(pubKey, index);
+  ) async => Bip32Ed25519KeyDerivation.instance.ckdPub(pubKey, index);
 
   @SquadronMethod()
   @bip32PublicKeysKeyMarshaler
@@ -78,11 +76,10 @@ class WalletTasks {
     @bip32PublicKeyKeyMarshaler Bip32PublicKey pubKey,
     int startIndexInclusive,
     int endIndexExclusive,
-  ) async =>
-      List.generate(
-        endIndexExclusive - startIndexInclusive,
-        (index) => Bip32Ed25519KeyDerivation.instance.ckdPub(pubKey, startIndexInclusive + index),
-      );
+  ) async => List.generate(
+    endIndexExclusive - startIndexInclusive,
+    (index) => Bip32Ed25519KeyDerivation.instance.ckdPub(pubKey, startIndexInclusive + index),
+  );
 
   @SquadronMethod()
   @stringListMarshaler
@@ -91,21 +88,19 @@ class WalletTasks {
     @bip32PublicKeyKeyMarshaler Bip32PublicKey pubKey,
     int startIndexInclusive,
     int endIndexExclusive,
-  ) async =>
-      List.generate(
-        endIndexExclusive - startIndexInclusive,
-        (index) => blake2bHash224(
-          Bip32Ed25519KeyDerivation.instance.ckdPub(pubKey, startIndexInclusive + index).rawKey,
-        ).hexEncode(),
-      );
+  ) async => List.generate(
+    endIndexExclusive - startIndexInclusive,
+    (index) => blake2bHash224(
+      Bip32Ed25519KeyDerivation.instance.ckdPub(pubKey, startIndexInclusive + index).rawKey,
+    ).hexEncode(),
+  );
 
   @SquadronMethod()
   @hdWalletMarshaler
   Future<HdWallet> buildHdWalletFromMnemonic(
     @stringListMarshaler List<String> mnemonic,
     int accountIndex,
-  ) async =>
-      HdWallet.fromMnemonic(mnemonic.join(" "), accountIndex: accountIndex);
+  ) async => HdWallet.fromMnemonic(mnemonic.join(" "), accountIndex: accountIndex);
 
   @SquadronMethod()
   @hdWalletMarshaler
@@ -119,8 +114,7 @@ class WalletTasks {
     @networkIdMarshaler NetworkId networkId,
     int index,
     @bip32KeyRoleMarshaler Bip32KeyRole role,
-  ) async =>
-      wallet.deriveBaseAddressKit(index: index, role: role, networkId: networkId);
+  ) async => wallet.deriveBaseAddressKit(index: index, role: role, networkId: networkId);
 
   @SquadronMethod()
   @walletMarshaler
@@ -214,10 +208,14 @@ class WalletTasks {
       stakeDelegationPoolId: txsPreparedForSigning.map((e) => e.txDiff.stakeDelegationPoolId).nonNulls.lastOrNull,
       dRepDeregistration: txsPreparedForSigning.any((e) => e.txDiff.dRepDeregistration),
       stakeDeregistration: txsPreparedForSigning.any((e) => e.txDiff.stakeDeregistration),
-      authorizeConstitutionalCommitteeHot:
-          txsPreparedForSigning.map((e) => e.txDiff.authorizeConstitutionalCommitteeHot).nonNulls.lastOrNull,
-      resignConstitutionalCommitteeCold:
-          txsPreparedForSigning.map((e) => e.txDiff.resignConstitutionalCommitteeCold).nonNulls.lastOrNull,
+      authorizeConstitutionalCommitteeHot: txsPreparedForSigning
+          .map((e) => e.txDiff.authorizeConstitutionalCommitteeHot)
+          .nonNulls
+          .lastOrNull,
+      resignConstitutionalCommitteeCold: txsPreparedForSigning
+          .map((e) => e.txDiff.resignConstitutionalCommitteeCold)
+          .nonNulls
+          .lastOrNull,
       dRepDelegation: txsPreparedForSigning.map((e) => e.txDiff.dRepDelegation).nonNulls.lastOrNull,
       dRepRegistration: txsPreparedForSigning.map((e) => e.txDiff.dRepRegistration).nonNulls.lastOrNull,
       dRepUpdate: txsPreparedForSigning.map((e) => e.txDiff.dRepUpdate).nonNulls.lastOrNull,
@@ -277,9 +275,11 @@ class WalletTasks {
         .toList(growable: false);
     final hasCertsForColdKeyAll = txs
         .map((e) => e.tx)
-        .map((tx) => tx.body.certs.requiresCommitteeColdSignature(
-              wallet.constitutionalCommiteeCold.value.credentialsBytes,
-            ))
+        .map(
+          (tx) => tx.body.certs.requiresCommitteeColdSignature(
+            wallet.constitutionalCommiteeCold.value.credentialsBytes,
+          ),
+        )
         .toList(growable: false);
 
     final hasCertsOrVotesForDRepAll = txs
@@ -463,6 +463,21 @@ class WalletTasks {
   }
 
   @SquadronMethod()
+  @cardanoSignerMarshaler
+  Future<CardanoSigner> findCardanoSigningPath(
+    String xPubHex,
+    String requestedSignerRaw,
+    int deriveMaxAddressCount,
+  ) async {
+    final pubAccount = await CardanoPubAccountFactory.instanceSync.fromHexXPub(xPubHex);
+    return WalletTasksSign.findCardanoSigner(
+      pubAccount: pubAccount,
+      requestedSignerRaw: requestedSignerRaw,
+      deriveMaxAddressCount: deriveMaxAddressCount,
+    );
+  }
+
+  @SquadronMethod()
   @dataSignatureMarshaler
   Future<DataSignature> signData(
     @walletMarshaler CardanoWallet wallet,
@@ -480,51 +495,51 @@ class WalletTasks {
     final Uint8List payloadBytes = payloadHex.hexDecode();
 
     ({Uint8List? keyId, ByteList requestedSigningAddressBytes, Bip32KeyPair signingKeyPair}) dataFromAddress(
-        CardanoAddress requestedSigningAddress) {
+      CardanoAddress requestedSigningAddress,
+    ) {
       final Bip32KeyPair signingKeyPair = switch (requestedSigningAddress.addressType) {
         AddressType.reward => () {
-            if (requestedSigningAddress.hexEncoded == wallet.stakeAddress.hexEncoded) {
-              return hdWallet.stakeKeys.value;
-            } else {
-              throw SigningAddressNotFoundException(
-                missingAddresses: {requestedSigningAddress.bech32Encoded},
-                searchedAddressesCount: 1,
-              );
-            }
-          }(),
-        AddressType.base => () {
-            for (int i = 0; i < deriveMaxAddressCount; i++) {
-              final paymentAddrForIndex = hdWallet.deriveBaseAddressKit(
-                index: i,
-                role: Bip32KeyRole.payment,
-                networkId: networkId,
-              );
-              final changeAddrForIndex = hdWallet.deriveBaseAddressKit(
-                index: i,
-                role: Bip32KeyRole.change,
-                networkId: networkId,
-              );
-              if (paymentAddrForIndex.address == requestedSigningAddress) {
-                return paymentAddrForIndex;
-              } else if (changeAddrForIndex.address == requestedSigningAddress) {
-                return changeAddrForIndex;
-              }
-            }
-
-            // if not found in for loop, throw
+          if (requestedSigningAddress.hexEncoded == wallet.stakeAddress.hexEncoded) {
+            return hdWallet.stakeKeys.value;
+          } else {
             throw SigningAddressNotFoundException(
               missingAddresses: {requestedSigningAddress.bech32Encoded},
-              searchedAddressesCount: deriveMaxAddressCount,
+              searchedAddressesCount: 1,
             );
-          }(),
+          }
+        }(),
+        AddressType.base => () {
+          for (int i = 0; i < deriveMaxAddressCount; i++) {
+            final paymentAddrForIndex = hdWallet.deriveBaseAddressKit(
+              index: i,
+              role: Bip32KeyRole.payment,
+              networkId: networkId,
+            );
+            final changeAddrForIndex = hdWallet.deriveBaseAddressKit(
+              index: i,
+              role: Bip32KeyRole.change,
+              networkId: networkId,
+            );
+            if (paymentAddrForIndex.address == requestedSigningAddress) {
+              return paymentAddrForIndex;
+            } else if (changeAddrForIndex.address == requestedSigningAddress) {
+              return changeAddrForIndex;
+            }
+          }
+
+          // if not found in for loop, throw
+          throw SigningAddressNotFoundException(
+            missingAddresses: {requestedSigningAddress.bech32Encoded},
+            searchedAddressesCount: deriveMaxAddressCount,
+          );
+        }(),
         AddressType.pointer ||
         AddressType.enterprise ||
-        AddressType.byron =>
-          throw UnexpectedSigningAddressTypeException(
-            hexAddress: requestedSignerRaw,
-            type: requestedSigningAddress.addressType,
-            signingContext: "When signing payload message",
-          ),
+        AddressType.byron => throw UnexpectedSigningAddressTypeException(
+          hexAddress: requestedSignerRaw,
+          type: requestedSigningAddress.addressType,
+          signingContext: "When signing payload message",
+        ),
       };
 
       return (
@@ -537,7 +552,8 @@ class WalletTasks {
     }
 
     ({Uint8List? keyId, ByteList requestedSigningAddressBytes, Bip32KeyPair signingKeyPair}) dataFromDrepIdOrCreds(
-        String drepIdOrCredsHex) {
+      String drepIdOrCredsHex,
+    ) {
       final walletDrepCredentials = wallet.drepId.value.credentialsHex;
       if (!drepIdOrCredsHex.endsWith(walletDrepCredentials)) {
         throw SigningAddressNotFoundException(
@@ -564,17 +580,17 @@ class WalletTasks {
       56 => dataFromDrepIdOrCreds(requestedSignerHex),
       // 58 or 114 is the length of the stake or receive address hex
       58 => () {
-          final requestedSignerBytes = requestedSignerHex.hexDecode();
-          final headerBytes = requestedSignerBytes[0];
-          return headerBytes & 0x0f > 1
-              ? dataFromDrepIdOrCreds(requestedSignerHex)
-              : dataFromAddress(CardanoAddress.fromHexString(requestedSignerHex));
-        }(),
+        final requestedSignerBytes = requestedSignerHex.hexDecode();
+        final headerBytes = requestedSignerBytes[0];
+        return headerBytes & 0x0f > 1
+            ? dataFromDrepIdOrCreds(requestedSignerHex)
+            : dataFromAddress(CardanoAddress.fromHexString(requestedSignerHex));
+      }(),
       114 => dataFromAddress(CardanoAddress.fromHexString(requestedSignerHex)),
       _ => throw SigningAddressNotValidException(
-          hexInvalidAddressOrCredential: requestedSignerHex,
-          signingContext: "When signing payload message",
-        )
+        hexInvalidAddressOrCredential: requestedSignerHex,
+        signingContext: "When signing payload message",
+      ),
     };
 
     final headers = CoseHeaders(
@@ -647,17 +663,17 @@ extension ListCertsX on List<Certificate>? {
           Certificate_AuthorizeCommitteeHot() => false,
           Certificate_ResignCommitteeCold() => false,
           Certificate_RegisterDRep() => const ListEquality().equals(
-              cert.dRepCredential.vKeyHash,
-              walletDRepCredentials,
-            ),
+            cert.dRepCredential.vKeyHash,
+            walletDRepCredentials,
+          ),
           Certificate_UnregisterDRep() => const ListEquality().equals(
-              cert.dRepCredential.vKeyHash,
-              walletDRepCredentials,
-            ),
+            cert.dRepCredential.vKeyHash,
+            walletDRepCredentials,
+          ),
           Certificate_UpdateDRep() => const ListEquality().equals(
-              cert.dRepCredential.vKeyHash,
-              walletDRepCredentials,
-            ),
+            cert.dRepCredential.vKeyHash,
+            walletDRepCredentials,
+          ),
         },
       ) ??
       false;
@@ -676,8 +692,9 @@ extension ListCertsX on List<Certificate>? {
           Certificate_StakeVoteDelegation() => cert.stakeCredential.vKeyHash.equalsDeep(walletStakeCredentials),
           Certificate_StakeRegistrationDelegation() => cert.stakeCredential.vKeyHash.equalsDeep(walletStakeCredentials),
           Certificate_VoteRegistrationDelegation() => cert.stakeCredential.vKeyHash.equalsDeep(walletStakeCredentials),
-          Certificate_StakeVoteRegistrationDelegation() =>
-            cert.stakeCredential.vKeyHash.equalsDeep(walletStakeCredentials),
+          Certificate_StakeVoteRegistrationDelegation() => cert.stakeCredential.vKeyHash.equalsDeep(
+            walletStakeCredentials,
+          ),
           Certificate_AuthorizeCommitteeHot() => false,
           Certificate_ResignCommitteeCold() => false,
           Certificate_RegisterDRep() => false,
@@ -690,10 +707,12 @@ extension ListCertsX on List<Certificate>? {
   bool requiresCommitteeColdSignature(Uint8List walletCommitteeColdCredentials) =>
       this?.any(
         (cert) => switch (cert) {
-          Certificate_AuthorizeCommitteeHot() =>
-            cert.committeeColdCredential.vKeyHash.equalsDeep(walletCommitteeColdCredentials),
-          Certificate_ResignCommitteeCold() =>
-            cert.committeeColdCredential.vKeyHash.equalsDeep(walletCommitteeColdCredentials),
+          Certificate_AuthorizeCommitteeHot() => cert.committeeColdCredential.vKeyHash.equalsDeep(
+            walletCommitteeColdCredentials,
+          ),
+          Certificate_ResignCommitteeCold() => cert.committeeColdCredential.vKeyHash.equalsDeep(
+            walletCommitteeColdCredentials,
+          ),
           Certificate_StakeRegistrationLegacy() => false,
           Certificate_StakeDeRegistrationLegacy() => false,
           Certificate_StakeDelegation() => false,
@@ -717,14 +736,14 @@ extension ListCertsX on List<Certificate>? {
 extension VotingProceduresX on VotingProcedures? {
   bool requiresDrepSignature(Uint8List walletDRepCredentials) =>
       this?.voting.keys.any(
-            (voter) => voter.vKeyHash.equalsDeep(walletDRepCredentials),
-          ) ??
+        (voter) => voter.vKeyHash.equalsDeep(walletDRepCredentials),
+      ) ??
       false;
 
   bool requiresCommitteeHotSignature(Uint8List walletCommitteeHotCredentials) =>
       this?.voting.keys.any(
-            (voter) => voter.vKeyHash.equalsDeep(walletCommitteeHotCredentials),
-          ) ??
+        (voter) => voter.vKeyHash.equalsDeep(walletCommitteeHotCredentials),
+      ) ??
       false;
 }
 

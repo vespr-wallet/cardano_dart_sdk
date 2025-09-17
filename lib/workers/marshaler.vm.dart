@@ -16,6 +16,7 @@ class GenericIdentityMarshaler<T> implements GenericMarshaler<T> {
   T unmarshal(dynamic data, [MarshalingContext? context]) => data as T;
 }
 
+const cardanoSignerMarshaler = GenericIdentityMarshaler<CardanoSigner>();
 const dataSignatureMarshaler = GenericIdentityMarshaler<DataSignature>();
 const utxoListMarshaler = GenericIdentityMarshaler<List<Utxo>>();
 const cardanoTransactionListMarshaler = GenericIdentityMarshaler<List<CardanoTransaction>>();

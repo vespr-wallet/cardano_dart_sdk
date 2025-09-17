@@ -9,12 +9,11 @@ extension CardanoPubAccountX on CardanoPubAccount {
     required int startIndex,
     required int endIndex,
     required Bip32KeyRole role,
-  }) =>
-      cardanoWorker.hexCredentialsDerivation(
-        _rolePublicKey(role),
-        startIndex,
-        endIndex,
-      );
+  }) => cardanoWorker.hexCredentialsDerivation(
+    _rolePublicKey(role),
+    startIndex,
+    endIndex,
+  );
 
   Future<Bip32PublicKey> paymentPublicKey(int index) => _deriveAsync(paymentRoleKey, index);
   Future<List<Bip32PublicKey>> paymentPublicKeys(int startIndex, int endIndex) =>
@@ -56,13 +55,13 @@ extension CardanoPubAccountX on CardanoPubAccount {
       stakeCardanoAddress(NetworkId.mainnet).then((addr) => addr.credentials);
 
   Bip32PublicKey _rolePublicKey(Bip32KeyRole role) => switch (role) {
-        Bip32KeyRole.payment => paymentRoleKey,
-        Bip32KeyRole.change => changeRoleKey,
-        Bip32KeyRole.staking => stakeRoleKey,
-        Bip32KeyRole.drepCredential => drepIdRoleKey,
-        Bip32KeyRole.constitutionalCommitteeCold => constitutionalCommitteeColdRoleKey,
-        Bip32KeyRole.constitutionalCommitteeHot => constitutionalCommitteeHotRoleKey,
-      };
+    Bip32KeyRole.payment => paymentRoleKey,
+    Bip32KeyRole.change => changeRoleKey,
+    Bip32KeyRole.staking => stakeRoleKey,
+    Bip32KeyRole.drepCredential => drepIdRoleKey,
+    Bip32KeyRole.constitutionalCommitteeCold => constitutionalCommitteeColdRoleKey,
+    Bip32KeyRole.constitutionalCommitteeHot => constitutionalCommitteeHotRoleKey,
+  };
 }
 
 class CardanoPubAccountWorkerFactory extends CardanoPubAccountFactory {

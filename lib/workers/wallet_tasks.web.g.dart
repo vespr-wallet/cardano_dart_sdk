@@ -2,7 +2,7 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
 // **************************************************************************
-// Generator: WorkerGenerator 7.1.4 (Squadron 7.1.1)
+// Generator: WorkerGenerator 7.1.5-mki (Squadron 7.1.2+1)
 // **************************************************************************
 
 import 'package:squadron/squadron.dart';
@@ -17,10 +17,12 @@ void main() {
 EntryPoint $getWalletTasksActivator(SquadronPlatformType platform) {
   if (platform.isJs) {
     return Squadron.uri(
-        '/assets/packages/cardano_flutter_sdk/workers/wallet_tasks.web.g.dart.js');
+      '/assets/packages/cardano_flutter_sdk/workers/wallet_tasks.web.g.dart.js',
+    );
   } else if (platform.isWasm) {
     return Squadron.uri(
-        '/assets/packages/cardano_flutter_sdk/workers/wallet_tasks.web.g.dart.wasm');
+      '/assets/packages/cardano_flutter_sdk/workers/wallet_tasks.web.g.dart.wasm',
+    );
   } else {
     throw UnsupportedError('${platform.label} not supported.');
   }

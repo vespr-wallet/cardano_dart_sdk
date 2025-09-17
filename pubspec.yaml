@@ -17,6 +17,7 @@ dependencies:
   collection: ^1.18.0 # to use collection extension methods
   fast_base58: ^0.2.1 # to/from base58 string conversion (used for byron addresses)
   hex: ^0.2.0 # to/from hex string conversion
+  meta: ^1.17.0
   pinenacl: ^0.6.0 # for cryptographic signatures and hashing
   squadron: ^7.1.2+1 # to use squadron for parallel processing
   # dartz: ^0.10.1 # to return Either<success, error>
@@ -24,7 +25,7 @@ dependencies:
 dev_dependencies:
   build_runner: any
   lints: ^6.0.0
-  squadron_builder: ^7.1.6
+  squadron_builder: 7.1.5 # 7.1.6 is broken
   test: ^1.26.3
   # dependency_validator: ^4.0.0
   #  mockito: ^5.4.2

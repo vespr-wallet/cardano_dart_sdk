@@ -1,0 +1,31 @@
+{
+    "mcpServers": {
+      "sentry": {
+        "type": "http",
+        "url": "https://mcp.sentry.dev/mcp"
+      },
+      "linear-server": {
+        "type": "sse",
+        "url": "https://mcp.linear.app/sse"
+      },
+      "dart": {
+        "command": "dart",
+        "args": [
+          "mcp-server"
+        ]
+      },
+      "serena": {
+        "type": "stdio",
+        "command": "uvx",
+        "args": [
+          "--from",
+          "git+https://github.com/oraios/serena",
+          "serena",
+          "start-mcp-server",
+          "--context",
+          "ide-assistant"
+        ],
+        "env": {}
+      }
+    }
+  }

@@ -4,7 +4,7 @@
 part of 'wallet_tasks.dart';
 
 // **************************************************************************
-// Generator: WorkerGenerator 7.1.4 (Squadron 7.1.1)
+// Generator: WorkerGenerator 7.1.5-mki (Squadron 7.1.2+1)
 // **************************************************************************
 
 /// Command ids used in operations map
@@ -14,173 +14,217 @@ const int _$buildWalletFromHdWalletId = 3;
 const int _$ckdPubBip32Ed25519KeyDerivationId = 4;
 const int _$ckdPubBip32Ed25519KeyDerivationsId = 5;
 const int _$deriveAddressKitId = 6;
-const int _$hexCredentialsDerivationId = 7;
-const int _$prepareTxsForSigningImplId = 8;
-const int _$signDataId = 9;
-const int _$signTransactionsBundleId = 10;
-const int _$toCardanoBaseAddressId = 11;
-const int _$toCardanoRewardAddressId = 12;
+const int _$findCardanoSigningPathId = 7;
+const int _$hexCredentialsDerivationId = 8;
+const int _$prepareTxsForSigningImplId = 9;
+const int _$signDataId = 10;
+const int _$signTransactionsBundleId = 11;
+const int _$toCardanoBaseAddressId = 12;
+const int _$toCardanoRewardAddressId = 13;
 
 /// WorkerService operations for WalletTasks
 extension on WalletTasks {
   OperationsMap _$getOperations() => OperationsMap({
-        _$buildHdWalletFromMnemonicId: ($req) async {
-          final HdWallet $res;
-          try {
-            final $dsr = _$Deser(contextAware: true);
-            $res = await buildHdWalletFromMnemonic(
-                $dsr.$0($req.args[0]), $dsr.$1($req.args[1]));
-          } finally {}
-          try {
-            final $sr = _$Ser(contextAware: true);
-            return $sr.$0($res);
-          } finally {}
-        },
-        _$buildHdWalletFromSeedId: ($req) async {
-          final HdWallet $res;
-          try {
-            final $dsr = _$Deser(contextAware: false);
-            $res = await buildHdWalletFromSeed(
-                $dsr.$2($req.args[0]), $dsr.$1($req.args[1]));
-          } finally {}
-          try {
-            final $sr = _$Ser(contextAware: true);
-            return $sr.$0($res);
-          } finally {}
-        },
-        _$buildWalletFromHdWalletId: ($req) async {
-          final CardanoWallet $res;
-          try {
-            final $dsr = _$Deser(contextAware: true);
-            $res = await buildWalletFromHdWallet(
-                $dsr.$3($req.args[0]), $dsr.$4($req.args[1]));
-          } finally {}
-          try {
-            final $sr = _$Ser(contextAware: true);
-            return $sr.$1($res);
-          } finally {}
-        },
-        _$ckdPubBip32Ed25519KeyDerivationId: ($req) async {
-          final Bip32PublicKey $res;
-          try {
-            final $dsr = _$Deser(contextAware: true);
-            $res = await ckdPubBip32Ed25519KeyDerivation(
-                $dsr.$5($req.args[0]), $dsr.$1($req.args[1]));
-          } finally {}
-          try {
-            final $sr = _$Ser(contextAware: true);
-            return $sr.$2($res);
-          } finally {}
-        },
-        _$ckdPubBip32Ed25519KeyDerivationsId: ($req) async {
-          final List<Bip32PublicKey> $res;
-          try {
-            final $dsr = _$Deser(contextAware: true);
-            $res = await ckdPubBip32Ed25519KeyDerivations($dsr.$5($req.args[0]),
-                $dsr.$1($req.args[1]), $dsr.$1($req.args[2]));
-          } finally {}
-          try {
-            final $sr = _$Ser(contextAware: true);
-            return $sr.$3($res);
-          } finally {}
-        },
-        _$deriveAddressKitId: ($req) async {
-          final CardanoAddressKit $res;
-          try {
-            final $dsr = _$Deser(contextAware: true);
-            $res = await deriveAddressKit(
-                $dsr.$3($req.args[0]),
-                $dsr.$4($req.args[1]),
-                $dsr.$1($req.args[2]),
-                $dsr.$6($req.args[3]));
-          } finally {}
-          try {
-            final $sr = _$Ser(contextAware: true);
-            return $sr.$4($res);
-          } finally {}
-        },
-        _$hexCredentialsDerivationId: ($req) async {
-          final List<String> $res;
-          try {
-            final $dsr = _$Deser(contextAware: true);
-            $res = await hexCredentialsDerivation($dsr.$5($req.args[0]),
-                $dsr.$1($req.args[1]), $dsr.$1($req.args[2]));
-          } finally {}
-          try {
-            final $sr = _$Ser(contextAware: true);
-            return $sr.$5($res);
-          } finally {}
-        },
-        _$prepareTxsForSigningImplId: ($req) async {
-          final TxSigningBundle $res;
-          try {
-            final $dsr = _$Deser(contextAware: true);
-            $res = await prepareTxsForSigningImpl(
-                $dsr.$7($req.args[0]),
-                $dsr.$7($req.args[1]),
-                $dsr.$7($req.args[2]),
-                $dsr.$7($req.args[3]),
-                $dsr.$4($req.args[4]),
-                $dsr.$8($req.args[5]),
-                $dsr.$9($req.args[6]));
-          } finally {}
-          try {
-            final $sr = _$Ser(contextAware: true);
-            return $sr.$6($res);
-          } finally {}
-        },
-        _$signDataId: ($req) async {
-          final DataSignature $res;
-          try {
-            final $dsr = _$Deser(contextAware: true);
-            $res = await signData($dsr.$10($req.args[0]), $dsr.$7($req.args[1]),
-                $dsr.$7($req.args[2]), $dsr.$1($req.args[3]));
-          } finally {}
-          try {
-            final $sr = _$Ser(contextAware: true);
-            return $sr.$7($res);
-          } finally {}
-        },
-        _$signTransactionsBundleId: ($req) async {
-          final TxSignedBundle $res;
-          try {
-            final $dsr = _$Deser(contextAware: true);
-            $res = await signTransactionsBundle($dsr.$10($req.args[0]),
-                $dsr.$11($req.args[1]), $dsr.$1($req.args[2]));
-          } finally {}
-          try {
-            final $sr = _$Ser(contextAware: true);
-            return $sr.$8($res);
-          } finally {}
-        },
-        _$toCardanoBaseAddressId: ($req) async {
-          final CardanoAddress $res;
-          try {
-            final $dsr = _$Deser(contextAware: true);
-            $res = await toCardanoBaseAddress($dsr.$5($req.args[0]),
-                $dsr.$5($req.args[1]), $dsr.$4($req.args[2]),
-                paymentType: $dsr.$12($req.args[3]),
-                stakeType: $dsr.$12($req.args[4]));
-          } finally {}
-          try {
-            final $sr = _$Ser(contextAware: true);
-            return $sr.$9($res);
-          } finally {}
-        },
-        _$toCardanoRewardAddressId: ($req) async {
-          final CardanoAddress $res;
-          try {
-            final $dsr = _$Deser(contextAware: true);
-            $res = await toCardanoRewardAddress(
-                $dsr.$5($req.args[0]), $dsr.$4($req.args[1]),
-                paymentType: $dsr.$12($req.args[2]));
-          } finally {}
-          try {
-            final $sr = _$Ser(contextAware: true);
-            return $sr.$9($res);
-          } finally {}
-        },
-      });
+    _$buildHdWalletFromMnemonicId: ($req) async {
+      final HdWallet $res;
+      try {
+        final $dsr = _$Deser(contextAware: true);
+        $res = await buildHdWalletFromMnemonic(
+          $dsr.$0($req.args[0]),
+          $dsr.$1($req.args[1]),
+        );
+      } finally {}
+      try {
+        final $sr = _$Ser(contextAware: true);
+        return $sr.$0($res);
+      } finally {}
+    },
+    _$buildHdWalletFromSeedId: ($req) async {
+      final HdWallet $res;
+      try {
+        final $dsr = _$Deser(contextAware: false);
+        $res = await buildHdWalletFromSeed(
+          $dsr.$2($req.args[0]),
+          $dsr.$1($req.args[1]),
+        );
+      } finally {}
+      try {
+        final $sr = _$Ser(contextAware: true);
+        return $sr.$0($res);
+      } finally {}
+    },
+    _$buildWalletFromHdWalletId: ($req) async {
+      final CardanoWallet $res;
+      try {
+        final $dsr = _$Deser(contextAware: true);
+        $res = await buildWalletFromHdWallet(
+          $dsr.$3($req.args[0]),
+          $dsr.$4($req.args[1]),
+        );
+      } finally {}
+      try {
+        final $sr = _$Ser(contextAware: true);
+        return $sr.$1($res);
+      } finally {}
+    },
+    _$ckdPubBip32Ed25519KeyDerivationId: ($req) async {
+      final Bip32PublicKey $res;
+      try {
+        final $dsr = _$Deser(contextAware: true);
+        $res = await ckdPubBip32Ed25519KeyDerivation(
+          $dsr.$5($req.args[0]),
+          $dsr.$1($req.args[1]),
+        );
+      } finally {}
+      try {
+        final $sr = _$Ser(contextAware: true);
+        return $sr.$2($res);
+      } finally {}
+    },
+    _$ckdPubBip32Ed25519KeyDerivationsId: ($req) async {
+      final List<Bip32PublicKey> $res;
+      try {
+        final $dsr = _$Deser(contextAware: true);
+        $res = await ckdPubBip32Ed25519KeyDerivations(
+          $dsr.$5($req.args[0]),
+          $dsr.$1($req.args[1]),
+          $dsr.$1($req.args[2]),
+        );
+      } finally {}
+      try {
+        final $sr = _$Ser(contextAware: true);
+        return $sr.$3($res);
+      } finally {}
+    },
+    _$deriveAddressKitId: ($req) async {
+      final CardanoAddressKit $res;
+      try {
+        final $dsr = _$Deser(contextAware: true);
+        $res = await deriveAddressKit(
+          $dsr.$3($req.args[0]),
+          $dsr.$4($req.args[1]),
+          $dsr.$1($req.args[2]),
+          $dsr.$6($req.args[3]),
+        );
+      } finally {}
+      try {
+        final $sr = _$Ser(contextAware: true);
+        return $sr.$4($res);
+      } finally {}
+    },
+    _$findCardanoSigningPathId: ($req) async {
+      final CardanoSigner $res;
+      try {
+        final $dsr = _$Deser(contextAware: false);
+        $res = await findCardanoSigningPath(
+          $dsr.$7($req.args[0]),
+          $dsr.$7($req.args[1]),
+          $dsr.$1($req.args[2]),
+        );
+      } finally {}
+      try {
+        final $sr = _$Ser(contextAware: true);
+        return $sr.$5($res);
+      } finally {}
+    },
+    _$hexCredentialsDerivationId: ($req) async {
+      final List<String> $res;
+      try {
+        final $dsr = _$Deser(contextAware: true);
+        $res = await hexCredentialsDerivation(
+          $dsr.$5($req.args[0]),
+          $dsr.$1($req.args[1]),
+          $dsr.$1($req.args[2]),
+        );
+      } finally {}
+      try {
+        final $sr = _$Ser(contextAware: true);
+        return $sr.$6($res);
+      } finally {}
+    },
+    _$prepareTxsForSigningImplId: ($req) async {
+      final TxSigningBundle $res;
+      try {
+        final $dsr = _$Deser(contextAware: true);
+        $res = await prepareTxsForSigningImpl(
+          $dsr.$7($req.args[0]),
+          $dsr.$7($req.args[1]),
+          $dsr.$7($req.args[2]),
+          $dsr.$7($req.args[3]),
+          $dsr.$4($req.args[4]),
+          $dsr.$8($req.args[5]),
+          $dsr.$9($req.args[6]),
+        );
+      } finally {}
+      try {
+        final $sr = _$Ser(contextAware: true);
+        return $sr.$7($res);
+      } finally {}
+    },
+    _$signDataId: ($req) async {
+      final DataSignature $res;
+      try {
+        final $dsr = _$Deser(contextAware: true);
+        $res = await signData(
+          $dsr.$10($req.args[0]),
+          $dsr.$7($req.args[1]),
+          $dsr.$7($req.args[2]),
+          $dsr.$1($req.args[3]),
+        );
+      } finally {}
+      try {
+        final $sr = _$Ser(contextAware: true);
+        return $sr.$8($res);
+      } finally {}
+    },
+    _$signTransactionsBundleId: ($req) async {
+      final TxSignedBundle $res;
+      try {
+        final $dsr = _$Deser(contextAware: true);
+        $res = await signTransactionsBundle(
+          $dsr.$10($req.args[0]),
+          $dsr.$11($req.args[1]),
+          $dsr.$1($req.args[2]),
+        );
+      } finally {}
+      try {
+        final $sr = _$Ser(contextAware: true);
+        return $sr.$9($res);
+      } finally {}
+    },
+    _$toCardanoBaseAddressId: ($req) async {
+      final CardanoAddress $res;
+      try {
+        final $dsr = _$Deser(contextAware: true);
+        $res = await toCardanoBaseAddress(
+          $dsr.$5($req.args[0]),
+          $dsr.$5($req.args[1]),
+          $dsr.$4($req.args[2]),
+          paymentType: $dsr.$12($req.args[3]),
+          stakeType: $dsr.$12($req.args[4]),
+        );
+      } finally {}
+      try {
+        final $sr = _$Ser(contextAware: true);
+        return $sr.$10($res);
+      } finally {}
+    },
+    _$toCardanoRewardAddressId: ($req) async {
+      final CardanoAddress $res;
+      try {
+        final $dsr = _$Deser(contextAware: true);
+        $res = await toCardanoRewardAddress(
+          $dsr.$5($req.args[0]),
+          $dsr.$4($req.args[1]),
+          paymentType: $dsr.$12($req.args[2]),
+        );
+      } finally {}
+      try {
+        final $sr = _$Ser(contextAware: true);
+        return $sr.$10($res);
+      } finally {}
+    },
+  });
 }
 
 /// Invoker for WalletTasks, implements the public interface to invoke the
@@ -188,12 +232,16 @@ extension on WalletTasks {
 mixin _$WalletTasks$Invoker on Invoker implements WalletTasks {
   @override
   Future<HdWallet> buildHdWalletFromMnemonic(
-      List<String> mnemonic, int accountIndex) async {
+    List<String> mnemonic,
+    int accountIndex,
+  ) async {
     final dynamic $res;
     try {
       final $sr = _$Ser(contextAware: true);
-      $res = await send(_$buildHdWalletFromMnemonicId,
-          args: [$sr.$5(mnemonic), accountIndex]);
+      $res = await send(
+        _$buildHdWalletFromMnemonicId,
+        args: [$sr.$6(mnemonic), accountIndex],
+      );
     } finally {}
     try {
       final $dsr = _$Deser(contextAware: true);
@@ -203,9 +251,13 @@ mixin _$WalletTasks$Invoker on Invoker implements WalletTasks {
 
   @override
   Future<HdWallet> buildHdWalletFromSeed(
-      Uint8List seed, int accountIndex) async {
-    final dynamic $res =
-        await send(_$buildHdWalletFromSeedId, args: [seed, accountIndex]);
+    Uint8List seed,
+    int accountIndex,
+  ) async {
+    final dynamic $res = await send(
+      _$buildHdWalletFromSeedId,
+      args: [seed, accountIndex],
+    );
     try {
       final $dsr = _$Deser(contextAware: true);
       return $dsr.$3($res);
@@ -214,12 +266,16 @@ mixin _$WalletTasks$Invoker on Invoker implements WalletTasks {
 
   @override
   Future<CardanoWallet> buildWalletFromHdWallet(
-      HdWallet hdWallet, NetworkId networkId) async {
+    HdWallet hdWallet,
+    NetworkId networkId,
+  ) async {
     final dynamic $res;
     try {
       final $sr = _$Ser(contextAware: true);
-      $res = await send(_$buildWalletFromHdWalletId,
-          args: [$sr.$0(hdWallet), $sr.$10(networkId)]);
+      $res = await send(
+        _$buildWalletFromHdWalletId,
+        args: [$sr.$0(hdWallet), $sr.$11(networkId)],
+      );
     } finally {}
     try {
       final $dsr = _$Deser(contextAware: true);
@@ -229,12 +285,16 @@ mixin _$WalletTasks$Invoker on Invoker implements WalletTasks {
 
   @override
   Future<Bip32PublicKey> ckdPubBip32Ed25519KeyDerivation(
-      Bip32PublicKey pubKey, int index) async {
+    Bip32PublicKey pubKey,
+    int index,
+  ) async {
     final dynamic $res;
     try {
       final $sr = _$Ser(contextAware: true);
-      $res = await send(_$ckdPubBip32Ed25519KeyDerivationId,
-          args: [$sr.$2(pubKey), index]);
+      $res = await send(
+        _$ckdPubBip32Ed25519KeyDerivationId,
+        args: [$sr.$2(pubKey), index],
+      );
     } finally {}
     try {
       final $dsr = _$Deser(contextAware: true);
@@ -244,14 +304,17 @@ mixin _$WalletTasks$Invoker on Invoker implements WalletTasks {
 
   @override
   Future<List<Bip32PublicKey>> ckdPubBip32Ed25519KeyDerivations(
-      Bip32PublicKey pubKey,
-      int startIndexInclusive,
-      int endIndexExclusive) async {
+    Bip32PublicKey pubKey,
+    int startIndexInclusive,
+    int endIndexExclusive,
+  ) async {
     final dynamic $res;
     try {
       final $sr = _$Ser(contextAware: true);
-      $res = await send(_$ckdPubBip32Ed25519KeyDerivationsId,
-          args: [$sr.$2(pubKey), startIndexInclusive, endIndexExclusive]);
+      $res = await send(
+        _$ckdPubBip32Ed25519KeyDerivationsId,
+        args: [$sr.$2(pubKey), startIndexInclusive, endIndexExclusive],
+      );
     } finally {}
     try {
       final $dsr = _$Deser(contextAware: true);
@@ -260,13 +323,19 @@ mixin _$WalletTasks$Invoker on Invoker implements WalletTasks {
   }
 
   @override
-  Future<CardanoAddressKit> deriveAddressKit(HdWallet wallet,
-      NetworkId networkId, int index, Bip32KeyRole role) async {
+  Future<CardanoAddressKit> deriveAddressKit(
+    HdWallet wallet,
+    NetworkId networkId,
+    int index,
+    Bip32KeyRole role,
+  ) async {
     final dynamic $res;
     try {
       final $sr = _$Ser(contextAware: true);
-      $res = await send(_$deriveAddressKitId,
-          args: [$sr.$0(wallet), $sr.$10(networkId), index, $sr.$11(role)]);
+      $res = await send(
+        _$deriveAddressKitId,
+        args: [$sr.$0(wallet), $sr.$11(networkId), index, $sr.$12(role)],
+      );
     } finally {}
     try {
       final $dsr = _$Deser(contextAware: true);
@@ -275,13 +344,34 @@ mixin _$WalletTasks$Invoker on Invoker implements WalletTasks {
   }
 
   @override
-  Future<List<String>> hexCredentialsDerivation(Bip32PublicKey pubKey,
-      int startIndexInclusive, int endIndexExclusive) async {
+  Future<CardanoSigner> findCardanoSigningPath(
+    String xPubHex,
+    String requestedSignerRaw,
+    int deriveMaxAddressCount,
+  ) async {
+    final dynamic $res = await send(
+      _$findCardanoSigningPathId,
+      args: [xPubHex, requestedSignerRaw, deriveMaxAddressCount],
+    );
+    try {
+      final $dsr = _$Deser(contextAware: true);
+      return $dsr.$15($res);
+    } finally {}
+  }
+
+  @override
+  Future<List<String>> hexCredentialsDerivation(
+    Bip32PublicKey pubKey,
+    int startIndexInclusive,
+    int endIndexExclusive,
+  ) async {
     final dynamic $res;
     try {
       final $sr = _$Ser(contextAware: true);
-      $res = await send(_$hexCredentialsDerivationId,
-          args: [$sr.$2(pubKey), startIndexInclusive, endIndexExclusive]);
+      $res = await send(
+        _$hexCredentialsDerivationId,
+        args: [$sr.$2(pubKey), startIndexInclusive, endIndexExclusive],
+      );
     } finally {}
     try {
       final $dsr = _$Deser(contextAware: true);
@@ -291,25 +381,29 @@ mixin _$WalletTasks$Invoker on Invoker implements WalletTasks {
 
   @override
   Future<TxSigningBundle> prepareTxsForSigningImpl(
-      String walletBech32Address,
-      String drepCredential,
-      String constitutionalCommitteeColdCredential,
-      String constitutionalCommitteeHotCredential,
-      NetworkId networkId,
-      List<CardanoTransaction> txs,
-      List<Utxo> utxos) async {
+    String walletBech32Address,
+    String drepCredential,
+    String constitutionalCommitteeColdCredential,
+    String constitutionalCommitteeHotCredential,
+    NetworkId networkId,
+    List<CardanoTransaction> txs,
+    List<Utxo> utxos,
+  ) async {
     final dynamic $res;
     try {
       final $sr = _$Ser(contextAware: true);
-      $res = await send(_$prepareTxsForSigningImplId, args: [
-        walletBech32Address,
-        drepCredential,
-        constitutionalCommitteeColdCredential,
-        constitutionalCommitteeHotCredential,
-        $sr.$10(networkId),
-        $sr.$12(txs),
-        $sr.$13(utxos)
-      ]);
+      $res = await send(
+        _$prepareTxsForSigningImplId,
+        args: [
+          walletBech32Address,
+          drepCredential,
+          constitutionalCommitteeColdCredential,
+          constitutionalCommitteeHotCredential,
+          $sr.$11(networkId),
+          $sr.$13(txs),
+          $sr.$14(utxos),
+        ],
+      );
     } finally {}
     try {
       final $dsr = _$Deser(contextAware: true);
@@ -318,32 +412,24 @@ mixin _$WalletTasks$Invoker on Invoker implements WalletTasks {
   }
 
   @override
-  Future<DataSignature> signData(CardanoWallet wallet, String payloadHex,
-      String requestedSignerRaw, int deriveMaxAddressCount) async {
+  Future<DataSignature> signData(
+    CardanoWallet wallet,
+    String payloadHex,
+    String requestedSignerRaw,
+    int deriveMaxAddressCount,
+  ) async {
     final dynamic $res;
     try {
       final $sr = _$Ser(contextAware: true);
-      $res = await send(_$signDataId, args: [
-        $sr.$1(wallet),
-        payloadHex,
-        requestedSignerRaw,
-        deriveMaxAddressCount
-      ]);
-    } finally {}
-    try {
-      final $dsr = _$Deser(contextAware: true);
-      return $dsr.$15($res);
-    } finally {}
-  }
-
-  @override
-  Future<TxSignedBundle> signTransactionsBundle(CardanoWallet wallet,
-      TxSigningBundle bundle, int deriveMaxAddressCount) async {
-    final dynamic $res;
-    try {
-      final $sr = _$Ser(contextAware: true);
-      $res = await send(_$signTransactionsBundleId,
-          args: [$sr.$1(wallet), $sr.$6(bundle), deriveMaxAddressCount]);
+      $res = await send(
+        _$signDataId,
+        args: [
+          $sr.$1(wallet),
+          payloadHex,
+          requestedSignerRaw,
+          deriveMaxAddressCount,
+        ],
+      );
     } finally {}
     try {
       final $dsr = _$Deser(contextAware: true);
@@ -352,20 +438,18 @@ mixin _$WalletTasks$Invoker on Invoker implements WalletTasks {
   }
 
   @override
-  Future<CardanoAddress> toCardanoBaseAddress(
-      Bip32PublicKey spend, Bip32PublicKey stake, NetworkId networkId,
-      {CredentialType paymentType = CredentialType.key,
-      CredentialType stakeType = CredentialType.key}) async {
+  Future<TxSignedBundle> signTransactionsBundle(
+    CardanoWallet wallet,
+    TxSigningBundle bundle,
+    int deriveMaxAddressCount,
+  ) async {
     final dynamic $res;
     try {
       final $sr = _$Ser(contextAware: true);
-      $res = await send(_$toCardanoBaseAddressId, args: [
-        $sr.$2(spend),
-        $sr.$2(stake),
-        $sr.$10(networkId),
-        $sr.$14(paymentType),
-        $sr.$14(stakeType)
-      ]);
+      $res = await send(
+        _$signTransactionsBundleId,
+        args: [$sr.$1(wallet), $sr.$7(bundle), deriveMaxAddressCount],
+      );
     } finally {}
     try {
       final $dsr = _$Deser(contextAware: true);
@@ -374,18 +458,50 @@ mixin _$WalletTasks$Invoker on Invoker implements WalletTasks {
   }
 
   @override
-  Future<CardanoAddress> toCardanoRewardAddress(
-      Bip32PublicKey spend, NetworkId networkId,
-      {CredentialType paymentType = CredentialType.key}) async {
+  Future<CardanoAddress> toCardanoBaseAddress(
+    Bip32PublicKey spend,
+    Bip32PublicKey stake,
+    NetworkId networkId, {
+    CredentialType paymentType = CredentialType.key,
+    CredentialType stakeType = CredentialType.key,
+  }) async {
     final dynamic $res;
     try {
       final $sr = _$Ser(contextAware: true);
-      $res = await send(_$toCardanoRewardAddressId,
-          args: [$sr.$2(spend), $sr.$10(networkId), $sr.$14(paymentType)]);
+      $res = await send(
+        _$toCardanoBaseAddressId,
+        args: [
+          $sr.$2(spend),
+          $sr.$2(stake),
+          $sr.$11(networkId),
+          $sr.$15(paymentType),
+          $sr.$15(stakeType),
+        ],
+      );
     } finally {}
     try {
       final $dsr = _$Deser(contextAware: true);
-      return $dsr.$17($res);
+      return $dsr.$18($res);
+    } finally {}
+  }
+
+  @override
+  Future<CardanoAddress> toCardanoRewardAddress(
+    Bip32PublicKey spend,
+    NetworkId networkId, {
+    CredentialType paymentType = CredentialType.key,
+  }) async {
+    final dynamic $res;
+    try {
+      final $sr = _$Ser(contextAware: true);
+      $res = await send(
+        _$toCardanoRewardAddressId,
+        args: [$sr.$2(spend), $sr.$11(networkId), $sr.$15(paymentType)],
+      );
+    } finally {}
+    try {
+      final $dsr = _$Deser(contextAware: true);
+      return $dsr.$18($res);
     } finally {}
   }
 }
@@ -410,25 +526,41 @@ WorkerService $WalletTasksInitializer(WorkerRequest $req) =>
 base class WalletTasksWorker extends Worker
     with _$WalletTasks$Invoker, _$WalletTasks$Facade
     implements WalletTasks {
-  WalletTasksWorker(
-      {PlatformThreadHook? threadHook, ExceptionManager? exceptionManager})
-      : super($WalletTasksActivator(Squadron.platformType),
-            threadHook: threadHook, exceptionManager: exceptionManager);
+  WalletTasksWorker({
+    PlatformThreadHook? threadHook,
+    ExceptionManager? exceptionManager,
+  }) : super(
+         $WalletTasksActivator(Squadron.platformType),
+         threadHook: threadHook,
+         exceptionManager: exceptionManager,
+       );
 
-  WalletTasksWorker.vm(
-      {PlatformThreadHook? threadHook, ExceptionManager? exceptionManager})
-      : super($WalletTasksActivator(SquadronPlatformType.vm),
-            threadHook: threadHook, exceptionManager: exceptionManager);
+  WalletTasksWorker.vm({
+    PlatformThreadHook? threadHook,
+    ExceptionManager? exceptionManager,
+  }) : super(
+         $WalletTasksActivator(SquadronPlatformType.vm),
+         threadHook: threadHook,
+         exceptionManager: exceptionManager,
+       );
 
-  WalletTasksWorker.js(
-      {PlatformThreadHook? threadHook, ExceptionManager? exceptionManager})
-      : super($WalletTasksActivator(SquadronPlatformType.js),
-            threadHook: threadHook, exceptionManager: exceptionManager);
+  WalletTasksWorker.js({
+    PlatformThreadHook? threadHook,
+    ExceptionManager? exceptionManager,
+  }) : super(
+         $WalletTasksActivator(SquadronPlatformType.js),
+         threadHook: threadHook,
+         exceptionManager: exceptionManager,
+       );
 
-  WalletTasksWorker.wasm(
-      {PlatformThreadHook? threadHook, ExceptionManager? exceptionManager})
-      : super($WalletTasksActivator(SquadronPlatformType.wasm),
-            threadHook: threadHook, exceptionManager: exceptionManager);
+  WalletTasksWorker.wasm({
+    PlatformThreadHook? threadHook,
+    ExceptionManager? exceptionManager,
+  }) : super(
+         $WalletTasksActivator(SquadronPlatformType.wasm),
+         threadHook: threadHook,
+         exceptionManager: exceptionManager,
+       );
 
   @override
   List? getStartArgs() => null;
@@ -438,50 +570,63 @@ base class WalletTasksWorker extends Worker
 base class WalletTasksWorkerPool extends WorkerPool<WalletTasksWorker>
     with _$WalletTasks$Facade
     implements WalletTasks {
-  WalletTasksWorkerPool(
-      {PlatformThreadHook? threadHook,
-      ExceptionManager? exceptionManager,
-      ConcurrencySettings? concurrencySettings})
-      : super(
-            (ExceptionManager exceptionManager) => WalletTasksWorker(
-                threadHook: threadHook, exceptionManager: exceptionManager),
-            concurrencySettings: concurrencySettings,
-            exceptionManager: exceptionManager);
+  WalletTasksWorkerPool({
+    PlatformThreadHook? threadHook,
+    ExceptionManager? exceptionManager,
+    ConcurrencySettings? concurrencySettings,
+  }) : super(
+         (ExceptionManager exceptionManager) => WalletTasksWorker(
+           threadHook: threadHook,
+           exceptionManager: exceptionManager,
+         ),
+         concurrencySettings: concurrencySettings,
+         exceptionManager: exceptionManager,
+       );
 
-  WalletTasksWorkerPool.vm(
-      {PlatformThreadHook? threadHook,
-      ExceptionManager? exceptionManager,
-      ConcurrencySettings? concurrencySettings})
-      : super(
-            (ExceptionManager exceptionManager) => WalletTasksWorker.vm(
-                threadHook: threadHook, exceptionManager: exceptionManager),
-            concurrencySettings: concurrencySettings,
-            exceptionManager: exceptionManager);
+  WalletTasksWorkerPool.vm({
+    PlatformThreadHook? threadHook,
+    ExceptionManager? exceptionManager,
+    ConcurrencySettings? concurrencySettings,
+  }) : super(
+         (ExceptionManager exceptionManager) => WalletTasksWorker.vm(
+           threadHook: threadHook,
+           exceptionManager: exceptionManager,
+         ),
+         concurrencySettings: concurrencySettings,
+         exceptionManager: exceptionManager,
+       );
 
-  WalletTasksWorkerPool.js(
-      {PlatformThreadHook? threadHook,
-      ExceptionManager? exceptionManager,
-      ConcurrencySettings? concurrencySettings})
-      : super(
-            (ExceptionManager exceptionManager) => WalletTasksWorker.js(
-                threadHook: threadHook, exceptionManager: exceptionManager),
-            concurrencySettings: concurrencySettings,
-            exceptionManager: exceptionManager);
+  WalletTasksWorkerPool.js({
+    PlatformThreadHook? threadHook,
+    ExceptionManager? exceptionManager,
+    ConcurrencySettings? concurrencySettings,
+  }) : super(
+         (ExceptionManager exceptionManager) => WalletTasksWorker.js(
+           threadHook: threadHook,
+           exceptionManager: exceptionManager,
+         ),
+         concurrencySettings: concurrencySettings,
+         exceptionManager: exceptionManager,
+       );
 
-  WalletTasksWorkerPool.wasm(
-      {PlatformThreadHook? threadHook,
-      ExceptionManager? exceptionManager,
-      ConcurrencySettings? concurrencySettings})
-      : super(
-            (ExceptionManager exceptionManager) => WalletTasksWorker.wasm(
-                threadHook: threadHook, exceptionManager: exceptionManager),
-            concurrencySettings: concurrencySettings,
-            exceptionManager: exceptionManager);
+  WalletTasksWorkerPool.wasm({
+    PlatformThreadHook? threadHook,
+    ExceptionManager? exceptionManager,
+    ConcurrencySettings? concurrencySettings,
+  }) : super(
+         (ExceptionManager exceptionManager) => WalletTasksWorker.wasm(
+           threadHook: threadHook,
+           exceptionManager: exceptionManager,
+         ),
+         concurrencySettings: concurrencySettings,
+         exceptionManager: exceptionManager,
+       );
 
   @override
   Future<HdWallet> buildHdWalletFromMnemonic(
-          List<String> mnemonic, int accountIndex) =>
-      execute((w) => w.buildHdWalletFromMnemonic(mnemonic, accountIndex));
+    List<String> mnemonic,
+    int accountIndex,
+  ) => execute((w) => w.buildHdWalletFromMnemonic(mnemonic, accountIndex));
 
   @override
   Future<HdWallet> buildHdWalletFromSeed(Uint8List seed, int accountIndex) =>
@@ -489,77 +634,133 @@ base class WalletTasksWorkerPool extends WorkerPool<WalletTasksWorker>
 
   @override
   Future<CardanoWallet> buildWalletFromHdWallet(
-          HdWallet hdWallet, NetworkId networkId) =>
-      execute((w) => w.buildWalletFromHdWallet(hdWallet, networkId));
+    HdWallet hdWallet,
+    NetworkId networkId,
+  ) => execute((w) => w.buildWalletFromHdWallet(hdWallet, networkId));
 
   @override
   Future<Bip32PublicKey> ckdPubBip32Ed25519KeyDerivation(
-          Bip32PublicKey pubKey, int index) =>
-      execute((w) => w.ckdPubBip32Ed25519KeyDerivation(pubKey, index));
+    Bip32PublicKey pubKey,
+    int index,
+  ) => execute((w) => w.ckdPubBip32Ed25519KeyDerivation(pubKey, index));
 
   @override
   Future<List<Bip32PublicKey>> ckdPubBip32Ed25519KeyDerivations(
-          Bip32PublicKey pubKey,
-          int startIndexInclusive,
-          int endIndexExclusive) =>
-      execute((w) => w.ckdPubBip32Ed25519KeyDerivations(
-          pubKey, startIndexInclusive, endIndexExclusive));
+    Bip32PublicKey pubKey,
+    int startIndexInclusive,
+    int endIndexExclusive,
+  ) => execute(
+    (w) => w.ckdPubBip32Ed25519KeyDerivations(
+      pubKey,
+      startIndexInclusive,
+      endIndexExclusive,
+    ),
+  );
 
   @override
   Future<CardanoAddressKit> deriveAddressKit(
-          HdWallet wallet, NetworkId networkId, int index, Bip32KeyRole role) =>
-      execute((w) => w.deriveAddressKit(wallet, networkId, index, role));
+    HdWallet wallet,
+    NetworkId networkId,
+    int index,
+    Bip32KeyRole role,
+  ) => execute((w) => w.deriveAddressKit(wallet, networkId, index, role));
 
   @override
-  Future<List<String>> hexCredentialsDerivation(Bip32PublicKey pubKey,
-          int startIndexInclusive, int endIndexExclusive) =>
-      execute((w) => w.hexCredentialsDerivation(
-          pubKey, startIndexInclusive, endIndexExclusive));
+  Future<CardanoSigner> findCardanoSigningPath(
+    String xPubHex,
+    String requestedSignerRaw,
+    int deriveMaxAddressCount,
+  ) => execute(
+    (w) => w.findCardanoSigningPath(
+      xPubHex,
+      requestedSignerRaw,
+      deriveMaxAddressCount,
+    ),
+  );
+
+  @override
+  Future<List<String>> hexCredentialsDerivation(
+    Bip32PublicKey pubKey,
+    int startIndexInclusive,
+    int endIndexExclusive,
+  ) => execute(
+    (w) => w.hexCredentialsDerivation(
+      pubKey,
+      startIndexInclusive,
+      endIndexExclusive,
+    ),
+  );
 
   @override
   Future<TxSigningBundle> prepareTxsForSigningImpl(
-          String walletBech32Address,
-          String drepCredential,
-          String constitutionalCommitteeColdCredential,
-          String constitutionalCommitteeHotCredential,
-          NetworkId networkId,
-          List<CardanoTransaction> txs,
-          List<Utxo> utxos) =>
-      execute((w) => w.prepareTxsForSigningImpl(
-          walletBech32Address,
-          drepCredential,
-          constitutionalCommitteeColdCredential,
-          constitutionalCommitteeHotCredential,
-          networkId,
-          txs,
-          utxos));
+    String walletBech32Address,
+    String drepCredential,
+    String constitutionalCommitteeColdCredential,
+    String constitutionalCommitteeHotCredential,
+    NetworkId networkId,
+    List<CardanoTransaction> txs,
+    List<Utxo> utxos,
+  ) => execute(
+    (w) => w.prepareTxsForSigningImpl(
+      walletBech32Address,
+      drepCredential,
+      constitutionalCommitteeColdCredential,
+      constitutionalCommitteeHotCredential,
+      networkId,
+      txs,
+      utxos,
+    ),
+  );
 
   @override
-  Future<DataSignature> signData(CardanoWallet wallet, String payloadHex,
-          String requestedSignerRaw, int deriveMaxAddressCount) =>
-      execute((w) => w.signData(
-          wallet, payloadHex, requestedSignerRaw, deriveMaxAddressCount));
+  Future<DataSignature> signData(
+    CardanoWallet wallet,
+    String payloadHex,
+    String requestedSignerRaw,
+    int deriveMaxAddressCount,
+  ) => execute(
+    (w) => w.signData(
+      wallet,
+      payloadHex,
+      requestedSignerRaw,
+      deriveMaxAddressCount,
+    ),
+  );
 
   @override
-  Future<TxSignedBundle> signTransactionsBundle(CardanoWallet wallet,
-          TxSigningBundle bundle, int deriveMaxAddressCount) =>
-      execute((w) =>
-          w.signTransactionsBundle(wallet, bundle, deriveMaxAddressCount));
+  Future<TxSignedBundle> signTransactionsBundle(
+    CardanoWallet wallet,
+    TxSigningBundle bundle,
+    int deriveMaxAddressCount,
+  ) => execute(
+    (w) => w.signTransactionsBundle(wallet, bundle, deriveMaxAddressCount),
+  );
 
   @override
   Future<CardanoAddress> toCardanoBaseAddress(
-          Bip32PublicKey spend, Bip32PublicKey stake, NetworkId networkId,
-          {CredentialType paymentType = CredentialType.key,
-          CredentialType stakeType = CredentialType.key}) =>
-      execute((w) => w.toCardanoBaseAddress(spend, stake, networkId,
-          paymentType: paymentType, stakeType: stakeType));
+    Bip32PublicKey spend,
+    Bip32PublicKey stake,
+    NetworkId networkId, {
+    CredentialType paymentType = CredentialType.key,
+    CredentialType stakeType = CredentialType.key,
+  }) => execute(
+    (w) => w.toCardanoBaseAddress(
+      spend,
+      stake,
+      networkId,
+      paymentType: paymentType,
+      stakeType: stakeType,
+    ),
+  );
 
   @override
   Future<CardanoAddress> toCardanoRewardAddress(
-          Bip32PublicKey spend, NetworkId networkId,
-          {CredentialType paymentType = CredentialType.key}) =>
-      execute((w) =>
-          w.toCardanoRewardAddress(spend, networkId, paymentType: paymentType));
+    Bip32PublicKey spend,
+    NetworkId networkId, {
+    CredentialType paymentType = CredentialType.key,
+  }) => execute(
+    (w) => w.toCardanoRewardAddress(spend, networkId, paymentType: paymentType),
+  );
 }
 
 final class _$Deser extends MarshalingContext {
@@ -579,9 +780,10 @@ final class _$Deser extends MarshalingContext {
   late final $12 = (($) => credentialTypeMarshaler.unmarshal($, this));
   late final $13 = (($) => bip32PublicKeysKeyMarshaler.unmarshal($, this));
   late final $14 = (($) => cardanoAddressKitMarshaler.unmarshal($, this));
-  late final $15 = (($) => dataSignatureMarshaler.unmarshal($, this));
-  late final $16 = (($) => txSignedBundleMarshaler.unmarshal($, this));
-  late final $17 = (($) => cardanoAddressMarshaler.unmarshal($, this));
+  late final $15 = (($) => cardanoSignerMarshaler.unmarshal($, this));
+  late final $16 = (($) => dataSignatureMarshaler.unmarshal($, this));
+  late final $17 = (($) => txSignedBundleMarshaler.unmarshal($, this));
+  late final $18 = (($) => cardanoAddressMarshaler.unmarshal($, this));
 }
 
 final class _$Ser extends MarshalingContext {
@@ -591,14 +793,15 @@ final class _$Ser extends MarshalingContext {
   late final $2 = (($) => bip32PublicKeyKeyMarshaler.marshal($, this));
   late final $3 = (($) => bip32PublicKeysKeyMarshaler.marshal($, this));
   late final $4 = (($) => cardanoAddressKitMarshaler.marshal($, this));
-  late final $5 = (($) => stringListMarshaler.marshal($, this));
-  late final $6 = (($) => txSigningBundleMarshaler.marshal($, this));
-  late final $7 = (($) => dataSignatureMarshaler.marshal($, this));
-  late final $8 = (($) => txSignedBundleMarshaler.marshal($, this));
-  late final $9 = (($) => cardanoAddressMarshaler.marshal($, this));
-  late final $10 = (($) => networkIdMarshaler.marshal($, this));
-  late final $11 = (($) => bip32KeyRoleMarshaler.marshal($, this));
-  late final $12 = (($) => cardanoTransactionListMarshaler.marshal($, this));
-  late final $13 = (($) => utxoListMarshaler.marshal($, this));
-  late final $14 = (($) => credentialTypeMarshaler.marshal($, this));
+  late final $5 = (($) => cardanoSignerMarshaler.marshal($, this));
+  late final $6 = (($) => stringListMarshaler.marshal($, this));
+  late final $7 = (($) => txSigningBundleMarshaler.marshal($, this));
+  late final $8 = (($) => dataSignatureMarshaler.marshal($, this));
+  late final $9 = (($) => txSignedBundleMarshaler.marshal($, this));
+  late final $10 = (($) => cardanoAddressMarshaler.marshal($, this));
+  late final $11 = (($) => networkIdMarshaler.marshal($, this));
+  late final $12 = (($) => bip32KeyRoleMarshaler.marshal($, this));
+  late final $13 = (($) => cardanoTransactionListMarshaler.marshal($, this));
+  late final $14 = (($) => utxoListMarshaler.marshal($, this));
+  late final $15 = (($) => credentialTypeMarshaler.marshal($, this));
 }
