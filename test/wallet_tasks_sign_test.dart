@@ -275,6 +275,48 @@ void main() {
           result.publicKeyBytes.hexEncode(),
           equals("acb1c00cbfdcb5d79915d27cca0b8566646d1e0b86e61c67a1bcd289e6e2a938"),
         );
+        expect(
+          result.requestedSignerBytes.hexEncode(),
+          equals(
+            "01E53A24B2FBEEEF3BC3ADC55622092CC8C172FAD61C231D1358E5F023272D0B87FB7B9561D4D3DEE46B8D422A8A8EC555C514E2B15F072934"
+                .toLowerCase(),
+          ),
+        );
+      });
+
+      // NOTE: Currently failing tests
+      // TESTS ARE CORRECT BUT LOGIC IS NOT IMPLEMENTED
+      group("finds mainnet enterprise address", () {
+        final testCases = {
+          "bech32": "addr1v8jn5f9jl0hw7w7r4hz4vgsf9nyvzuh66cwzx8gntrjlqgcvfr3f7",
+          "hex": "addr1v8jn5f9jl0hw7w7r4hz4vgsf9nyvzuh66cwzx8gntrjlqgcvfr3f7".bech32ToHex(),
+        };
+
+        for (final entry in testCases.entries) {
+          final testName = entry.key;
+
+          test(testName, () async {
+            final mainnetEnterpriseAddr = entry.value;
+            final result = await WalletTasksSign.findCardanoSigner(
+              pubAccount: pubAccount,
+              requestedSignerRaw: mainnetEnterpriseAddr,
+              deriveMaxAddressCount: 10,
+            );
+
+            expect(result.path.role, equals(Bip32KeyRole.payment));
+            expect(result.path.address, equals(0));
+            expect(
+              result.publicKeyBytes.hexEncode(),
+              equals("acb1c00cbfdcb5d79915d27cca0b8566646d1e0b86e61c67a1bcd289e6e2a938"),
+            );
+            expect(
+              result.requestedSignerBytes.hexEncode(),
+              equals(
+                "61E53A24B2FBEEEF3BC3ADC55622092CC8C172FAD61C231D1358E5F023".toLowerCase(),
+              ),
+            );
+          });
+        }
       });
 
       test("finds mainnet stake address", () async {

@@ -87,6 +87,16 @@ void main() async {
   print("  Hex:    ${(await pubAccount.paymentAddress(0, NetworkId.mainnet)).hexEncoded}");
   print("");
 
+  print("Enterprise payment address (index 0):");
+  final mainnetPaymentAddrCreds = CardanoAddress.fromBech32(mainnetPaymentAddr).credentials;
+  final mainnetEnterpriseAddr = CardanoAddress.fromHexPaymentCredentials(
+    paymentCredentials: mainnetPaymentAddrCreds,
+    networkId: NetworkId.mainnet,
+  );
+  print("  Bech32: ${mainnetEnterpriseAddr.bech32Encoded}");
+  print("  Hex:    ${mainnetEnterpriseAddr.hexEncoded}");
+  print("");
+
   print("Mainnet stake address:");
   final mainnetStakeAddr = await pubAccount.stakeAddress(NetworkId.mainnet);
   print("  Bech32: $mainnetStakeAddr");
