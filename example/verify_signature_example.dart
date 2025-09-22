@@ -2,15 +2,50 @@
 
 import "package:bip32_ed25519/api.dart";
 import "package:cardano_dart_types/cardano_dart_types.dart";
+import "package:cardano_flutter_sdk/cardano_flutter_sdk.dart";
 
+
+const addressCount = 50;
+
+Future<void> deriveFromXPub() async {
+  final xpub =
+      "17409bf58f590d559973fdadb5fad523f20e1fdd9d81ef99700e5ad48209f85340ae2e846f886e8b131d8ec47d52f2799f91c423f5b9d87fbd51b1265d58753f"
+          .hexToBech32("xpub");
+
+  final acc = await CardanoPubAccountWorkerFactory.instance.fromBech32XPub(xpub);
+  final start = DateTime.now();
+  for (var i = 0; i < addressCount; i++) {
+    await acc.rolePublicKey(Bip32KeyRole.payment, i);
+  }
+  final end = DateTime.now();
+  print(end.difference(start).inMilliseconds);
+}
+
+Future<void> deriveFromMnemonic() async {
+  const mnemonic =
+      "chief fiber betray curve tissue output feature jungle adapt smile brown crane accuse gospel plate unlock pull arrow hard february tape soccer patrol fetch";
+  final wallet = await WalletFactory.fromMnemonic(NetworkId.mainnet, mnemonic.split(" "));
+  final start = DateTime.now();
+  for (var i = 0; i < addressCount; i++) {
+    await wallet.getPaymentAddressKit(addressIndex: i);
+  }
+  final end = DateTime.now();
+  print(end.difference(start).inMilliseconds);
+}
 void main() async {
+  await deriveFromMnemonic();
+  await deriveFromXPub();
+}
+
+// ignore: unreachable_from_main, avoid_void_async
+void main2() async {
   // THIS EXAMPLE CONTAINS SIGNATURE DATA FROM LEDGER
-  const messageHex =
-      "535441522037363736303136343920746f2061646472317138707668656868687875766561637676716e3936676d79717171633568717167797a6c6464777633677467643861306a6a346d34327236673876366d3234757074376c6c6c6e736c6d7a32376e643530796335726c7a636e6e3873636b647338352033316136626162353061383462383433396164636662373836626232303230663638303765366538666461363239623432343131306663376262316336623862";
+  final messageHex =
+      "I am logging in to jpg.store. My verification code is: 490398171".utf8ToHex();
   const sig =
-      "16acce5836bbf54d892dd8d694c53c50c569ecf013d18b666933fee86adb0530ab86ef06085053059bd7889d815ecec795260b092af82748a31bf43c8935820f";
-  final vkeyHex = "b3d5f4158f0c391ee2a28a2e285f218f3e895ff6ff59cb9369c64b03b5bab5eb".hexDecode();
-  const addr = "5a53103829a7382c2ab76111fb69f13e69d616824c62058e44f1a8b3";
+      "9f7a907dcf5bd765d929354d157dd83d7e9f42ea1dd57cb3c3fb925d8cd24665050a1c25b0bd59ca19ed1ab45fd41dfef3c9bb42122fef01c20d624ad800d00a";
+  const addr = "e557890352095f1cf6fd2b7d1a28e3c3cb029f48cf34ff890a28d176";
+  final vkeyHex = "012f5dc3115b8a07981e6e50f5a671e2c6fbb26c3ffde1cd1dcaf40a7fe8f160".hexDecode();
 
   final vk = VerifyKey(vkeyHex);
 

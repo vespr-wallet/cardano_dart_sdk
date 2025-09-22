@@ -477,9 +477,10 @@ class WalletTasks {
     );
   }
 
+  @Deprecated("Use signDataV2 instead")
   @SquadronMethod()
   @dataSignatureMarshaler
-  Future<DataSignature> signData(
+  Future<DataSignature> signDataLegacy(
     @walletMarshaler CardanoWallet wallet,
     String payloadHex,
     String requestedSignerRaw,
@@ -626,6 +627,50 @@ class WalletTasks {
       coseKeyHex: coseKey.serializeAsBytes().hexEncode(),
       coseSignHex: coseSign1.serializeAsBytes().hexEncode(),
     );
+  }
+
+  @SquadronMethod()
+  @dataSignatureMarshaler
+  Future<DataSignature> signDataV2(
+    @walletMarshaler CardanoWalletImpl wallet,
+    String payloadHex,
+    String requestedSignerRaw,
+    int deriveMaxAddressCount,
+  ) async {
+    final Uint8List payloadBytes = payloadHex.hexDecode();
+
+    // Note avoiding calling wallet.cardanoPubAccount() to keep the operation in current worker/isolate
+    final pubAccount = await CardanoPubAccountFactory.instanceSync.fromBech32XPub(wallet.xPubBech32);
+    final signer = await WalletTasksSign.findCardanoSigner(
+      pubAccount: pubAccount,
+      requestedSignerRaw: requestedSignerRaw,
+      deriveMaxAddressCount: deriveMaxAddressCount,
+    );
+    final signingKeyPair = await WalletTasksSign.signerToSigningKeyPair(
+      wallet: wallet,
+      signer: signer,
+    );
+
+    final headers = SigningUtils.prepareCoseHeaders(
+      requestedSignerBytes: signer.requestedSignerBytes,
+      hashed: false,
+    );
+
+    final dataToSign = SigningUtils.prepareBytesToSign(
+      headers: headers,
+      payloadBytes: payloadBytes,
+    );
+
+    final SignedMessage signedMessage = signingKeyPair.signingKey.sign(dataToSign);
+
+    final DataSignature dataSignature = SigningUtils.prepareDataSignature(
+      verifyRawKeyBytes: signingKeyPair.verifyKey.rawKey.toUint8List(),
+      headers: headers,
+      payloadBytes: payloadBytes,
+      signatureBytes: signedMessage.signature.toUint8List(),
+    );
+
+    return dataSignature;
   }
 }
 

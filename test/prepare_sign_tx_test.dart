@@ -153,7 +153,7 @@ void main() async {
           "82825820130daaeea53a7461f8bbe970d7302a9497032652172ecdca0b69c777c271daa20282583901ed49d9adbd06592290b9a16032375d6b79d4df760cad0d9bca9555fc4199f66b16ce9eb5849ed96473face025b2e9bcbdf1e352ad43629811a057872f6"
         ];
 
-        final signingBundle = await prepareTxsForSigning(
+        final signingBundle = await SigningUtils.prepareTxsForSigning(
           txs: [CardanoTransaction.deserializeFromHex(txCbor)],
           walletUtxos: cborUtxos.map(Utxo.deserializeHex).toList(),
           walletReceiveAddressBech32:
@@ -236,7 +236,7 @@ void main() async {
         );
 
         test("single tx diff check", () async {
-          final signingBundle = await prepareTxsForSigning(
+          final signingBundle = await SigningUtils.prepareTxsForSigning(
             txs: [tx1],
             walletUtxos: walletUtxos,
             walletReceiveAddressBech32: wallet.firstAddress.bech32Encoded,
@@ -680,7 +680,7 @@ void main() async {
               ],
             );
 
-            final signingBundle = await prepareTxsForSigning(
+            final signingBundle = await SigningUtils.prepareTxsForSigning(
               txs: [tx1, tx2, tx3],
               walletUtxos: walletUtxos,
               walletReceiveAddressBech32: wallet.firstAddress.bech32Encoded,
@@ -952,7 +952,7 @@ void main() async {
           );
 
           final expectedTotalDiff = calculatedExpectedTx1Diff + expectedTx2Diff + expectedTx3Diff;
-          final signingBundle = await prepareTxsForSigning(
+          final signingBundle = await SigningUtils.prepareTxsForSigning(
             txs: [tx1, tx2, tx3],
             walletUtxos: walletUtxos,
             walletReceiveAddressBech32: wallet.firstAddress.bech32Encoded,
@@ -999,7 +999,7 @@ void main() async {
         );
 
         test("single tx diff check", () async {
-          final signingBundle = await prepareTxsForSigning(
+          final signingBundle = await SigningUtils.prepareTxsForSigning(
             txs: [tx1],
             walletUtxos: walletUtxos,
             walletReceiveAddressBech32: wallet.firstAddress.bech32Encoded,
@@ -1077,7 +1077,7 @@ void main() async {
           );
 
           final expectedTotalDiff = expectedTx1Diff + expectedTx2Diff + expectedTx3Diff;
-          final signingBundle = await prepareTxsForSigning(
+          final signingBundle = await SigningUtils.prepareTxsForSigning(
             txs: [tx1, tx2, tx3],
             walletUtxos: walletUtxos,
             walletReceiveAddressBech32: wallet.firstAddress.bech32Encoded,
@@ -1124,7 +1124,7 @@ void main() async {
         );
 
         test("single tx diff check", () async {
-          final signingBundle = await prepareTxsForSigning(
+          final signingBundle = await SigningUtils.prepareTxsForSigning(
             txs: [tx1],
             walletUtxos: walletUtxos,
             walletReceiveAddressBech32: wallet.firstAddress.bech32Encoded,
@@ -1229,7 +1229,7 @@ void main() async {
           );
 
           final expectedTotalDiff = expectedTx1Diff + expectedTx2Diff + expectedTx3Diff;
-          final signingBundle = await prepareTxsForSigning(
+          final signingBundle = await SigningUtils.prepareTxsForSigning(
             txs: [tx1, tx2, tx3],
             walletUtxos: walletUtxos,
             walletReceiveAddressBech32: wallet.firstAddress.bech32Encoded,

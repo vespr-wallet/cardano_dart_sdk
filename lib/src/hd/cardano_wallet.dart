@@ -169,7 +169,20 @@ class CardanoWalletImpl extends CardanoWallet {
     required String payloadHex,
     required String requestedSignerRaw,
     int deriveMaxAddressCount = 1000,
-  }) => cardanoWorker.signData(this, payloadHex, requestedSignerRaw, deriveMaxAddressCount);
+    bool useLegacy = false, // temporary flag to use the legacy sign data method in case v2 has issues
+  }) => useLegacy
+      ? cardanoWorker.signDataLegacy(
+          this,
+          payloadHex,
+          requestedSignerRaw,
+          deriveMaxAddressCount,
+        )
+      : cardanoWorker.signDataV2(
+          this,
+          payloadHex,
+          requestedSignerRaw,
+          deriveMaxAddressCount,
+        );
 
   // Contains root public key that can derive all payment/change/stake public keys / addresses
   @override

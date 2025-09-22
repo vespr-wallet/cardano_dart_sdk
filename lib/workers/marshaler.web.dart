@@ -131,14 +131,15 @@ class _Bip32PublicKeysKeyMarshaler implements GenericMarshaler<List<Bip32PublicK
       BinaryReaderImpl(data as Uint8List).readBytesList().map(Bip32VerifyKey.new).toList();
 }
 
-class _WalletMarshaler implements GenericMarshaler<CardanoWallet> {
+class _WalletMarshaler implements GenericMarshaler<CardanoWalletImpl> {
   const _WalletMarshaler();
 
   @override
   dynamic marshal(CardanoWallet data, [MarshalingContext? context]) => data.marshal();
 
   @override
-  CardanoWallet unmarshal(dynamic data, [MarshalingContext? context]) => CardanoWalletImpl.unmarshal(data as Uint8List);
+  CardanoWalletImpl unmarshal(dynamic data, [MarshalingContext? context]) =>
+      CardanoWalletImpl.unmarshal(data as Uint8List);
 }
 
 class _TxSigningBundleMarshaler implements GenericMarshaler<TxSigningBundle> {

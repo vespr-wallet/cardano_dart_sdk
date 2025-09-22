@@ -18,10 +18,11 @@ const int _$deriveAddressKitId = 6;
 const int _$findCardanoSignerId = 7;
 const int _$hexCredentialsDerivationId = 8;
 const int _$prepareTxsForSigningImplId = 9;
-const int _$signDataId = 10;
-const int _$signTransactionsBundleId = 11;
-const int _$toCardanoBaseAddressId = 12;
-const int _$toCardanoRewardAddressId = 13;
+const int _$signDataLegacyId = 10;
+const int _$signDataV2Id = 11;
+const int _$signTransactionsBundleId = 12;
+const int _$toCardanoBaseAddressId = 13;
+const int _$toCardanoRewardAddressId = 14;
 
 /// WorkerService operations for WalletTasks
 extension on WalletTasks {
@@ -162,11 +163,27 @@ extension on WalletTasks {
         return $sr.$7($res);
       } finally {}
     },
-    _$signDataId: ($req) async {
+    _$signDataLegacyId: ($req) async {
       final DataSignature $res;
       try {
         final $dsr = _$Deser(contextAware: true);
-        $res = await signData(
+        $res = await signDataLegacy(
+          $dsr.$10($req.args[0]),
+          $dsr.$7($req.args[1]),
+          $dsr.$7($req.args[2]),
+          $dsr.$1($req.args[3]),
+        );
+      } finally {}
+      try {
+        final $sr = _$Ser(contextAware: true);
+        return $sr.$8($res);
+      } finally {}
+    },
+    _$signDataV2Id: ($req) async {
+      final DataSignature $res;
+      try {
+        final $dsr = _$Deser(contextAware: true);
+        $res = await signDataV2(
           $dsr.$10($req.args[0]),
           $dsr.$7($req.args[1]),
           $dsr.$7($req.args[2]),
@@ -413,7 +430,7 @@ mixin _$WalletTasks$Invoker on Invoker implements WalletTasks {
   }
 
   @override
-  Future<DataSignature> signData(
+  Future<DataSignature> signDataLegacy(
     CardanoWallet wallet,
     String payloadHex,
     String requestedSignerRaw,
@@ -423,7 +440,33 @@ mixin _$WalletTasks$Invoker on Invoker implements WalletTasks {
     try {
       final $sr = _$Ser(contextAware: true);
       $res = await send(
-        _$signDataId,
+        _$signDataLegacyId,
+        args: [
+          $sr.$1(wallet),
+          payloadHex,
+          requestedSignerRaw,
+          deriveMaxAddressCount,
+        ],
+      );
+    } finally {}
+    try {
+      final $dsr = _$Deser(contextAware: true);
+      return $dsr.$16($res);
+    } finally {}
+  }
+
+  @override
+  Future<DataSignature> signDataV2(
+    CardanoWalletImpl wallet,
+    String payloadHex,
+    String requestedSignerRaw,
+    int deriveMaxAddressCount,
+  ) async {
+    final dynamic $res;
+    try {
+      final $sr = _$Ser(contextAware: true);
+      $res = await send(
+        _$signDataV2Id,
         args: [
           $sr.$1(wallet),
           payloadHex,
@@ -711,13 +754,28 @@ base class WalletTasksWorkerPool extends WorkerPool<WalletTasksWorker>
   );
 
   @override
-  Future<DataSignature> signData(
+  Future<DataSignature> signDataLegacy(
     CardanoWallet wallet,
     String payloadHex,
     String requestedSignerRaw,
     int deriveMaxAddressCount,
   ) => execute(
-    (w) => w.signData(
+    (w) => w.signDataLegacy(
+      wallet,
+      payloadHex,
+      requestedSignerRaw,
+      deriveMaxAddressCount,
+    ),
+  );
+
+  @override
+  Future<DataSignature> signDataV2(
+    CardanoWalletImpl wallet,
+    String payloadHex,
+    String requestedSignerRaw,
+    int deriveMaxAddressCount,
+  ) => execute(
+    (w) => w.signDataV2(
       wallet,
       payloadHex,
       requestedSignerRaw,

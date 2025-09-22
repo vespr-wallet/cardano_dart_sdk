@@ -3,12 +3,22 @@ import "dart:async";
 import "package:cardano_dart_types/cardano_dart_types.dart";
 
 import "../src/hd/address/cardano_pub_account_x.dart";
+import "../src/hd/cardano_wallet.dart";
 import "../src/models/cardano_signer.dart";
 
 const _unknownAccountIndex = -1;
 
 class WalletTasksSign {
   const WalletTasksSign._();
+
+  // This is a synchronous operation, but it's heavy compute
+  static FutureOr<Bip32KeyPair> signerToSigningKeyPair({
+    required CardanoWalletImpl wallet,
+    required CardanoSigner signer,
+  }) => wallet.hdWallet.deriveAddressKeys(
+    role: signer.path.role,
+    index: signer.path.address,
+  );
 
   static Future<CardanoSigner> findCardanoSigner({
     required CardanoPubAccount pubAccount,
@@ -63,14 +73,6 @@ class WalletTasksSign {
 
     return await data;
   }
-
-  // Future<DataSignature> signData(
-  //   @walletMarshaler CardanoWallet wallet,
-  //   String payloadHex,
-  //   String requestedSignerRaw,
-  //   int deriveMaxAddressCount,
-  // ) async {
-  // }
 }
 
 FutureOr<CardanoSigner> _dataFromDrepIdOrDrepCreds({
