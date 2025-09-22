@@ -29,7 +29,7 @@ class WalletTasksSign {
         drepIdOrCredsHex: requestedSignerHex,
         pubAccount: pubAccount,
         deriveMaxAddressCount: deriveMaxAddressCount,
-        requestedSignerRaw: requestedSignerRaw,
+        requestedSignerHex: requestedSignerHex,
       ),
       // 58 or 114 is the length of the stake or receive address hex
       58 => () {
@@ -40,20 +40,20 @@ class WalletTasksSign {
                 drepIdOrCredsHex: requestedSignerHex,
                 pubAccount: pubAccount,
                 deriveMaxAddressCount: deriveMaxAddressCount,
-                requestedSignerRaw: requestedSignerRaw,
+                requestedSignerHex: requestedSignerHex,
               )
             : _dataFromAddress(
                 requestedSigningAddress: CardanoAddress.fromHexString(requestedSignerHex),
                 pubAccount: pubAccount,
                 deriveMaxAddressCount: deriveMaxAddressCount,
-                requestedSignerHex: requestedSignerRaw,
+                requestedSignerHex: requestedSignerHex,
               );
       }(),
       114 => _dataFromAddress(
         requestedSigningAddress: CardanoAddress.fromHexString(requestedSignerHex),
         pubAccount: pubAccount,
         deriveMaxAddressCount: deriveMaxAddressCount,
-        requestedSignerHex: requestedSignerRaw,
+        requestedSignerHex: requestedSignerHex,
       ),
       _ => throw SigningAddressNotValidException(
         hexInvalidAddressOrCredential: requestedSignerHex,
@@ -77,21 +77,27 @@ FutureOr<CardanoSigner> _dataFromDrepIdOrDrepCreds({
   required String drepIdOrCredsHex,
   required CardanoPubAccount pubAccount,
   required int deriveMaxAddressCount,
-  required String requestedSignerRaw,
+  required String requestedSignerHex,
 }) {
   final walletDRepDerivation = pubAccount.dRepDerivation.value;
   final walletDrepCredentials = walletDRepDerivation.credentialsHex;
   if (!drepIdOrCredsHex.endsWith(walletDrepCredentials)) {
     throw SigningAddressNotFoundException(
-      missingAddresses: {requestedSignerRaw},
+      missingAddresses: {requestedSignerHex},
       searchedAddressesCount: 1,
     );
   }
 
   return CardanoSigner(
     publicKeyBytes: walletDRepDerivation.bytes,
-    requestedSignerBytes: requestedSignerRaw.hexDecode(),
-    path: CardanoSigningPath_Shelley(account: _unknownAccountIndex, address: 0, role: Bip32KeyRole.drepCredential),
+    // requeste signer bytes are the wallet drep credentials
+    // for any drep format (old/new) or encoding (hex/bech32)
+    requestedSignerBytes: walletDrepCredentials.hexDecode(),
+    path: CardanoSigningPath_Shelley(
+      account: _unknownAccountIndex,
+      address: 0,
+      role: Bip32KeyRole.drepCredential,
+    ),
   );
 }
 

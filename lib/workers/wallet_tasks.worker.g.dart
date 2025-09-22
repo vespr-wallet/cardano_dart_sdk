@@ -1,12 +1,13 @@
-// dart format width=80
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format width=80
 
 part of 'wallet_tasks.dart';
 
 // **************************************************************************
-// Generator: WorkerGenerator 7.1.5-mki (Squadron 7.1.2+1)
+// Generator: WorkerGenerator 8.0.0 (Squadron 7.1.2+1)
 // **************************************************************************
 
+// dart format width=80
 /// Command ids used in operations map
 const int _$buildHdWalletFromMnemonicId = 1;
 const int _$buildHdWalletFromSeedId = 2;
@@ -14,7 +15,7 @@ const int _$buildWalletFromHdWalletId = 3;
 const int _$ckdPubBip32Ed25519KeyDerivationId = 4;
 const int _$ckdPubBip32Ed25519KeyDerivationsId = 5;
 const int _$deriveAddressKitId = 6;
-const int _$findCardanoSigningPathId = 7;
+const int _$findCardanoSignerId = 7;
 const int _$hexCredentialsDerivationId = 8;
 const int _$prepareTxsForSigningImplId = 9;
 const int _$signDataId = 10;
@@ -112,11 +113,11 @@ extension on WalletTasks {
         return $sr.$4($res);
       } finally {}
     },
-    _$findCardanoSigningPathId: ($req) async {
+    _$findCardanoSignerId: ($req) async {
       final CardanoSigner $res;
       try {
         final $dsr = _$Deser(contextAware: false);
-        $res = await findCardanoSigningPath(
+        $res = await findCardanoSigner(
           $dsr.$7($req.args[0]),
           $dsr.$7($req.args[1]),
           $dsr.$1($req.args[2]),
@@ -344,13 +345,13 @@ mixin _$WalletTasks$Invoker on Invoker implements WalletTasks {
   }
 
   @override
-  Future<CardanoSigner> findCardanoSigningPath(
+  Future<CardanoSigner> findCardanoSigner(
     String xPubHex,
     String requestedSignerRaw,
     int deriveMaxAddressCount,
   ) async {
     final dynamic $res = await send(
-      _$findCardanoSigningPathId,
+      _$findCardanoSignerId,
       args: [xPubHex, requestedSignerRaw, deriveMaxAddressCount],
     );
     try {
@@ -666,16 +667,13 @@ base class WalletTasksWorkerPool extends WorkerPool<WalletTasksWorker>
   ) => execute((w) => w.deriveAddressKit(wallet, networkId, index, role));
 
   @override
-  Future<CardanoSigner> findCardanoSigningPath(
+  Future<CardanoSigner> findCardanoSigner(
     String xPubHex,
     String requestedSignerRaw,
     int deriveMaxAddressCount,
   ) => execute(
-    (w) => w.findCardanoSigningPath(
-      xPubHex,
-      requestedSignerRaw,
-      deriveMaxAddressCount,
-    ),
+    (w) =>
+        w.findCardanoSigner(xPubHex, requestedSignerRaw, deriveMaxAddressCount),
   );
 
   @override

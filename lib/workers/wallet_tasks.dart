@@ -464,7 +464,7 @@ class WalletTasks {
 
   @SquadronMethod()
   @cardanoSignerMarshaler
-  Future<CardanoSigner> findCardanoSigningPath(
+  Future<CardanoSigner> findCardanoSigner(
     String xPubHex,
     String requestedSignerRaw,
     int deriveMaxAddressCount,
