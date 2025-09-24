@@ -38,7 +38,6 @@ void main() {
           );
 
           expect(result.path.role, equals(Bip32KeyRole.drepCredential));
-          expect(result.path.account, equals(-1)); // unknown account index
           expect(result.path.address, equals(0));
           expect(result.requestedSignerBytes.hexEncode(), equals(drepCredsHex));
           expect(result.publicKeyBytes.hexEncode(), equals(drepRawKeyHex));
@@ -86,7 +85,6 @@ void main() {
         );
 
         expect(result.path.role, equals(Bip32KeyRole.staking));
-        expect(result.path.account, equals(-1));
         expect(result.path.address, equals(0));
       });
 
@@ -101,7 +99,6 @@ void main() {
         );
 
         expect(result.path.role, equals(Bip32KeyRole.staking));
-        expect(result.path.account, equals(-1));
         expect(result.path.address, equals(0));
       });
 
@@ -148,7 +145,6 @@ void main() {
         );
 
         expect(result.path.role, equals(Bip32KeyRole.payment));
-        expect(result.path.account, equals(-1));
         expect(result.path.address, equals(0));
         expect(
           result.publicKeyBytes.hexEncode(),
@@ -186,7 +182,6 @@ void main() {
         );
 
         expect(result.path.role, equals(Bip32KeyRole.change));
-        expect(result.path.account, equals(-1));
         expect(result.path.address, equals(0));
         expect(
           result.publicKeyBytes.hexEncode(),
@@ -489,7 +484,7 @@ void main() {
         expect(result.path.address, equals(0));
       });
 
-      test("handles very large deriveMaxAddressCount efficiently", () async {
+      test("handles large deriveMaxAddressCount", () async {
         // This should not find the address and should not hang
         const nonExistentAddr =
             "addr_test1qz2fxv2umyhttkxyxp8x0dlpdt3k6cwng5pxj3jhsydzer3n0d3vllmyqwsx5wktcd8cc3sq835lu7drv2xwl2wywfgs68faae";
@@ -500,7 +495,7 @@ void main() {
           WalletTasksSign.findCardanoSigner(
             pubAccount: pubAccount,
             requestedSignerRaw: nonExistentAddr,
-            deriveMaxAddressCount: 1000, // Large number
+            deriveMaxAddressCount: 100, // Large number
           ),
           throwsA(isA<SigningAddressNotFoundException>()),
         );

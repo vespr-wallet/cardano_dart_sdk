@@ -689,9 +689,9 @@ List<String> _credsFromNativeScripts(List<NativeScript> scripts) {
   return d.flattened.toList();
 }
 
-extension ListCertsX on List<Certificate>? {
+extension ListCertsX on Certificates? {
   bool requiresDrepSignature(Uint8List walletDRepCredentials) =>
-      this?.any(
+      this?.certificates.any(
         (cert) => switch (cert) {
           Certificate_StakeRegistrationLegacy() => false,
           Certificate_StakeDeRegistrationLegacy() => false,
@@ -724,7 +724,7 @@ extension ListCertsX on List<Certificate>? {
       false;
 
   bool requiresStakeSignature(Uint8List walletStakeCredentials) =>
-      this?.any(
+      this?.certificates.any(
         (cert) => switch (cert) {
           Certificate_StakeRegistrationLegacy() => cert.stakeCredential.vKeyHash.equalsDeep(walletStakeCredentials),
           Certificate_StakeDeRegistrationLegacy() => cert.stakeCredential.vKeyHash.equalsDeep(walletStakeCredentials),
@@ -750,7 +750,7 @@ extension ListCertsX on List<Certificate>? {
       false;
 
   bool requiresCommitteeColdSignature(Uint8List walletCommitteeColdCredentials) =>
-      this?.any(
+      this?.certificates.any(
         (cert) => switch (cert) {
           Certificate_AuthorizeCommitteeHot() => cert.committeeColdCredential.vKeyHash.equalsDeep(
             walletCommitteeColdCredentials,

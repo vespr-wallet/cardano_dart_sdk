@@ -40,7 +40,6 @@ class CardanoSigner {
     final requestedSignerBytes = reader.readByteList();
 
     final path = CardanoSigningPath_Shelley(
-      account: reader.readInt(),
       address: reader.readInt(),
       role: Bip32KeyRole.fromDerivationIndex(reader.readInt()),
     );
@@ -57,7 +56,6 @@ class CardanoSigner {
     writer.writeByteList(requestedSignerBytes);
 
     // start of CardanoSigningPath_Shelley
-    writer.writeInt(path.account);
     writer.writeInt(path.address);
     writer.writeInt(path.role.derivationIndex);
     // end of CardanoSigningPath_Shelley

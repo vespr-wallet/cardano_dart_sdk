@@ -11,14 +11,13 @@ CardanoTransaction cardanoTx({
   bool isValidDi = true,
   CBORMetadata? auxiliaryData,
   bool overrideBodyMetadataHash = false,
-}) =>
-    CardanoTransaction(
-      body: body,
-      witnessSet: witnessSet ?? const WitnessSet(),
-      isValidDi: isValidDi,
-      auxiliaryData: auxiliaryData,
-      overrideBodyMetadataHash: overrideBodyMetadataHash,
-    );
+}) => CardanoTransaction(
+  body: body,
+  witnessSet: witnessSet ?? const WitnessSet(),
+  isValidDi: isValidDi,
+  auxiliaryData: auxiliaryData,
+  overrideBodyMetadataHash: overrideBodyMetadataHash,
+);
 
 CardanoTransactionBody txBody({
   CardanoTransactionInputs inputs = const CardanoTransactionInputs(data: [], cborTags: []), // 0
@@ -26,7 +25,7 @@ CardanoTransactionBody txBody({
   BigInt? fee, // 2
   // OPTIONAL
   BigInt? ttl, // 3
-  List<Certificate>? certs, // 4
+  Certificates? certs, // 4
   List<Withdraw>? withdrawals, // 5
   // 6 - update ; what is it?
   Uint8List? metadataHash, // 7
@@ -45,27 +44,26 @@ CardanoTransactionBody txBody({
   List<ProposalProcedure>? proposalProcedures, // 20
   BigInt? currentTreasuryValue, // 21
   BigInt? donation, // 22
-}) =>
-    CardanoTransactionBody.create(
-      inputs: inputs,
-      outputs: outputs,
-      fee: fee ?? BigInt.zero,
-      ttl: ttl,
-      certs: certs,
-      withdrawals: withdrawals,
-      metadataHash: metadataHash,
-      validityStartInterval: validityStartInterval,
-      mint: mint,
-      scriptDataHash: scriptDataHash,
-      collateral: collateral,
-      requiredSigners: requiredSigners,
-      networkId: networkId,
-      collateralReturn: collateralReturn,
-      totalCollateral: totalCollateral,
-      referenceInputs: referenceInputs,
-      votingProcedures: votingProcedures,
-      proposalProcedures: proposalProcedures,
-    );
+}) => CardanoTransactionBody.create(
+  inputs: inputs,
+  outputs: outputs,
+  fee: fee ?? BigInt.zero,
+  ttl: ttl,
+  certs: certs,
+  withdrawals: withdrawals,
+  metadataHash: metadataHash,
+  validityStartInterval: validityStartInterval,
+  mint: mint,
+  scriptDataHash: scriptDataHash,
+  collateral: collateral,
+  requiredSigners: requiredSigners,
+  networkId: networkId,
+  collateralReturn: collateralReturn,
+  totalCollateral: totalCollateral,
+  referenceInputs: referenceInputs,
+  votingProcedures: votingProcedures,
+  proposalProcedures: proposalProcedures,
+);
 
 WitnessSet witnessSet({
   List<WitnessVKey>? vkeyWitnesses,
@@ -75,13 +73,12 @@ WitnessSet witnessSet({
   List<PlutusData>? plutusData,
   List<Redeemer>? redeemer,
   List<PlutusScriptV2>? plutusScriptV2,
-}) =>
-    WitnessSet(
-      ivkeyWitnesses: vkeyWitnesses?.let((p0) => ListWithCborType(p0, CborLengthType.auto, null)),
-      ibootstrap: bootstrap?.let((p0) => ListWithCborType(p0, CborLengthType.auto, null)),
-      inativeScripts: nativeScripts?.let((p0) => ListWithCborType(p0, CborLengthType.auto, null)),
-      iplutusScriptV1: plutusScriptV1?.let((p0) => ListWithCborType(p0, CborLengthType.auto, null)),
-      iplutusData: plutusData?.let((p0) => ListWithCborType(p0, CborLengthType.auto, null)),
-      iredeemer: redeemer?.let((p0) => ListWithCborType(p0, CborLengthType.auto, null)),
-      iplutusScriptV2: plutusScriptV2?.let((p0) => ListWithCborType(p0, CborLengthType.auto, null)),
-    );
+}) => WitnessSet(
+  ivkeyWitnesses: vkeyWitnesses?.let((p0) => ListWithCborType(p0, CborLengthType.auto, null)),
+  ibootstrap: bootstrap?.let((p0) => ListWithCborType(p0, CborLengthType.auto, null)),
+  inativeScripts: nativeScripts?.let((p0) => ListWithCborType(p0, CborLengthType.auto, null)),
+  iplutusScriptV1: plutusScriptV1?.let((p0) => ListWithCborType(p0, CborLengthType.auto, null)),
+  iplutusData: plutusData?.let((p0) => ListWithCborType(p0, CborLengthType.auto, null)),
+  iredeemer: redeemer?.let((p0) => ListWithCborType(p0, CborLengthType.auto, null)),
+  iplutusScriptV2: plutusScriptV2?.let((p0) => ListWithCborType(p0, CborLengthType.auto, null)),
+);

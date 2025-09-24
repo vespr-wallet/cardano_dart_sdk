@@ -6,8 +6,6 @@ import "../src/hd/address/cardano_pub_account_x.dart";
 import "../src/hd/cardano_wallet.dart";
 import "../src/models/cardano_signer.dart";
 
-const _unknownAccountIndex = -1;
-
 class WalletTasksSign {
   const WalletTasksSign._();
 
@@ -96,7 +94,6 @@ FutureOr<CardanoSigner> _dataFromDrepIdOrDrepCreds({
     // for any drep format (old/new) or encoding (hex/bech32)
     requestedSignerBytes: walletDrepCredentials.hexDecode(),
     path: CardanoSigningPath_Shelley(
-      account: _unknownAccountIndex,
       address: 0,
       role: Bip32KeyRole.drepCredential,
     ),
@@ -114,7 +111,7 @@ FutureOr<CardanoSigner> _dataFromAddress({
       return CardanoSigner(
         publicKeyBytes: pubAccount.stakeDerivation.value.bytes,
         requestedSignerBytes: requestedSignerHex.hexDecode(),
-        path: CardanoSigningPath_Shelley(account: _unknownAccountIndex, address: 0, role: Bip32KeyRole.staking),
+        path: CardanoSigningPath_Shelley(address: 0, role: Bip32KeyRole.staking),
       );
     } else {
       throw SigningAddressNotFoundException(
@@ -137,13 +134,13 @@ FutureOr<CardanoSigner> _dataFromAddress({
         return CardanoSigner(
           publicKeyBytes: (await pubAccount.paymentPublicKey(i)).rawKey,
           requestedSignerBytes: requestedSignerHex.hexDecode(),
-          path: CardanoSigningPath_Shelley(account: _unknownAccountIndex, address: i, role: Bip32KeyRole.payment),
+          path: CardanoSigningPath_Shelley(address: i, role: Bip32KeyRole.payment),
         );
       } else if ((await changeAddrForIndex) == requestedSigningAddress) {
         return CardanoSigner(
           publicKeyBytes: (await pubAccount.changePublicKey(i)).rawKey,
           requestedSignerBytes: requestedSignerHex.hexDecode(),
-          path: CardanoSigningPath_Shelley(account: _unknownAccountIndex, address: i, role: Bip32KeyRole.change),
+          path: CardanoSigningPath_Shelley(address: i, role: Bip32KeyRole.change),
         );
       }
     }

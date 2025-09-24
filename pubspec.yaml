@@ -12,7 +12,7 @@ environment:
 dependencies:
   bip32_ed25519: ^0.6.2 # for generating/deriving keys
   bip39_plus: ^1.1.1 # VESPR fork of bip39
-  cardano_dart_types: 2.9.5 # lock version because of web workers
+  cardano_dart_types: 2.10.0 # lock version because of web workers
   cbor: ^6.3.7 # to encode/decode cbor transactions
   collection: ^1.18.0 # to use collection extension methods
   fast_base58: ^0.2.1 # to/from base58 string conversion (used for byron addresses)

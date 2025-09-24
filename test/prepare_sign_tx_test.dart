@@ -29,10 +29,14 @@ void main() async {
   final wallet = await WalletFactory.fromMnemonic(NetworkId.mainnet, mnemonic.split(" "));
   final walletStakeCredential = Credential(CredType.ADDR_KEY_HASH, wallet.stakeAddress.credentialsBytes);
   final walletDRepCredential = Credential(CredType.ADDR_KEY_HASH, wallet.drepId.value.credentialsBytes);
-  final walletConstitutionalCommitteeColdCredential =
-      Credential(CredType.ADDR_KEY_HASH, wallet.constitutionalCommiteeCold.value.credentialsBytes);
-  final walletConstitutionalCommitteeHotCredential =
-      Credential(CredType.ADDR_KEY_HASH, wallet.constitutionalCommiteeHot.value.credentialsBytes);
+  final walletConstitutionalCommitteeColdCredential = Credential(
+    CredType.ADDR_KEY_HASH,
+    wallet.constitutionalCommiteeCold.value.credentialsBytes,
+  );
+  final walletConstitutionalCommitteeHotCredential = Credential(
+    CredType.ADDR_KEY_HASH,
+    wallet.constitutionalCommiteeHot.value.credentialsBytes,
+  );
 
   final stakePoolId = StakePoolId.fromBech32PoolId("pool1qnrqc7zpwye2r9wtkayh2dryvfqs7unp99f2039duljrsaffq5c");
   final stakePoolId2 = StakePoolId.fromBech32PoolId("pool1sjwdmeme5zs042jzwmdvxshhv27kepxke0mr02f2yzacsyd4wtu");
@@ -43,25 +47,29 @@ void main() async {
   final otherWalletsUtxos = _otherWalletsUtxos.map(Utxo.deserializeHex).toList();
 
   List<CardanoTransactionOutput> genThisWalletOutputs(Iterable<Value> values) => values
-      .map((e) => CardanoTransactionOutput.postAlonzo(
-            addressBytes: Uint8List.fromList(wallet.firstAddress.bytes),
-            value: e,
-            outDatum: null,
-            scriptRef: null,
-            lengthType: CborLengthType.definite,
-          ))
+      .map(
+        (e) => CardanoTransactionOutput.postAlonzo(
+          addressBytes: Uint8List.fromList(wallet.firstAddress.bytes),
+          value: e,
+          outDatum: null,
+          scriptRef: null,
+          lengthType: CborLengthType.definite,
+        ),
+      )
       .toList();
 
   List<CardanoTransactionOutput> genOtherWalletOutputs(Iterable<Value> values) => values
-      .map((e) => CardanoTransactionOutput.postAlonzo(
-            addressBytes:
-                "addr1q8l7hny7x96fadvq8cukyqkcfca5xmkrvfrrkt7hp76v3qvssm7fz9ajmtd58ksljgkyvqu6gl23hlcfgv7um5v0rn8qtnzlfk"
-                    .bech32Decode(),
-            value: e,
-            outDatum: null,
-            scriptRef: null,
-            lengthType: CborLengthType.definite,
-          ))
+      .map(
+        (e) => CardanoTransactionOutput.postAlonzo(
+          addressBytes:
+              "addr1q8l7hny7x96fadvq8cukyqkcfca5xmkrvfrrkt7hp76v3qvssm7fz9ajmtd58ksljgkyvqu6gl23hlcfgv7um5v0rn8qtnzlfk"
+                  .bech32Decode(),
+          value: e,
+          outDatum: null,
+          scriptRef: null,
+          lengthType: CborLengthType.definite,
+        ),
+      )
       .toList();
 
   (CardanoTransaction, Value, Set<String>) gentx({
@@ -71,7 +79,7 @@ void main() async {
     required Iterable<CardanoTransactionOutput> otherWalletOutputs,
     required BigInt thisWalletRewards, // rewards to withdraw
     required BigInt otherWalletRewards, // rewards to withdraw
-    required List<Certificate> certs,
+    required Certificates certs,
     required VotingProcedures? votingProcedures,
     required List<ProposalProcedure> proposalProcedures,
   }) {
@@ -116,7 +124,8 @@ void main() async {
     test(
       "cbor 3.2.1 and older - issue deserializing negative 33-bit amounts (including sign)",
       () async {
-        const txCbor = "84a600838258203fc3758817c53993e22c8b87c8e96b3d9d6665da8484bfedf7827e58836f65ac018258207845e"
+        const txCbor =
+            "84a600838258203fc3758817c53993e22c8b87c8e96b3d9d6665da8484bfedf7827e58836f65ac018258207845e"
             "eb7745ee67fd8c5792f2c5f0f279ceef789c21839309249080fce4fbef301825820ad98ec1770a5f6594f7d4dfe"
             "d929e34fbc6e008058a31c2bad1673cef367c18302018383583911a65ca58a4e9c755fa830173d2a5caed458ac0c"
             "73f97db7faae2e7e3b52563c5410bff6a0d43ccebb7c37e1f69f5eb260552521adff33b9c2821a003cfb6fa1581c"
@@ -150,7 +159,7 @@ void main() async {
           "82825820ad98ec1770a5f6594f7d4dfed929e34fbc6e008058a31c2bad1673cef367c1830282583901ed49d9adbd06592290b9a16032375d6b79d4df760cad0d9bca9555fc4199f66b16ce9eb5849ed96473face025b2e9bcbdf1e352ad43629811a06289195",
           "828258203d0fcabc511e4d70a8ac3efbf3582cff33bbb07b9093cd47ff026b968a4617c80282583901ed49d9adbd06592290b9a16032375d6b79d4df760cad0d9bca9555fc4199f66b16ce9eb5849ed96473face025b2e9bcbdf1e352ad4362981821a083a9d50b1581c062b1da3d344c1e6208ef908b2d308201e7ff6bcfddf0f606249817fa14a4f52454d4f423430363301581c0a4352475d66381d5bc7257224725ea7a83a115ff81c257db07a683ca14749446a6565666f01581c0e14267a8020229adc0184dd25fa3174c3f7d6caadcb4425c70e7c04a24a756e7369673031353839014a756e736967303633383501581c1131301ad4b3cb7deaddbc8f03f77189082a5738c0167e1772233097a14f43617264616e6f426974733332333101581c15509d4cb60f066ca4c7e982d764d6ceb4324cb33776d1711da1beeea34e42616279416c69656e3035333635014e42616279416c69656e3037333338014e42616279416c69656e303930343601581c1f362a4df39f451401e44fee30f27eb39712d66aae375f539be94ed6a14c546865496c6961643238303401581c279c909f348e533da5808898f87f9a14bb2c3dfbbacccd631d927a3fa144534e454b1a0005ee9d581c373d98c16a7dd0945072cecc79c8c16da5f4625ac1530005f5861a1da145564553505201581c38ad9dc3aec6a2f38e220142b9aa6ade63ebe71f65e7cc2b7d8a8535a144434c41591a0015931b581c51a5e236c4de3af2b8020442e2a26f454fda3b04cb621c1294a0ef34a144424f4f4b181c581c530a197fe7c275f204c3396b3782fc738f4968f0c81dd2291cf07b8aa1581a434330303031303030303030303030303030303131343030333201581c5dac8536653edc12f6f5e1045d8164b9f59998d3bdc300fc92843489a1444e4d4b521a15752a00581c6ae8d99e095a01522591a76fd42ac6ed406bd2d58cd8e504e72daf18a14a537469676d613431343501581c8164b47180e8c2542403903a12d6a34f1db9e05108b9b93cd091d5bba15074696e792064696e6f7320233930343001581c821b636862f9160d68f875ac7d460b9642e462d499c00cae9b88ec25a14a5754503030373354303701581c851ab97a83e9d630cc007bf4a084b553a01aede72ef3f31a646478e0a14934467265356832383501581c92776616f1f32c65a173392e4410a3d8c39dcf6ef768c73af164779ca1454d795553441a0004a190",
           "82825820130daaeea53a7461f8bbe970d7302a9497032652172ecdca0b69c777c271daa20182583901ed49d9adbd06592290b9a16032375d6b79d4df760cad0d9bca9555fc4199f66b16ce9eb5849ed96473face025b2e9bcbdf1e352ad4362981821a00115cb0a1581c420000029ad9527271b1b1e3c27ee065c18df70a4a4cfc3093a41a44a14341584f18d8",
-          "82825820130daaeea53a7461f8bbe970d7302a9497032652172ecdca0b69c777c271daa20282583901ed49d9adbd06592290b9a16032375d6b79d4df760cad0d9bca9555fc4199f66b16ce9eb5849ed96473face025b2e9bcbdf1e352ad43629811a057872f6"
+          "82825820130daaeea53a7461f8bbe970d7302a9497032652172ecdca0b69c777c271daa20282583901ed49d9adbd06592290b9a16032375d6b79d4df760cad0d9bca9555fc4199f66b16ce9eb5849ed96473face025b2e9bcbdf1e352ad43629811a057872f6",
         ];
 
         final signingBundle = await SigningUtils.prepareTxsForSigning(
@@ -176,7 +185,7 @@ void main() async {
                 MultiAsset(
                   policyId: "3ef4ec008dffd3ef3a516a2609be258861086c493020bf5bd26f7a69",
                   assets: [Asset(hexName: "474f4e4144", value: BigInt.parse("-2656159029"))],
-                )
+                ),
               ],
             ),
           ),
@@ -206,21 +215,25 @@ void main() async {
           ]),
           thisWalletRewards: BigInt.one,
           otherWalletRewards: BigInt.from(100000000),
-          certs: [
-            Certificate.stakeRegistration(
-              coin: CborBigInt(BigInt.from(2)),
-              stakeCredential: walletStakeCredential,
-            ),
-            Certificate.stakeDelegation(
-              stakeCredential: walletStakeCredential,
-              stakePoolId: stakePoolId,
-            ),
-            Certificate.registerDRep(
-              dRepCredential: randomCredential,
-              coin: CborInt(BigInt.one),
-              anchor: null,
-            ),
-          ],
+          certs: Certificates(
+            certificates: [
+              Certificate.stakeRegistration(
+                coin: CborBigInt(BigInt.from(2)),
+                stakeCredential: walletStakeCredential,
+              ),
+              Certificate.stakeDelegation(
+                stakeCredential: walletStakeCredential,
+                stakePoolId: stakePoolId,
+              ),
+              Certificate.registerDRep(
+                dRepCredential: randomCredential,
+                coin: CborInt(BigInt.one),
+                anchor: null,
+              ),
+            ],
+            cborTags: [],
+            lengthType: CborLengthType.definite,
+          ),
           proposalProcedures: [],
           votingProcedures: null,
         );
@@ -386,60 +399,67 @@ void main() async {
               otherWalletUtxoInputs: [],
               thisWalletOutputs: genThisWalletOutputs([
                 Value.v0(lovelace: BigInt.from(112)),
-                Value.v1(lovelace: BigInt.from(1), mA: [
-                  MultiAsset(
-                    policyId: "b37b1d05794b9c046a584b7a02caea2a4840cb971e63e4ca613592ef",
-                    assets: [
-                      Asset(hexName: "5350435b416c69656e5d202331313538", value: BigInt.from(1)),
-                    ],
-                  ),
-                  MultiAsset(
-                    policyId: "a1ce0414d79b040f986f3bcd187a7563fd26662390dece6b12262b52",
-                    assets: [
-                      Asset(hexName: "464c45534820544f4b454e", value: BigInt.parse("31718971375682855")),
-                    ],
-                  ),
-                  MultiAsset(
-                    policyId: "9a9693a9a37912a5097918f97918d15240c92ab729a0b7c4aa144d77",
-                    assets: [
-                      Asset(hexName: "53554e444145", value: BigInt.parse("200")),
-                    ],
-                  ),
-                ]),
+                Value.v1(
+                  lovelace: BigInt.from(1),
+                  mA: [
+                    MultiAsset(
+                      policyId: "b37b1d05794b9c046a584b7a02caea2a4840cb971e63e4ca613592ef",
+                      assets: [
+                        Asset(hexName: "5350435b416c69656e5d202331313538", value: BigInt.from(1)),
+                      ],
+                    ),
+                    MultiAsset(
+                      policyId: "a1ce0414d79b040f986f3bcd187a7563fd26662390dece6b12262b52",
+                      assets: [
+                        Asset(hexName: "464c45534820544f4b454e", value: BigInt.parse("31718971375682855")),
+                      ],
+                    ),
+                    MultiAsset(
+                      policyId: "9a9693a9a37912a5097918f97918d15240c92ab729a0b7c4aa144d77",
+                      assets: [
+                        Asset(hexName: "53554e444145", value: BigInt.parse("200")),
+                      ],
+                    ),
+                  ],
+                ),
                 Value.v0(lovelace: BigInt.from(5)),
               ]),
               otherWalletOutputs: genOtherWalletOutputs([
                 Value.v0(lovelace: BigInt.from(192)),
                 Value.v0(lovelace: BigInt.from(192)),
               ]),
-              certs: [
-                Certificate.stakeVoteRegistrationDelegation(
-                  stakeCredential: walletStakeCredential,
-                  stakePoolId: stakePoolId2,
-                  dRep: Drep.abstain(lengthType: CborLengthType.definite),
-                  coin: CborInt(BigInt.from(1)),
-                ),
-                Certificate.registerDRep(
-                  dRepCredential: walletDRepCredential,
-                  coin: CborInt(BigInt.from(1)),
-                  anchor: null,
-                ),
-                Certificate.updateDRep(
-                  dRepCredential: walletDRepCredential,
-                  anchor: null,
-                ),
-                Certificate.authorizeCommitteeHot(
-                  committeeColdCredential: walletConstitutionalCommitteeColdCredential,
-                  committeeHotCredential: randomCredential,
-                ),
-                Certificate.resignCommitteeCold(
-                  committeeColdCredential: walletConstitutionalCommitteeColdCredential,
-                  anchor: null,
-                ),
-                Certificate.stakeDeRegistrationLegacy(
-                  stakeCredential: walletStakeCredential,
-                )
-              ],
+              certs: Certificates(
+                certificates: [
+                  Certificate.stakeVoteRegistrationDelegation(
+                    stakeCredential: walletStakeCredential,
+                    stakePoolId: stakePoolId2,
+                    dRep: Drep.abstain(lengthType: CborLengthType.definite),
+                    coin: CborInt(BigInt.from(1)),
+                  ),
+                  Certificate.registerDRep(
+                    dRepCredential: walletDRepCredential,
+                    coin: CborInt(BigInt.from(1)),
+                    anchor: null,
+                  ),
+                  Certificate.updateDRep(
+                    dRepCredential: walletDRepCredential,
+                    anchor: null,
+                  ),
+                  Certificate.authorizeCommitteeHot(
+                    committeeColdCredential: walletConstitutionalCommitteeColdCredential,
+                    committeeHotCredential: randomCredential,
+                  ),
+                  Certificate.resignCommitteeCold(
+                    committeeColdCredential: walletConstitutionalCommitteeColdCredential,
+                    anchor: null,
+                  ),
+                  Certificate.stakeDeRegistrationLegacy(
+                    stakeCredential: walletStakeCredential,
+                  ),
+                ],
+                cborTags: [],
+                lengthType: CborLengthType.definite,
+              ),
               proposalProcedures: [
                 ProposalProcedure(
                   deposit: CborInt(BigInt.one),
@@ -497,7 +517,7 @@ void main() async {
                       anchor: null,
                       vote: Vote.no,
                     ),
-                  }
+                  },
                 },
               ),
             );
@@ -574,25 +594,28 @@ void main() async {
               ],
               otherWalletUtxoInputs: [],
               thisWalletOutputs: genThisWalletOutputs([
-                Value.v1(lovelace: BigInt.from(14), mA: [
-                  MultiAsset(
-                    policyId: "9a9693a9a37912a5097918f97918d15240c92ab729a0b7c4aa144d77",
-                    assets: [Asset(hexName: "53554e444145", value: BigInt.from(200))],
-                  ),
-                  MultiAsset(
-                    policyId: "d5ad382393561e45b7e580415b99562eea6cd120ce6a542a4b8e1e95",
-                    assets: [
-                      Asset(hexName: "426c657373696e67206f66207468652042756c6c202334303632", value: BigInt.from(2))
-                    ],
-                  ),
-                ]),
+                Value.v1(
+                  lovelace: BigInt.from(14),
+                  mA: [
+                    MultiAsset(
+                      policyId: "9a9693a9a37912a5097918f97918d15240c92ab729a0b7c4aa144d77",
+                      assets: [Asset(hexName: "53554e444145", value: BigInt.from(200))],
+                    ),
+                    MultiAsset(
+                      policyId: "d5ad382393561e45b7e580415b99562eea6cd120ce6a542a4b8e1e95",
+                      assets: [
+                        Asset(hexName: "426c657373696e67206f66207468652042756c6c202334303632", value: BigInt.from(2)),
+                      ],
+                    ),
+                  ],
+                ),
                 Value.v0(lovelace: BigInt.from(5)),
               ]),
               otherWalletOutputs: genOtherWalletOutputs([
                 Value.v0(lovelace: BigInt.from(1922)),
                 Value.v0(lovelace: BigInt.from(2)),
               ]),
-              certs: [],
+              certs: const Certificates(certificates: [], cborTags: [], lengthType: CborLengthType.definite),
               proposalProcedures: [],
               votingProcedures: null,
             );
@@ -653,7 +676,7 @@ void main() async {
                 MultiAsset(
                   policyId: "f3bfa228ccaffa52bbe3f27ef3646516481cd15a80d1435083fe6b6b",
                   assets: [
-                    Asset(hexName: "4144415969656c64204e46542047656d73202d2032333031", value: BigInt.parse("-1"))
+                    Asset(hexName: "4144415969656c64204e46542047656d73202d2032333031", value: BigInt.parse("-1")),
                   ],
                 ),
                 MultiAsset(
@@ -674,7 +697,7 @@ void main() async {
                 MultiAsset(
                   policyId: "d5ad382393561e45b7e580415b99562eea6cd120ce6a542a4b8e1e95",
                   assets: [
-                    Asset(hexName: "426c657373696e67206f66207468652042756c6c202334303632", value: BigInt.parse("1"))
+                    Asset(hexName: "426c657373696e67206f66207468652042756c6c202334303632", value: BigInt.parse("1")),
                   ],
                 ),
               ],
@@ -706,17 +729,18 @@ void main() async {
             expect(signingBundle.txsData.length, equals(3));
             expect(signingBundle.txsData[0].txDiff.diff, equals(tx1Diff));
             expect(
-                signingBundle.txsData[0].signingAddressesRequired,
-                equals(
-                  {
-                    "addr1q8jn5f9jl0hw7w7r4hz4vgsf9nyvzuh66cwzx8gntrjlqge8959c07mmj4saf577u34c6s32328v24w9zn3tzhc89y6q5qswjx"
-                  },
-                ));
+              signingBundle.txsData[0].signingAddressesRequired,
+              equals(
+                {
+                  "addr1q8jn5f9jl0hw7w7r4hz4vgsf9nyvzuh66cwzx8gntrjlqge8959c07mmj4saf577u34c6s32328v24w9zn3tzhc89y6q5qswjx",
+                },
+              ),
+            );
             expect(
               signingBundle.txsData[1].signingAddressesRequired,
               {
                 "addr1q8jn5f9jl0hw7w7r4hz4vgsf9nyvzuh66cwzx8gntrjlqge8959c07mmj4saf577u34c6s32328v24w9zn3tzhc89y6q5qswjx",
-                "addr1qyfs44hfdvrwxk30x0u28t8mezf4620jkecfkeqh4j2gusf8959c07mmj4saf577u34c6s32328v24w9zn3tzhc89y6qxz45yy"
+                "addr1qyfs44hfdvrwxk30x0u28t8mezf4620jkecfkeqh4j2gusf8959c07mmj4saf577u34c6s32328v24w9zn3tzhc89y6qxz45yy",
               },
             );
             expect(signingBundle.txsData[1].txDiff.diff, equals(tx2Diff));
@@ -724,7 +748,7 @@ void main() async {
               signingBundle.txsData[2].signingAddressesRequired,
               {
                 "addr1q8jn5f9jl0hw7w7r4hz4vgsf9nyvzuh66cwzx8gntrjlqge8959c07mmj4saf577u34c6s32328v24w9zn3tzhc89y6q5qswjx",
-                "addr1qxstkcvzlnwlj4pgq4zuqpjyx8pwce780utg7r25gmtammf8959c07mmj4saf577u34c6s32328v24w9zn3tzhc89y6qc4ejug"
+                "addr1qxstkcvzlnwlj4pgq4zuqpjyx8pwce780utg7r25gmtammf8959c07mmj4saf577u34c6s32328v24w9zn3tzhc89y6qc4ejug",
               },
             );
             expect(signingBundle.txsData[2].txDiff.diff, equals(tx3Diff));
@@ -813,22 +837,25 @@ void main() async {
             final expectedVotes = [
               VoteInfo(
                 action: GovActionId(
-                    transactionId: "940293a1a623a4e70f52575b9a7826faf90e12692eb5432cc859f0de632d4f4a",
-                    govActionIndex: 0),
+                  transactionId: "940293a1a623a4e70f52575b9a7826faf90e12692eb5432cc859f0de632d4f4a",
+                  govActionIndex: 0,
+                ),
                 vote: Vote.yes,
               ),
               VoteInfo(
                 action: GovActionId(
-                    transactionId: "940293a1a623a4e70f52575b9a7826faf90e12692eb5432cc859f0de632d4f4b",
-                    govActionIndex: 1),
+                  transactionId: "940293a1a623a4e70f52575b9a7826faf90e12692eb5432cc859f0de632d4f4b",
+                  govActionIndex: 1,
+                ),
                 vote: Vote.abstain,
               ),
               VoteInfo(
                 action: GovActionId(
-                    transactionId: "940293a1a623a4e70f52575b9a7826faf90e12692eb5432cc859f0de632d4f4c",
-                    govActionIndex: 0),
+                  transactionId: "940293a1a623a4e70f52575b9a7826faf90e12692eb5432cc859f0de632d4f4c",
+                  govActionIndex: 0,
+                ),
                 vote: Vote.no,
-              )
+              ),
             ];
             expect(
               signingBundle.votes,
@@ -899,33 +926,36 @@ void main() async {
             otherWalletUtxoInputs: [],
             thisWalletOutputs: genThisWalletOutputs([
               Value.v0(lovelace: BigInt.from(112)),
-              Value.v1(lovelace: BigInt.from(1), mA: [
-                MultiAsset(
-                  policyId: "b37b1d05794b9c046a584b7a02caea2a4840cb971e63e4ca613592ef",
-                  assets: [
-                    Asset(hexName: "5350435b416c69656e5d202331313538", value: BigInt.from(1)),
-                  ],
-                ),
-                MultiAsset(
-                  policyId: "a1ce0414d79b040f986f3bcd187a7563fd26662390dece6b12262b52",
-                  assets: [
-                    Asset(hexName: "464c45534820544f4b454e", value: BigInt.parse("31718971375682855")),
-                  ],
-                ),
-                MultiAsset(
-                  policyId: "9a9693a9a37912a5097918f97918d15240c92ab729a0b7c4aa144d77",
-                  assets: [
-                    Asset(hexName: "53554e444145", value: BigInt.parse("200")),
-                  ],
-                ),
-              ]),
+              Value.v1(
+                lovelace: BigInt.from(1),
+                mA: [
+                  MultiAsset(
+                    policyId: "b37b1d05794b9c046a584b7a02caea2a4840cb971e63e4ca613592ef",
+                    assets: [
+                      Asset(hexName: "5350435b416c69656e5d202331313538", value: BigInt.from(1)),
+                    ],
+                  ),
+                  MultiAsset(
+                    policyId: "a1ce0414d79b040f986f3bcd187a7563fd26662390dece6b12262b52",
+                    assets: [
+                      Asset(hexName: "464c45534820544f4b454e", value: BigInt.parse("31718971375682855")),
+                    ],
+                  ),
+                  MultiAsset(
+                    policyId: "9a9693a9a37912a5097918f97918d15240c92ab729a0b7c4aa144d77",
+                    assets: [
+                      Asset(hexName: "53554e444145", value: BigInt.parse("200")),
+                    ],
+                  ),
+                ],
+              ),
               Value.v0(lovelace: BigInt.from(5)),
             ]),
             otherWalletOutputs: genOtherWalletOutputs([
               Value.v0(lovelace: BigInt.from(192)),
               Value.v0(lovelace: BigInt.from(192)),
             ]),
-            certs: [],
+            certs: const Certificates(certificates: [], cborTags: [], lengthType: CborLengthType.definite),
             proposalProcedures: [],
             votingProcedures: null,
           );
@@ -946,7 +976,7 @@ void main() async {
               Value.v0(lovelace: BigInt.from(1922)),
               Value.v0(lovelace: BigInt.from(2)),
             ]),
-            certs: [],
+            certs: const Certificates(certificates: [], cborTags: [], lengthType: CborLengthType.definite),
             proposalProcedures: [],
             votingProcedures: null,
           );
@@ -993,7 +1023,7 @@ void main() async {
           otherWalletOutputs: genOtherWalletOutputs([
             Value.v0(lovelace: BigInt.from(1922)),
           ]),
-          certs: [],
+          certs: const Certificates(certificates: [], cborTags: [], lengthType: CborLengthType.definite),
           proposalProcedures: [],
           votingProcedures: null,
         );
@@ -1027,33 +1057,36 @@ void main() async {
             ],
             thisWalletOutputs: genThisWalletOutputs([
               Value.v0(lovelace: BigInt.from(112)),
-              Value.v1(lovelace: BigInt.from(1), mA: [
-                MultiAsset(
-                  policyId: "b37b1d05794b9c046a584b7a02caea2a4840cb971e63e4ca613592ef",
-                  assets: [
-                    Asset(hexName: "5350435b416c69656e5d202331313538", value: BigInt.from(1)),
-                  ],
-                ),
-                MultiAsset(
-                  policyId: "a1ce0414d79b040f986f3bcd187a7563fd26662390dece6b12262b52",
-                  assets: [
-                    Asset(hexName: "464c45534820544f4b454e", value: BigInt.parse("31718971375682855")),
-                  ],
-                ),
-                MultiAsset(
-                  policyId: "9a9693a9a37912a5097918f97918d15240c92ab729a0b7c4aa144d77",
-                  assets: [
-                    Asset(hexName: "53554e444145", value: BigInt.parse("200")),
-                  ],
-                ),
-              ]),
+              Value.v1(
+                lovelace: BigInt.from(1),
+                mA: [
+                  MultiAsset(
+                    policyId: "b37b1d05794b9c046a584b7a02caea2a4840cb971e63e4ca613592ef",
+                    assets: [
+                      Asset(hexName: "5350435b416c69656e5d202331313538", value: BigInt.from(1)),
+                    ],
+                  ),
+                  MultiAsset(
+                    policyId: "a1ce0414d79b040f986f3bcd187a7563fd26662390dece6b12262b52",
+                    assets: [
+                      Asset(hexName: "464c45534820544f4b454e", value: BigInt.parse("31718971375682855")),
+                    ],
+                  ),
+                  MultiAsset(
+                    policyId: "9a9693a9a37912a5097918f97918d15240c92ab729a0b7c4aa144d77",
+                    assets: [
+                      Asset(hexName: "53554e444145", value: BigInt.parse("200")),
+                    ],
+                  ),
+                ],
+              ),
               Value.v0(lovelace: BigInt.from(5)),
             ]),
             otherWalletOutputs: genOtherWalletOutputs([
               Value.v0(lovelace: BigInt.from(192)),
               Value.v0(lovelace: BigInt.from(192)),
             ]),
-            certs: [],
+            certs: const Certificates(certificates: [], cborTags: [], lengthType: CborLengthType.definite),
             proposalProcedures: [],
             votingProcedures: null,
           );
@@ -1071,7 +1104,7 @@ void main() async {
               Value.v0(lovelace: BigInt.from(1922)),
               Value.v0(lovelace: BigInt.from(2)),
             ]),
-            certs: [],
+            certs: const Certificates(certificates: [], cborTags: [], lengthType: CborLengthType.definite),
             proposalProcedures: [],
             votingProcedures: null,
           );
@@ -1118,7 +1151,7 @@ void main() async {
           otherWalletOutputs: genOtherWalletOutputs([
             Value.v0(lovelace: BigInt.from(1922)),
           ]),
-          certs: [],
+          certs: const Certificates(certificates: [], cborTags: [], lengthType: CborLengthType.definite),
           proposalProcedures: [],
           votingProcedures: null,
         );
@@ -1157,33 +1190,36 @@ void main() async {
             ],
             thisWalletOutputs: genThisWalletOutputs([
               Value.v0(lovelace: BigInt.from(112)),
-              Value.v1(lovelace: BigInt.from(1), mA: [
-                MultiAsset(
-                  policyId: "b37b1d05794b9c046a584b7a02caea2a4840cb971e63e4ca613592ef",
-                  assets: [
-                    Asset(hexName: "5350435b416c69656e5d202331313538", value: BigInt.from(1)),
-                  ],
-                ),
-                MultiAsset(
-                  policyId: "a1ce0414d79b040f986f3bcd187a7563fd26662390dece6b12262b52",
-                  assets: [
-                    Asset(hexName: "464c45534820544f4b454e", value: BigInt.parse("31718971375682855")),
-                  ],
-                ),
-                MultiAsset(
-                  policyId: "9a9693a9a37912a5097918f97918d15240c92ab729a0b7c4aa144d77",
-                  assets: [
-                    Asset(hexName: "53554e444145", value: BigInt.parse("200")),
-                  ],
-                ),
-              ]),
+              Value.v1(
+                lovelace: BigInt.from(1),
+                mA: [
+                  MultiAsset(
+                    policyId: "b37b1d05794b9c046a584b7a02caea2a4840cb971e63e4ca613592ef",
+                    assets: [
+                      Asset(hexName: "5350435b416c69656e5d202331313538", value: BigInt.from(1)),
+                    ],
+                  ),
+                  MultiAsset(
+                    policyId: "a1ce0414d79b040f986f3bcd187a7563fd26662390dece6b12262b52",
+                    assets: [
+                      Asset(hexName: "464c45534820544f4b454e", value: BigInt.parse("31718971375682855")),
+                    ],
+                  ),
+                  MultiAsset(
+                    policyId: "9a9693a9a37912a5097918f97918d15240c92ab729a0b7c4aa144d77",
+                    assets: [
+                      Asset(hexName: "53554e444145", value: BigInt.parse("200")),
+                    ],
+                  ),
+                ],
+              ),
               Value.v0(lovelace: BigInt.from(5)),
             ]),
             otherWalletOutputs: genOtherWalletOutputs([
               Value.v0(lovelace: BigInt.from(192)),
               Value.v0(lovelace: BigInt.from(192)),
             ]),
-            certs: [],
+            certs: const Certificates(certificates: [], cborTags: [], lengthType: CborLengthType.definite),
             proposalProcedures: [],
             votingProcedures: null,
           );
@@ -1198,32 +1234,35 @@ void main() async {
             otherWalletUtxoInputs: [otherWalletsUtxos[2]],
             thisWalletOutputs: genThisWalletOutputs([
               Value.v0(lovelace: BigInt.from(14)),
-              Value.v1(lovelace: BigInt.from(2482546), mA: [
-                MultiAsset(
-                  policyId: "f15b1a746b16524305b39b9bb12bb27eafc4121af24f1e443feaec04",
-                  assets: [
-                    Asset(
-                      hexName: "4d442023353520536f6369616c204d6564696120446566656e6465",
-                      value: BigInt.parse("12"),
-                    ),
-                  ],
-                ),
-                MultiAsset(
-                  policyId: "b37b1d05794b9c046a584b7a02caea2a4840cb971e63e4ca613592ef",
-                  assets: [
-                    Asset(
-                      hexName: "5350435b416c69656e5d2023373530",
-                      value: BigInt.parse("1"),
-                    ),
-                  ],
-                ),
-              ]),
+              Value.v1(
+                lovelace: BigInt.from(2482546),
+                mA: [
+                  MultiAsset(
+                    policyId: "f15b1a746b16524305b39b9bb12bb27eafc4121af24f1e443feaec04",
+                    assets: [
+                      Asset(
+                        hexName: "4d442023353520536f6369616c204d6564696120446566656e6465",
+                        value: BigInt.parse("12"),
+                      ),
+                    ],
+                  ),
+                  MultiAsset(
+                    policyId: "b37b1d05794b9c046a584b7a02caea2a4840cb971e63e4ca613592ef",
+                    assets: [
+                      Asset(
+                        hexName: "5350435b416c69656e5d2023373530",
+                        value: BigInt.parse("1"),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ]),
             otherWalletOutputs: genOtherWalletOutputs([
               Value.v0(lovelace: BigInt.from(1922)),
               Value.v0(lovelace: BigInt.from(2)),
             ]),
-            certs: [],
+            certs: const Certificates(certificates: [], cborTags: [], lengthType: CborLengthType.definite),
             proposalProcedures: [],
             votingProcedures: null,
           );
@@ -1262,10 +1301,11 @@ void main() async {
 final _otherWalletsUtxos = [
   "82825820840e2a99a354a6124a96c094d58a69a3323b2075c8503acdb5105e3d8a48e9b70382583901417c2ee0a344b0817236364cd4f659572832282e857c81890062dfe502ec24cc47b8415899e64e947c1a49bdc36fbb08d5db93e42546889f821a001e8480a1581c815418a1b078a259e678ecccc9d7eac7648d10b88f6f75ce2db8a25aa1554672616374696f6e2045737461746520546f6b656e1b000001ebb53d45f9",
   "8282582010df9593c75de962025a46c45d889d4e1ede2208d1b0467bfa70a1db91ccd4b80182583901417c2ee0a344b0817236364cd4f659572832282e857c81890062dfe502ec24cc47b8415899e64e947c1a49bdc36fbb08d5db93e42546889f821b000000010a6785fea5581c7261a890df6a65e267f3f60571b534c47603c5c7288189f102c24adca14f567946695f4144412f4645545f4c501b00000004e10729ed581c7cdf4b8d9a5a4fad4d609e54c82ed5c699c674681313488b4bc747a1a14a5554494c49545930333001581c815418a1b078a259e678ecccc9d7eac7648d10b88f6f75ce2db8a25aa1554672616374696f6e2045737461746520546f6b656e1b01ee2662e9760692581cf0ff48bbb7bbe9d59a40f1ce90e9e9d0ff5002ec48f232b49ca0fb9aa14f6672616374696f6e2e65737461746501581cfa0009db1a71d3618ce6336f8bc623cdf81c99a3572f6755ef77e9aea14001",
-  "82825820405805b464d698abbc07cc6c3e125b3d9c8cdcc83177b3716fd5e01d1d5ebe820182583901417c2ee0a344b0817236364cd4f659572832282e857c81890062dfe502ec24cc47b8415899e64e947c1a49bdc36fbb08d5db93e42546889f1a00f79d6c"
+  "82825820405805b464d698abbc07cc6c3e125b3d9c8cdcc83177b3716fd5e01d1d5ebe820182583901417c2ee0a344b0817236364cd4f659572832282e857c81890062dfe502ec24cc47b8415899e64e947c1a49bdc36fbb08d5db93e42546889f1a00f79d6c",
 ];
 
-final _utxos = """
+final _utxos =
+    """
 8282582073952449efe72265d2e6ff654e46ffd025006437a4bcb672f3f6e9919adda0120683583901e53a24b2fbeeef3bc3adc55622092cc8c172fad61c231d1358e5f023272d0b87fb7b9561d4d3dee46b8d422a8a8ec555c514e2b15f072934821a0019f0a0a1581c8a1cfae21368b8bebbbed9800fec304e95cce39a2a57dc35e2e3ebaaa1444d494c4b18f7582020a0255f62f30b76a99fedad498353f5629c3c6aa75f4d07a9020100c697d1a7
 828258206a66efa55b24f0816456f0106248b28b55c19b9de39d5e4744b6d55505d4b8c70782583901e53a24b2fbeeef3bc3adc55622092cc8c172fad61c231d1358e5f023272d0b87fb7b9561d4d3dee46b8d422a8a8ec555c514e2b15f072934821a003a98d2aa581cb1eb73a732247342724b85ca10f626b9494c69b6f5d21a2bd4052bf7a150544150316368696c6c696e673230323201581cb37b1d05794b9c046a584b7a02caea2a4840cb971e63e4ca613592efa94f5350435b416c69656e5d202337353001505350435b416c69656e5d20233131353801505350435b416c69656e5d20233133363401545350435b4865726f2046656d616c655d2023333301555350435b4865726f2046656d616c655d202337333501565350435b4865726f2046656d616c655d20233131383201565350435b4865726f2046656d616c655d20233139303201575350435b56696c6c61696e204d616c655d2023313534370158195350435b56696c6c61696e2046656d616c655d20233134373901581cb788fbee71a32d2efc5ee7d151f3917d99160f78fb1e41a1bbf80d8fa1494c454146544f4b454e1a1dd46455581cc88bbd1848db5ea665b1fffbefba86e8dcd723b5085348e8a8d2260fa14444414e411a000f4240581cd0f41ec7e976348635073611069457837401ba599896ef0ecde882a5a14001581cd5ad382393561e45b7e580415b99562eea6cd120ce6a542a4b8e1e95a35819426c657373696e67206f66207468652042756c6c202334363101581a426c657373696e67206f66207468652042756c6c20233236383201581a426c657373696e67206f66207468652042756c6c20233835323101581cda8c30857834c6ae7203935b89278c532b3995245295456f993e1d24a1424c511995db581cdd2bebba256099ddbc70d691935215d6dfd73cef054a087207947e89a1424d4d01581cdf91391a520cf3fc617c62144a2418be67d2e40d96a67c2cf66fdbb6a14001581ce14fe3ab348f9a6198359481472601f4557b9f86984f40a186a3b1e8a1464348455252591a0032dcd6
 828258206a66efa55b24f0816456f0106248b28b55c19b9de39d5e4744b6d55505d4b8c70882583901130ad6e96b06e35a2f33f8a3acfbc8935d29f2b6709b6417ac948e41272d0b87fb7b9561d4d3dee46b8d422a8a8ec555c514e2b15f072934821a001f9140a5581ce98165a25cd0320b25f22d686268e58e66f855b6d85974947ccd708da146414441464f58190342581cea2d23f1fa631b414252824c153f2d6ba833506477a929770a4dd9c2a1464d414442554c1a00051616581cf3bfa228ccaffa52bbe3f27ef3646516481cd15a80d1435083fe6b6ba158184144415969656c64204e46542047656d73202d203233303101581cf7206fd0d0df2e14ad6b10d36b0b29231bb3f295880e9c01f43f509ea2534144415969656c642047656d202d203239353601534144415969656c642047656d202d203437373601581cff97c85de383ebf0b047667ef23c697967719def58d380caf7f04b64a144534f554c186f
@@ -1354,5 +1394,5 @@ final _utxos = """
 828258204e8e9808f7daa002e9736186a76c2a3fbdf598b04893d4208ca6160fb6a5ac990282583901e53a24b2fbeeef3bc3adc55622092cc8c172fad61c231d1358e5f023272d0b87fb7b9561d4d3dee46b8d422a8a8ec555c514e2b15f072934821a285b0e6ca2581c772e4d6da1e199ace469b0d3cc39187fe7f7683684fb4ca23fa84b55a15253504352617269746965734379626f72673901581ca1ce0414d79b040f986f3bcd187a7563fd26662390dece6b12262b52a14b464c45534820544f4b454e1b00263d655aea1d08
 8282582049578ecb61ec37c2fa02093e0afe0d868d4e6e2a6e52f21c7ea6bcc1a67451960182583901a0bb6182fcddf954280545c0064431c2ec67c77f168f0d5446d7dded272d0b87fb7b9561d4d3dee46b8d422a8a8ec555c514e2b15f0729341a019bfcc0
 """
-    .split("\n")
-    .where((e) => e.trim().isNotEmpty);
+        .split("\n")
+        .where((e) => e.trim().isNotEmpty);
