@@ -21,9 +21,7 @@ EntryPoint $getWalletTasksActivator(SquadronPlatformType platform) {
       '/assets/packages/cardano_flutter_sdk/workers/wallet_tasks.web.g.dart.js',
     );
   } else if (platform.isWasm) {
-    return Squadron.uri(
-      '/assets/packages/cardano_flutter_sdk/workers/wallet_tasks.web.g.dart.wasm',
-    );
+    return Squadron.uri('/assets/packages/cardano_flutter_sdk/workers/wallet_tasks.web.g.loader.js'); // Modified for Manifest V3;
   } else {
     throw UnsupportedError('${platform.label} not supported.');
   }

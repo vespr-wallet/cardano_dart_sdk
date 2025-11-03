@@ -39,3 +39,4 @@ flutter:
     - packages/cardano_flutter_sdk/workers/wallet_tasks.web.g.dart.js
     - packages/cardano_flutter_sdk/workers/wallet_tasks.web.g.dart.mjs
     - packages/cardano_flutter_sdk/workers/wallet_tasks.web.g.dart.wasm
+    - packages/cardano_flutter_sdk/workers/wallet_tasks.web.g.loader.js
