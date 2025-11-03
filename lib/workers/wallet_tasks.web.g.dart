@@ -3,7 +3,7 @@
 
 // **************************************************************************
 // Generator: WorkerGenerator 8.0.0 (Squadron 7.1.2+1)
-// Generated: 2025-09-22 09:26:01.127831Z
+// Generated: 2025-11-03 16:41:46.513553Z
 // **************************************************************************
 
 import 'package:squadron/squadron.dart';
@@ -21,7 +21,9 @@ EntryPoint $getWalletTasksActivator(SquadronPlatformType platform) {
       '/assets/packages/cardano_flutter_sdk/workers/wallet_tasks.web.g.dart.js',
     );
   } else if (platform.isWasm) {
-    return Squadron.uri('/assets/packages/cardano_flutter_sdk/workers/wallet_tasks.web.g.loader.js'); // Modified for Manifest V3;
+    return Squadron.uri(
+      '/assets/packages/cardano_flutter_sdk/workers/wallet_tasks.web.g.loader.js',
+    );
   } else {
     throw UnsupportedError('${platform.label} not supported.');
   }
