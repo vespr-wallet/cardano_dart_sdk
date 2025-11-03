@@ -49,7 +49,7 @@ class CardanoWalletImpl extends CardanoWallet {
     required this.firstAddress,
     required this.stakeAddress,
     required this.hdWallet,
-    this.accountIndex = 0,
+    required this.accountIndex,
   }) : networkId = stakeAddress.bech32Encoded.startsWith("stake_test") ? NetworkId.testnet : NetworkId.mainnet;
 
   @override
