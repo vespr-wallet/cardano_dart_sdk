@@ -1,3 +1,37 @@
+## 3.0.0
+
+Web workers Built with Flutter 3.35.7
+
+### ⚠️ BREAKING CHANGES
+
+- **API Change**: `prepareTxsForSigning()` moved to `SigningUtils.prepareTxsForSigning()`
+
+  ```dart
+  // Before
+  await prepareTxsForSigning(txs: [...], ...);
+  // After
+  await SigningUtils.prepareTxsForSigning(txs: [...], ...);
+  ```
+
+- **Minimum Dart SDK increased to 3.9.0** (from 3.6.0)
+
+### ✨ Added
+
+- New `CardanoSigner` model for managing signing operations
+- New `SigningUtils` helper methods: `prepareCoseHeaders()`, `prepareBytesToSign()`, `prepareDataSignature()`
+- Improved `signData()` with better address/credential matching (legacy mode available via `useLegacy: true` if needed)
+- Chrome Extension Manifest V3 compatibility (web workers now work in browser extensions)
+
+### 🔧 Changed
+
+- Updated Squadron to 7.2.0
+- Updated cardano_dart_types to 2.10.0
+
+### 🐛 Fixed
+
+- Fixed enterprise address matching in signing operations
+- Fixed DRep credential handling
+
 ## 2.5.4
 
 Web workers Built with Flutter 3.32.8
