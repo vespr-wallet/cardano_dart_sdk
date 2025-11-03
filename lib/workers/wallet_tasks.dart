@@ -19,7 +19,7 @@ part "wallet_tasks.worker.g.dart";
 final WalletTasks cardanoWorker = WalletTasksWorkerPool(
   concurrencySettings: const ConcurrencySettings(
     maxWorkers: 10,
-    minWorkers: 1,
+    minWorkers: 0,
     // Temporary fix for the issue with the worker pool where nested worker tasks get scheduled on the same worker
     // --- using maxParallel to 1 would cause a deadlock for nested worker tasks
     // --- [in squadrion 6.0.3]
