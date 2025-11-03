@@ -17,7 +17,7 @@ dependencies:
   collection: ^1.18.0 # to use collection extension methods
   fast_base58: ^0.2.1 # to/from base58 string conversion (used for byron addresses)
   hex: ^0.2.0 # to/from hex string conversion
-  meta: ^1.17.0
+  meta: ^1.0.0 # keep min version low for compatibility with older flutter versions
   pinenacl: ^0.6.0 # for cryptographic signatures and hashing
   squadron: ^7.2.0 # to use squadron for parallel processing
   # dartz: ^0.10.1 # to return Either<success, error>
