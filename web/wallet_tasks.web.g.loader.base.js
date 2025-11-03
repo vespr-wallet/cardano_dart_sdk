@@ -4,7 +4,7 @@
 // RUNTIME_PLACEHOLDER - The patch script will inject the MJS runtime code here
 
 (async function () {
-    const url = "lib/workers/wallet_tasks.web.g.dart.wasm";
+    const url = "/assets/packages/cardano_flutter_sdk/workers/wallet_tasks.web.g.dart.wasm";
     const workerUri = new URL(url.replaceAll('"', '\\"'), self.location.origin).href;
   
     try {
