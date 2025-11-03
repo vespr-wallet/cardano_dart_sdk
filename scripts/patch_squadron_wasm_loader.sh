@@ -5,7 +5,7 @@
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-BASE_LOADER_PATH="$SCRIPT_DIR/../lib/workers/wallet_tasks.web.g.loader.base.js"
+BASE_LOADER_PATH="$SCRIPT_DIR/../web/wallet_tasks.web.g.loader.base.js"
 LOADER_PATH="$SCRIPT_DIR/../lib/workers/wallet_tasks.web.g.loader.js"
 MJS_PATH="$SCRIPT_DIR/../lib/workers/wallet_tasks.web.g.dart.mjs"
 DART_FILE_PATH="$SCRIPT_DIR/../lib/workers/wallet_tasks.web.g.dart"
