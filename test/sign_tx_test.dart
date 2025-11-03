@@ -29,6 +29,33 @@ void main() async {
       },
       timeout: const Timeout(Duration(hours: 6000)),
     );
+    test(
+      "from ashiyapool",
+      () async {
+        const mnemonic = "huge grid pole system myth shift boring call comic waste cause timber";
+
+        const txCbor =
+            "84a500d9010281825820e53823731fd5b7e1fa1166b98f9bb76448b041fd39ff47e97e0a5447851f4a5300018182583901ad02b09b9643135c6ae5ae519f8dde9d1f17c4d8c3033bc1d3cf75652d5854ccbc49b6bdedc774f70bfa2180e636ca289766ca91252df0df1a003b09b9021a0002c95904d901028282008200581c2d5854ccbc49b6bdedc774f70bfa2180e636ca289766ca91252df0df83028200581c2d5854ccbc49b6bdedc774f70bfa2180e636ca289766ca91252df0df581ca79aedbfe592557a1779f521f4b9c7693f89f36d449970c0974efe320758209ce748ae809e9da48d57bc3498c5b1e8a1a0d686564f591499fa2587aaf4e237a0f5a11902a2a1636d7367847744656c656761746520746f2041736869796120506f6f6c7838706f6f6c31353764776d306c396a66326835396d653735736c6677773864796c636e756d64676a766870737968666d6c727934636e343461782b496e636c75646573207374616b6520726567697374726174696f6e20283220414441206465706f736974296e617368697961706f6f6c2e636f6d";
+
+        final tx = CardanoTransaction.deserializeFromHex(txCbor);
+        final wallet = await WalletFactory.fromMnemonic(NetworkId.mainnet, mnemonic.split(" "));
+
+        final signature = await wallet.signTransaction(
+          tx: tx,
+          witnessBech32Addresses: {
+            "addr1qxks9vymjep3xhr2ukh9r8udm6w3797ymrpsxw7p608h2efdtp2ve0zfk677m3m57u9l5gvqucmv52yhvm9fzffd7r0s0enkgx",
+          },
+        );
+
+        // wrong result from vespr
+
+        const expected =
+            "a1008282582009324187f2dda56661dc50e75501ab0a31d091ec944a3d94c17f5f52a920c12b5840c4259ca453960eb3a7a45ed12055e66a397d40ba7862a433c7be60bf37364ee104a82a4e5261ad3a0044e97c34b603f19d9490e863c91cd79b589c9d4ccaee0e8258204a039e038745a1a56c32c6cbcecf906513449ee210bcbcce0f0e31f8a1b5fb8e58406886b629ac6f506ea9146d0e25e6d64d9e07c928ad7c8d280abf60793035c12dc94280450b79c46024264e6ae71f18fc0b7133980c40c371aa7cf465e59f9b0f";
+        expect(signature.vkeyWitnesses, isNotEmpty);
+        expect(signature.serializeHexString(), expected);
+      },
+      timeout: const Timeout(Duration(hours: 6000)),
+    );
   });
 
   const mnemonic =
