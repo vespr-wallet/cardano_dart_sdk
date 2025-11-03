@@ -31,6 +31,7 @@ Web workers Built with Flutter 3.35.7
 
 - Fixed enterprise address matching in signing operations
 - Fixed DRep credential handling
+- Fixed `accountIndex` serialization in `CardanoWalletImpl`
 
 ## 2.5.4
 
