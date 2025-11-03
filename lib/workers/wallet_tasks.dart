@@ -127,7 +127,12 @@ class WalletTasks {
 
     final stakeAddress = hdWallet.toRewardAddress(networkId: networkId);
 
-    return CardanoWalletImpl(firstAddress: firstAddress, stakeAddress: stakeAddress, hdWallet: hdWallet);
+    return CardanoWalletImpl(
+      firstAddress: firstAddress,
+      stakeAddress: stakeAddress,
+      hdWallet: hdWallet,
+      accountIndex: hdWallet.accountIndex,
+    );
   }
 
   @SquadronMethod()
