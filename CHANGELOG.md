@@ -1,3 +1,19 @@
+## 3.1.0
+
+Web workers built with Flutter 3.38.3 and cardano_dart_types 2.11.0
+
+### Bug Fixes
+
+- Some inconsistency where web could generate invalid tx signatures while mobile would generate a valid signature (for the same transaction) - Fix coming from the updated cardano_dart_types version.
+
+### 🔧 Changed
+
+- Updated Flutter to 3.38.3
+- Updated cardano_dart_types to 2.11.0
+- Updated Squadron to 7.4.0
+- Updated Squadron Builder to 9.0.0+1
+- Re-generated web workers
+
 ## 3.0.0
 
 Web workers Built with Flutter 3.35.7

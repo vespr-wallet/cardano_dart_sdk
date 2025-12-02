@@ -3,7 +3,7 @@
 [![Pub Version](https://img.shields.io/pub/v/cardano_flutter_sdk.svg)](https://pub.dev/packages/cardano_flutter_sdk)
 [![GitHub Repo](https://img.shields.io/badge/github-vespr--wallet%2Fcardano__dart__sdk-blue?logo=github)](https://github.com/vespr-wallet/cardano_dart_sdk)
 
-A high-level, cross-platform Dart SDK for Cardano wallet operations, targeting Flutter apps. This library enables parsing, address/key derivation, and transaction signing for Cardano, with a focus on security and performance. 
+A high-level, cross-platform Dart SDK for Cardano wallet operations, targeting Flutter apps. This library enables parsing, address/key derivation, and transaction signing for Cardano, with a focus on security and performance.
 
 **Tested on:** Android, iOS, and Web. Should work on all Dart/Flutter platforms.
 
@@ -22,6 +22,7 @@ A high-level, cross-platform Dart SDK for Cardano wallet operations, targeting F
 - Modern, null-safe Dart codebase
 
 ## Supported Standards
+
 - [BIP-32](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki) (HD wallets)
 - [BIP-39](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki) (mnemonic)
 - [BIP-44](https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki) (multi-account)
@@ -40,8 +41,8 @@ Add the following to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  cardano_flutter_sdk: ^2.5.1
-  cardano_dart_types:
+  cardano_flutter_sdk: ^3.1.0
+  cardano_dart_types: any
 ```
 
 > **Note:** You must add a dependency to `cardano_dart_types` as well (do **not** specify a version; let pub resolve the compatible one).
@@ -121,6 +122,7 @@ void main() async {
 ## Example Projects
 
 See the [`example/`](example/) directory for more usage examples:
+
 - [wallet_example.dart](example/wallet_example.dart): Wallet creation, address derivation
 - [sign_tx_example.dart](example/sign_tx_example.dart): Transaction signing
 - [xpub_example.dart](example/xpub_example.dart): xpub address derivation
@@ -142,6 +144,7 @@ Contributions, issues, and feature requests are welcome! See [issues](https://gi
 ---
 
 ## Links
+
 - [Pub.dev package](https://pub.dev/packages/cardano_flutter_sdk)
 - [Cardano Dart Types](https://pub.dev/packages/cardano_dart_types)
 - [Vespr Wallet](https://vespr.xyz)

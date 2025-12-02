@@ -4,7 +4,7 @@
 part of 'wallet_tasks.dart';
 
 // **************************************************************************
-// Generator: WorkerGenerator 8.0.0+1 (Squadron 7.2.0)
+// Generator: WorkerGenerator 9.0.0+1 (Squadron 7.4.0)
 // **************************************************************************
 
 // dart format width=80
@@ -553,6 +553,22 @@ mixin _$WalletTasks$Invoker on Invoker implements WalletTasks {
 /// Facade for WalletTasks, implements other details of the service unrelated to
 /// invoking the remote service.
 mixin _$WalletTasks$Facade implements WalletTasks {}
+
+/// WorkerClient for WalletTasks
+final class $WalletTasks$Client extends WorkerClient
+    with _$WalletTasks$Invoker, _$WalletTasks$Facade
+    implements WalletTasks {
+  $WalletTasks$Client(PlatformChannel channelInfo)
+    : super(Channel.deserialize(channelInfo)!);
+}
+
+/// Local worker extension for WalletTasks
+extension $WalletTasksLocalWorkerExt on WalletTasks {
+  // Get a fresh local worker instance.
+  LocalWorker<WalletTasks> getLocalWorker([
+    ExceptionManager? exceptionManager,
+  ]) => LocalWorker.create(this, _$getOperations(), exceptionManager);
+}
 
 /// WorkerService class for WalletTasks
 class _$WalletTasks$WorkerService extends WalletTasks implements WorkerService {
