@@ -1,3 +1,11 @@
+## 3.1.1
+
+Web workers built with Flutter 3.38.3 and cardano_dart_types 2.11.2
+
+### Bug Fixes
+- Re-serializing transactions with non-asc order for the TX Body CBOR entries now works correctly (original order is retained instead of serializing with ascending order for the keys)
+- Re-serializing correctly retains empty metadata hash in tx body
+
 ## 3.1.0
 
 Web workers built with Flutter 3.38.3 and cardano_dart_types 2.11.0
