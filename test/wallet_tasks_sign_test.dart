@@ -348,9 +348,9 @@ void main() {
         );
       });
 
-      test("throws for Enterprise address", () async {
+      test("throws for Enterprise address not belonging to wallet", () async {
         // Enterprise address (type 6 or 7) - 29 bytes = 58 hex chars (not 114)
-        // Using type 6 (key hash) enterprise address for testnet
+        // Using type 6 (key hash) enterprise address for testnet that doesn't belong to wallet
         const enterpriseHex = "60dd5fba0222e5a11fd1979c4cc7a1ee88ff7a6c0ead5cb62d008a72dd";
 
         await expectLater(
@@ -359,7 +359,7 @@ void main() {
             requestedSignerRaw: enterpriseHex,
             deriveMaxAddressCount: 10,
           ),
-          throwsA(isA<UnexpectedSigningAddressTypeException>()),
+          throwsA(isA<SigningAddressNotFoundException>()),
         );
       });
 

@@ -151,7 +151,35 @@ FutureOr<CardanoSigner> _dataFromAddress({
       searchedAddressesCount: deriveMaxAddressCount,
     );
   }(),
-  AddressType.pointer || AddressType.enterprise || AddressType.byron => throw UnexpectedSigningAddressTypeException(
+  AddressType.enterprise => () async {
+    final enterpriseCredentials = requestedSigningAddress.credentials;
+
+    for (int i = 0; i < deriveMaxAddressCount; i++) {
+      final paymentCredsForIndex = await pubAccount.paymentCredentialsHex(i);
+      final changeCredsForIndex = await pubAccount.changeCredentialsHex(i);
+
+      if (paymentCredsForIndex == enterpriseCredentials) {
+        return CardanoSigner(
+          publicKeyBytes: (await pubAccount.paymentPublicKey(i)).rawKey,
+          requestedSignerBytes: requestedSignerHex.hexDecode(),
+          path: CardanoSigningPath_Shelley(address: i, role: Bip32KeyRole.payment),
+        );
+      } else if (changeCredsForIndex == enterpriseCredentials) {
+        return CardanoSigner(
+          publicKeyBytes: (await pubAccount.changePublicKey(i)).rawKey,
+          requestedSignerBytes: requestedSignerHex.hexDecode(),
+          path: CardanoSigningPath_Shelley(address: i, role: Bip32KeyRole.change),
+        );
+      }
+    }
+
+    // if not found in for loop, throw
+    throw SigningAddressNotFoundException(
+      missingAddresses: {requestedSigningAddress.bech32Encoded},
+      searchedAddressesCount: deriveMaxAddressCount,
+    );
+  }(),
+  AddressType.pointer || AddressType.byron => throw UnexpectedSigningAddressTypeException(
     hexAddress: requestedSignerHex,
     type: requestedSigningAddress.addressType,
     signingContext: "When signing payload message",

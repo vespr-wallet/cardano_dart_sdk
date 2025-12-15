@@ -81,6 +81,28 @@ void main() async {
       }
     });
 
+    group("enterprise address", () {
+      // Enterprise address uses only payment credential (no stake part)
+      // Same payment key as base address, so coseKeyHex should be identical
+      const expectedResult = DataSignature(
+        coseKeyHex: "a4010103272006215820acb1c00cbfdcb5d79915d27cca0b8566646d1e0b86e61c67a1bcd289e6e2a938",
+        coseSignHex:
+            "84582aa201276761646472657373581d61e53a24b2fbeeef3bc3adc55622092cc8c172fad61c231d1358e5f023a166686173686564f458404920616d206c6f6767696e6720696e20746f206a70672e73746f72652e204d7920766572696669636174696f6e20636f64652069733a203932333536303532385840166be3c79287b630f29266425cdd5b0b606c004f8f21620959c91af27cdeaae333c1f038e15cd9c83ae8a6241cc3d225c5f6813a48ef1a91c8d84c6380d57504",
+      );
+      final items = {
+        "bech32": "addr1v8jn5f9jl0hw7w7r4hz4vgsf9nyvzuh66cwzx8gntrjlqgcvfr3f7",
+        "hex": "61e53a24b2fbeeef3bc3adc55622092cc8c172fad61c231d1358e5f023",
+      };
+
+      for (final item in items.entries) {
+        test(item.key, () async {
+          final actualResult = await wallet.signData(payloadHex: inputMessageHex, requestedSignerRaw: item.value);
+
+          expect(actualResult, expectedResult);
+        });
+      }
+    });
+
     group("drep id", () {
       final items = {
         "bech": "drep1yg3mcc7w6njqkgkafes9rsjchgud2euas83n7d87tewdkngpgk07n", // bech32
