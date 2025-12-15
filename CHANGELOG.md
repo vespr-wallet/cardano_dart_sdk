@@ -1,3 +1,17 @@
+## 3.2.0
+
+Web workers built with Flutter 3.38.5 and cardano_dart_types 2.12.0
+
+### Added
+
+- Enterprise address signing support in `signData()` - can now sign with enterprise addresses using payment credentials
+
+### Changed
+
+- Updated Flutter to 3.38.5
+- Updated cardano_dart_types to 2.12.0
+- Re-generated web workers
+
 ## 3.1.1
 
 Web workers built with Flutter 3.38.3 and cardano_dart_types 2.11.2
