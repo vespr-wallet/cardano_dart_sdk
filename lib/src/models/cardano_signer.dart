@@ -35,7 +35,7 @@ class CardanoSigner {
   int get hashCode => Object.hash(publicKeyBytes, requestedSignerBytes, path);
 
   static CardanoSigner unmarshal(Uint8List bytes) {
-    final reader = BinaryReaderImpl(bytes);
+    final reader = BinaryReader(bytes);
     final publicKeyBytes = reader.readByteList();
     final requestedSignerBytes = reader.readByteList();
 
@@ -51,7 +51,7 @@ class CardanoSigner {
   }
 
   Uint8List marshal() {
-    final writer = BinaryWriterImpl();
+    final writer = BinaryWriter();
     writer.writeByteList(publicKeyBytes.toUint8List());
     writer.writeByteList(requestedSignerBytes);
 

@@ -54,7 +54,7 @@ class CardanoWalletImpl extends CardanoWallet {
 
   @override
   Uint8List marshal() {
-    final BinaryWriterImpl writer = BinaryWriterImpl();
+    final BinaryWriter writer = BinaryWriter();
     writer.writeByteList(hdWallet.marshal());
     writer.writeInt(accountIndex);
     writer.writeString(stakeAddress.marshal());
@@ -63,7 +63,7 @@ class CardanoWalletImpl extends CardanoWallet {
   }
 
   factory CardanoWalletImpl.unmarshal(Uint8List bytes) {
-    final BinaryReader reader = BinaryReaderImpl(bytes);
+    final BinaryReader reader = BinaryReader(bytes);
     final hdWallet = HdWallet.unmarshal(reader.readByteList());
     final accountIndex = reader.readInt();
     final stakeAddress = CardanoAddress.unmarshal(reader.readString());

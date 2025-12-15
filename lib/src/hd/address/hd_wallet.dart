@@ -168,7 +168,7 @@ class HdWallet {
   }
 
   Uint8List marshal() {
-    final BinaryWriterImpl writer = BinaryWriterImpl();
+    final BinaryWriter writer = BinaryWriter();
     writer.writeByteList(rootSigningKey.asTypedList);
     writer.writeInt(accountIndex);
 
@@ -176,7 +176,7 @@ class HdWallet {
   }
 
   factory HdWallet.unmarshal(Uint8List bytes) {
-    final BinaryReaderImpl reader = BinaryReaderImpl(bytes);
+    final BinaryReader reader = BinaryReader(bytes);
     return HdWallet(
       rootSigningKey: Bip32SigningKey(reader.readByteList()),
       accountIndex: reader.readInt(),

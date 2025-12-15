@@ -62,7 +62,7 @@ class _UtxoListMarshaler extends UInt8ListMarshaler<List<Utxo>> {
 
   @override
   Uint8List marshalToBytes(List<Utxo> data) {
-    final writer = BinaryWriterImpl();
+    final writer = BinaryWriter();
     writer.writeBytesList(
       data.map((e) => e.serializeAsBytes()).toList(),
     );
@@ -72,7 +72,7 @@ class _UtxoListMarshaler extends UInt8ListMarshaler<List<Utxo>> {
 
   @override
   List<Utxo> unmarshalFromBytes(Uint8List data) {
-    return BinaryReaderImpl(data)
+    return BinaryReader(data)
         .readBytesList() //
         .map(Utxo.deserializeBytes)
         .toList();
@@ -84,7 +84,7 @@ class _CardanoTransactionListMarshaler extends UInt8ListMarshaler<List<CardanoTr
 
   @override
   Uint8List marshalToBytes(List<CardanoTransaction> data) {
-    final writer = BinaryWriterImpl();
+    final writer = BinaryWriter();
     writer.writeBytesList(
       data.map((e) => e.serializeAsBytes()).toList(),
     );
@@ -94,7 +94,7 @@ class _CardanoTransactionListMarshaler extends UInt8ListMarshaler<List<CardanoTr
 
   @override
   List<CardanoTransaction> unmarshalFromBytes(Uint8List data) {
-    return BinaryReaderImpl(data)
+    return BinaryReader(data)
         .readBytesList() //
         .map(CardanoTransaction.deserializeBytes)
         .toList();
@@ -136,13 +136,13 @@ class _Bip32PublicKeysKeyMarshaler extends UInt8ListMarshaler<List<Bip32PublicKe
 
   @override
   Uint8List marshalToBytes(List<Bip32PublicKey> data) =>
-      (BinaryWriterImpl() //
+      (BinaryWriter() //
             ..writeBytesList(data.map(Uint8List.fromList).toList())) //
           .toBytes();
 
   @override
   List<Bip32PublicKey> unmarshalFromBytes(Uint8List data) =>
-      BinaryReaderImpl(data).readBytesList().map(Bip32VerifyKey.new).toList();
+      BinaryReader(data).readBytesList().map(Bip32VerifyKey.new).toList();
 }
 
 class _WalletMarshaler extends UInt8ListMarshaler<CardanoWalletImpl> {
@@ -220,7 +220,7 @@ class _StringListMarshaler extends UInt8ListMarshaler<List<String>> {
 
   @override
   Uint8List marshalToBytes(List<String> data) {
-    final writer = BinaryWriterImpl();
+    final writer = BinaryWriter();
     writer.writeStringList(data);
 
     return writer.toBytes();
@@ -228,7 +228,7 @@ class _StringListMarshaler extends UInt8ListMarshaler<List<String>> {
 
   @override
   List<String> unmarshalFromBytes(Uint8List data) {
-    final reader = BinaryReaderImpl(data);
+    final reader = BinaryReader(data);
     return reader.readStringList();
   }
 }
