@@ -1,3 +1,16 @@
+## 3.2.1
+
+Web workers built with Flutter 3.38.5 and cardano_dart_types 2.12.1
+
+### Bug Fixes
+
+- Fixed `writeIntList`/`readIntList` crashing on dart2js (Int64 accessor not supported) - fix coming from updated cardano_dart_types
+
+### Changed
+
+- Updated cardano_dart_types to 2.12.1
+- Re-generated web workers
+
 ## 3.2.0
 
 Web workers built with Flutter 3.38.5 and cardano_dart_types 2.12.0
