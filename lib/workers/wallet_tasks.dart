@@ -163,7 +163,7 @@ class WalletTasks {
           // find all wallet utxos used in this tx
           .where((e) => txUtxos.contains("${e.identifier.transactionHash}#${e.identifier.index}"))
           // get the wallet addresses needed to sign the used wallet utxos
-          .map((e) => e.content.addressBytes.addressBase58Orbech32Encode())
+          .map((e) => e.content.address.base58OrBech32Value)
           .toSet();
 
       final List<Utxo> notUsedUserUtxos = walletUtxosBeforeTx
@@ -171,10 +171,13 @@ class WalletTasks {
           .toList();
       final List<Utxo> generatedUserUtxos = tx.body.outputs
           .mapIndexed<Utxo?>(
-            (utxoIndex, e) => e.addressBytes.addressBase58Orbech32Encode() != bech32Address
+            (utxoIndex, e) => e.address.base58OrBech32Value != bech32Address
                 ? null
                 : Utxo(
-                    identifier: CardanoTransactionInput(transactionHash: txHash, index: utxoIndex),
+                    identifier: CardanoTransactionInput(
+                      transactionHash: TransactionHash.fromHex(txHash),
+                      index: utxoIndex,
+                    ),
                     content: e,
                   ),
           )
@@ -201,7 +204,7 @@ class WalletTasks {
     }
 
     final txsTotalDiff = txsPreparedForSigning.reduceSafe(
-      initialValue: Value.v0(lovelace: BigInt.zero),
+      initialValue: Value.v0(lovelace: BigInt.zero.toCborInt()),
       combine: (aggregator, e) => aggregator + e.txDiff.diff,
     );
 

@@ -14,11 +14,11 @@ Value simpleDiff({
 }) {
   return returnOutputs.reduceSafe(
         combine: (agg, e) => agg + e.value,
-        initialValue: Value.v0(lovelace: BigInt.zero),
+        initialValue: Value.v0(lovelace: BigInt.zero.toCborInt()),
       ) -
       inputs.reduceSafe(
         combine: (agg, e) => agg + e.content.value,
-        initialValue: Value.v0(lovelace: withdrawnRewards),
+        initialValue: Value.v0(lovelace: withdrawnRewards.toCborInt()),
       );
 }
 
@@ -49,7 +49,7 @@ void main() async {
   List<CardanoTransactionOutput> genThisWalletOutputs(Iterable<Value> values) => values
       .map(
         (e) => CardanoTransactionOutput.postAlonzo(
-          addressBytes: Uint8List.fromList(wallet.firstAddress.bytes),
+          address: Address(value: wallet.firstAddress.bytes),
           value: e,
           outDatum: null,
           scriptRef: null,
@@ -61,9 +61,9 @@ void main() async {
   List<CardanoTransactionOutput> genOtherWalletOutputs(Iterable<Value> values) => values
       .map(
         (e) => CardanoTransactionOutput.postAlonzo(
-          addressBytes:
-              "addr1q8l7hny7x96fadvq8cukyqkcfca5xmkrvfrrkt7hp76v3qvssm7fz9ajmtd58ksljgkyvqu6gl23hlcfgv7um5v0rn8qtnzlfk"
-                  .bech32Decode(),
+          address: Address.fromBase58OrBech32(
+            "addr1q8l7hny7x96fadvq8cukyqkcfca5xmkrvfrrkt7hp76v3qvssm7fz9ajmtd58ksljgkyvqu6gl23hlcfgv7um5v0rn8qtnzlfk",
+          ),
           value: e,
           outDatum: null,
           scriptRef: null,
@@ -115,7 +115,7 @@ void main() async {
       ),
     );
 
-    final signAddrs = thisWalletUtxoInputs.map((e) => e.content.addressBytes.addressBase58Orbech32Encode()).toSet();
+    final signAddrs = thisWalletUtxoInputs.map((e) => e.content.address.base58OrBech32Value).toSet();
 
     return (tx, expectedDiff, signAddrs);
   }
@@ -180,11 +180,16 @@ void main() async {
           signingBundle.totalDiff,
           equals(
             Value.v1(
-              lovelace: BigInt.parse("-4217512"),
+              lovelace: BigInt.parse("-4217512").toCborInt(),
               mA: [
                 MultiAsset(
-                  policyId: "3ef4ec008dffd3ef3a516a2609be258861086c493020bf5bd26f7a69",
-                  assets: [Asset(hexName: "474f4e4144", value: BigInt.parse("-2656159029"))],
+                  policyId: PolicyId.fromHex("3ef4ec008dffd3ef3a516a2609be258861086c493020bf5bd26f7a69"),
+                  assets: [
+                    Asset(
+                      assetName: AssetName.fromHex("474f4e4144"),
+                      value: BigInt.parse("-2656159029").toCborInt(),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -208,10 +213,10 @@ void main() async {
           thisWalletUtxoInputs: [walletUtxos[0]],
           otherWalletUtxoInputs: [],
           thisWalletOutputs: genThisWalletOutputs([
-            Value.v0(lovelace: BigInt.from(142)),
+            Value.v0(lovelace: BigInt.from(142).toCborInt()),
           ]),
           otherWalletOutputs: genOtherWalletOutputs([
-            Value.v0(lovelace: BigInt.from(1922)),
+            Value.v0(lovelace: BigInt.from(1922).toCborInt()),
           ]),
           thisWalletRewards: BigInt.one,
           otherWalletRewards: BigInt.from(100000000),
@@ -239,11 +244,11 @@ void main() async {
         );
 
         final tx1Diff = Value.v1(
-          lovelace: BigInt.from(-1699859),
+          lovelace: BigInt.from(-1699859).toCborInt(),
           mA: [
             MultiAsset(
-              policyId: "8a1cfae21368b8bebbbed9800fec304e95cce39a2a57dc35e2e3ebaa",
-              assets: [Asset(hexName: "4d494c4b", value: BigInt.from(-247))],
+              policyId: PolicyId.fromHex("8a1cfae21368b8bebbbed9800fec304e95cce39a2a57dc35e2e3ebaa"),
+              assets: [Asset(assetName: AssetName.fromHex("4d494c4b"), value: BigInt.from(-247).toCborInt())],
             ),
           ],
         );
@@ -343,48 +348,71 @@ void main() async {
             ///     200 9a9693a9a37912a5097918f97918d15240c92ab729a0b7c4aa144d77.53554e444145
             ///
             final tx2Diff = Value.v1(
-              lovelace: BigInt.from(-5241502),
+              lovelace: BigInt.from(-5241502).toCborInt(),
               mA: [
                 MultiAsset(
-                  policyId: "e98165a25cd0320b25f22d686268e58e66f855b6d85974947ccd708d",
-                  assets: [Asset(hexName: "414441464f58", value: BigInt.from(-834))],
+                  policyId: PolicyId.fromHex("e98165a25cd0320b25f22d686268e58e66f855b6d85974947ccd708d"),
+                  assets: [Asset(assetName: AssetName.fromHex("414441464f58"), value: BigInt.from(-834).toCborInt())],
                 ),
                 MultiAsset(
-                  policyId: "ea2d23f1fa631b414252824c153f2d6ba833506477a929770a4dd9c2",
-                  assets: [Asset(hexName: "4d414442554c", value: BigInt.from(-333334))],
-                ),
-                MultiAsset(
-                  policyId: "f3bfa228ccaffa52bbe3f27ef3646516481cd15a80d1435083fe6b6b",
+                  policyId: PolicyId.fromHex("ea2d23f1fa631b414252824c153f2d6ba833506477a929770a4dd9c2"),
                   assets: [
-                    Asset(hexName: "4144415969656c64204e46542047656d73202d2032333031", value: BigInt.from(-1)),
+                    Asset(assetName: AssetName.fromHex("4d414442554c"), value: BigInt.from(-333334).toCborInt()),
                   ],
                 ),
                 MultiAsset(
-                  policyId: "f7206fd0d0df2e14ad6b10d36b0b29231bb3f295880e9c01f43f509e",
+                  policyId: PolicyId.fromHex("f3bfa228ccaffa52bbe3f27ef3646516481cd15a80d1435083fe6b6b"),
                   assets: [
-                    Asset(hexName: "4144415969656c642047656d202d2032393536", value: BigInt.from(-1)),
-                    Asset(hexName: "4144415969656c642047656d202d2034373736", value: BigInt.from(-1)),
+                    Asset(
+                      assetName: AssetName.fromHex("4144415969656c64204e46542047656d73202d2032333031"),
+                      value: BigInt.from(-1).toCborInt(),
+                    ),
                   ],
                 ),
                 MultiAsset(
-                  policyId: "ff97c85de383ebf0b047667ef23c697967719def58d380caf7f04b64",
-                  assets: [Asset(hexName: "534f554c", value: BigInt.from(-111))],
+                  policyId: PolicyId.fromHex("f7206fd0d0df2e14ad6b10d36b0b29231bb3f295880e9c01f43f509e"),
+                  assets: [
+                    Asset(
+                      assetName: AssetName.fromHex("4144415969656c642047656d202d2032393536"),
+                      value: BigInt.from(-1).toCborInt(),
+                    ),
+                    Asset(
+                      assetName: AssetName.fromHex("4144415969656c642047656d202d2034373736"),
+                      value: BigInt.from(-1).toCborInt(),
+                    ),
+                  ],
                 ),
                 MultiAsset(
-                  policyId: "44f8fabe04dc11bcf039128131b131b427db582f0e0be041a6b03691",
-                  assets: [Asset(hexName: "534e454b5049435336333037", value: BigInt.from(-1))],
+                  policyId: PolicyId.fromHex("ff97c85de383ebf0b047667ef23c697967719def58d380caf7f04b64"),
+                  assets: [Asset(assetName: AssetName.fromHex("534f554c"), value: BigInt.from(-111).toCborInt())],
                 ),
                 MultiAsset(
-                  policyId: "a1ce0414d79b040f986f3bcd187a7563fd26662390dece6b12262b52",
-                  assets: [Asset(hexName: "464c45534820544f4b454e", value: BigInt.parse("30785259816167760"))],
+                  policyId: PolicyId.fromHex("44f8fabe04dc11bcf039128131b131b427db582f0e0be041a6b03691"),
+                  assets: [
+                    Asset(assetName: AssetName.fromHex("534e454b5049435336333037"), value: BigInt.from(-1).toCborInt()),
+                  ],
                 ),
                 MultiAsset(
-                  policyId: "b37b1d05794b9c046a584b7a02caea2a4840cb971e63e4ca613592ef",
-                  assets: [Asset(hexName: "5350435b416c69656e5d202331313538", value: BigInt.from(1))],
+                  policyId: PolicyId.fromHex("a1ce0414d79b040f986f3bcd187a7563fd26662390dece6b12262b52"),
+                  assets: [
+                    Asset(
+                      assetName: AssetName.fromHex("464c45534820544f4b454e"),
+                      value: BigInt.parse("30785259816167760").toCborInt(),
+                    ),
+                  ],
                 ),
                 MultiAsset(
-                  policyId: "9a9693a9a37912a5097918f97918d15240c92ab729a0b7c4aa144d77",
-                  assets: [Asset(hexName: "53554e444145", value: BigInt.from(200))],
+                  policyId: PolicyId.fromHex("b37b1d05794b9c046a584b7a02caea2a4840cb971e63e4ca613592ef"),
+                  assets: [
+                    Asset(
+                      assetName: AssetName.fromHex("5350435b416c69656e5d202331313538"),
+                      value: BigInt.from(1).toCborInt(),
+                    ),
+                  ],
+                ),
+                MultiAsset(
+                  policyId: PolicyId.fromHex("9a9693a9a37912a5097918f97918d15240c92ab729a0b7c4aa144d77"),
+                  assets: [Asset(assetName: AssetName.fromHex("53554e444145"), value: BigInt.from(200).toCborInt())],
                 ),
               ],
             );
@@ -398,35 +426,41 @@ void main() async {
               ],
               otherWalletUtxoInputs: [],
               thisWalletOutputs: genThisWalletOutputs([
-                Value.v0(lovelace: BigInt.from(112)),
+                Value.v0(lovelace: BigInt.from(112).toCborInt()),
                 Value.v1(
-                  lovelace: BigInt.from(1),
+                  lovelace: BigInt.from(1).toCborInt(),
                   mA: [
                     MultiAsset(
-                      policyId: "b37b1d05794b9c046a584b7a02caea2a4840cb971e63e4ca613592ef",
+                      policyId: PolicyId.fromHex("b37b1d05794b9c046a584b7a02caea2a4840cb971e63e4ca613592ef"),
                       assets: [
-                        Asset(hexName: "5350435b416c69656e5d202331313538", value: BigInt.from(1)),
+                        Asset(
+                          assetName: AssetName.fromHex("5350435b416c69656e5d202331313538"),
+                          value: BigInt.from(1).toCborInt(),
+                        ),
                       ],
                     ),
                     MultiAsset(
-                      policyId: "a1ce0414d79b040f986f3bcd187a7563fd26662390dece6b12262b52",
+                      policyId: PolicyId.fromHex("a1ce0414d79b040f986f3bcd187a7563fd26662390dece6b12262b52"),
                       assets: [
-                        Asset(hexName: "464c45534820544f4b454e", value: BigInt.parse("31718971375682855")),
+                        Asset(
+                          assetName: AssetName.fromHex("464c45534820544f4b454e"),
+                          value: BigInt.parse("31718971375682855").toCborInt(),
+                        ),
                       ],
                     ),
                     MultiAsset(
-                      policyId: "9a9693a9a37912a5097918f97918d15240c92ab729a0b7c4aa144d77",
+                      policyId: PolicyId.fromHex("9a9693a9a37912a5097918f97918d15240c92ab729a0b7c4aa144d77"),
                       assets: [
-                        Asset(hexName: "53554e444145", value: BigInt.parse("200")),
+                        Asset(assetName: AssetName.fromHex("53554e444145"), value: BigInt.parse("200").toCborInt()),
                       ],
                     ),
                   ],
                 ),
-                Value.v0(lovelace: BigInt.from(5)),
+                Value.v0(lovelace: BigInt.from(5).toCborInt()),
               ]),
               otherWalletOutputs: genOtherWalletOutputs([
-                Value.v0(lovelace: BigInt.from(192)),
-                Value.v0(lovelace: BigInt.from(192)),
+                Value.v0(lovelace: BigInt.from(192).toCborInt()),
+                Value.v0(lovelace: BigInt.from(192).toCborInt()),
               ]),
               certs: Certificates(
                 certificates: [
@@ -523,16 +557,25 @@ void main() async {
             );
 
             final tx1Utxo = Utxo(
-              identifier: CardanoTransactionInput(transactionHash: tx1.body.blake2bHash256Hex(), index: 0),
+              identifier: CardanoTransactionInput(
+                transactionHash: TransactionHash.fromHex(tx1.body.blake2bHash256Hex()),
+                index: 0,
+              ),
               content: tx1.body.outputs[0], // 142 lovelace
             );
 
             final tx2Utxo1 = Utxo(
-              identifier: CardanoTransactionInput(transactionHash: tx2.body.blake2bHash256Hex(), index: 0),
+              identifier: CardanoTransactionInput(
+                transactionHash: TransactionHash.fromHex(tx2.body.blake2bHash256Hex()),
+                index: 0,
+              ),
               content: tx2.body.outputs[0], // 112 lovelace
             );
             final tx2Utxo2 = Utxo(
-              identifier: CardanoTransactionInput(transactionHash: tx2.body.blake2bHash256Hex(), index: 1),
+              identifier: CardanoTransactionInput(
+                transactionHash: TransactionHash.fromHex(tx2.body.blake2bHash256Hex()),
+                index: 1,
+              ),
               content: tx2.body.outputs[1], // 1 lovelace and some assets
             );
 
@@ -565,20 +608,33 @@ void main() async {
             ///     1 d5ad382393561e45b7e580415b99562eea6cd120ce6a542a4b8e1e95.426c657373696e67206f66207468652042756c6c202334303632
             ///
             final tx3Diff = Value.v1(
-              lovelace: BigInt.from(-1237206),
+              lovelace: BigInt.from(-1237206).toCborInt(),
               mA: [
                 MultiAsset(
-                  policyId: "b37b1d05794b9c046a584b7a02caea2a4840cb971e63e4ca613592ef",
-                  assets: [Asset(hexName: "5350435b416c69656e5d202331313538", value: BigInt.from(-1))],
-                ),
-                MultiAsset(
-                  policyId: "a1ce0414d79b040f986f3bcd187a7563fd26662390dece6b12262b52",
-                  assets: [Asset(hexName: "464c45534820544f4b454e", value: BigInt.parse("-31718971375682855"))],
-                ),
-                MultiAsset(
-                  policyId: "d5ad382393561e45b7e580415b99562eea6cd120ce6a542a4b8e1e95",
+                  policyId: PolicyId.fromHex("b37b1d05794b9c046a584b7a02caea2a4840cb971e63e4ca613592ef"),
                   assets: [
-                    Asset(hexName: "426c657373696e67206f66207468652042756c6c202334303632", value: BigInt.from(1)),
+                    Asset(
+                      assetName: AssetName.fromHex("5350435b416c69656e5d202331313538"),
+                      value: BigInt.from(-1).toCborInt(),
+                    ),
+                  ],
+                ),
+                MultiAsset(
+                  policyId: PolicyId.fromHex("a1ce0414d79b040f986f3bcd187a7563fd26662390dece6b12262b52"),
+                  assets: [
+                    Asset(
+                      assetName: AssetName.fromHex("464c45534820544f4b454e"),
+                      value: BigInt.parse("-31718971375682855").toCborInt(),
+                    ),
+                  ],
+                ),
+                MultiAsset(
+                  policyId: PolicyId.fromHex("d5ad382393561e45b7e580415b99562eea6cd120ce6a542a4b8e1e95"),
+                  assets: [
+                    Asset(
+                      assetName: AssetName.fromHex("426c657373696e67206f66207468652042756c6c202334303632"),
+                      value: BigInt.from(1).toCborInt(),
+                    ),
                   ],
                 ),
               ],
@@ -595,25 +651,30 @@ void main() async {
               otherWalletUtxoInputs: [],
               thisWalletOutputs: genThisWalletOutputs([
                 Value.v1(
-                  lovelace: BigInt.from(14),
+                  lovelace: BigInt.from(14).toCborInt(),
                   mA: [
                     MultiAsset(
-                      policyId: "9a9693a9a37912a5097918f97918d15240c92ab729a0b7c4aa144d77",
-                      assets: [Asset(hexName: "53554e444145", value: BigInt.from(200))],
+                      policyId: PolicyId.fromHex("9a9693a9a37912a5097918f97918d15240c92ab729a0b7c4aa144d77"),
+                      assets: [
+                        Asset(assetName: AssetName.fromHex("53554e444145"), value: BigInt.from(200).toCborInt()),
+                      ],
                     ),
                     MultiAsset(
-                      policyId: "d5ad382393561e45b7e580415b99562eea6cd120ce6a542a4b8e1e95",
+                      policyId: PolicyId.fromHex("d5ad382393561e45b7e580415b99562eea6cd120ce6a542a4b8e1e95"),
                       assets: [
-                        Asset(hexName: "426c657373696e67206f66207468652042756c6c202334303632", value: BigInt.from(2)),
+                        Asset(
+                          assetName: AssetName.fromHex("426c657373696e67206f66207468652042756c6c202334303632"),
+                          value: BigInt.from(2).toCborInt(),
+                        ),
                       ],
                     ),
                   ],
                 ),
-                Value.v0(lovelace: BigInt.from(5)),
+                Value.v0(lovelace: BigInt.from(5).toCborInt()),
               ]),
               otherWalletOutputs: genOtherWalletOutputs([
-                Value.v0(lovelace: BigInt.from(1922)),
-                Value.v0(lovelace: BigInt.from(2)),
+                Value.v0(lovelace: BigInt.from(1922).toCborInt()),
+                Value.v0(lovelace: BigInt.from(2).toCborInt()),
               ]),
               certs: const Certificates(certificates: [], cborTags: [], lengthType: CborLengthType.definite),
               proposalProcedures: [],
@@ -651,53 +712,79 @@ void main() async {
             ///     200 9a9693a9a37912a5097918f97918d15240c92ab729a0b7c4aa144d77.53554e444145
             ///     1 d5ad382393561e45b7e580415b99562eea6cd120ce6a542a4b8e1e95.426c657373696e67206f66207468652042756c6c202334303632
             final totalDiff = Value.v1(
-              lovelace: BigInt.from(-8178567),
+              lovelace: BigInt.from(-8178567).toCborInt(),
               mA: [
                 MultiAsset(
-                  policyId: "8a1cfae21368b8bebbbed9800fec304e95cce39a2a57dc35e2e3ebaa",
-                  assets: [Asset(hexName: "4d494c4b", value: BigInt.from(-247))],
+                  policyId: PolicyId.fromHex("8a1cfae21368b8bebbbed9800fec304e95cce39a2a57dc35e2e3ebaa"),
+                  assets: [Asset(assetName: AssetName.fromHex("4d494c4b"), value: BigInt.from(-247).toCborInt())],
                 ),
                 MultiAsset(
-                  policyId: "a1ce0414d79b040f986f3bcd187a7563fd26662390dece6b12262b52",
-                  assets: [Asset(hexName: "464c45534820544f4b454e", value: BigInt.parse("-933711559515095"))],
-                ),
-                MultiAsset(
-                  policyId: "9a9693a9a37912a5097918f97918d15240c92ab729a0b7c4aa144d77",
-                  assets: [Asset(hexName: "53554e444145", value: BigInt.parse("200"))],
-                ),
-                MultiAsset(
-                  policyId: "e98165a25cd0320b25f22d686268e58e66f855b6d85974947ccd708d",
-                  assets: [Asset(hexName: "414441464f58", value: BigInt.parse("-834"))],
-                ),
-                MultiAsset(
-                  policyId: "ea2d23f1fa631b414252824c153f2d6ba833506477a929770a4dd9c2",
-                  assets: [Asset(hexName: "4d414442554c", value: BigInt.parse("-333334"))],
-                ),
-                MultiAsset(
-                  policyId: "f3bfa228ccaffa52bbe3f27ef3646516481cd15a80d1435083fe6b6b",
+                  policyId: PolicyId.fromHex("a1ce0414d79b040f986f3bcd187a7563fd26662390dece6b12262b52"),
                   assets: [
-                    Asset(hexName: "4144415969656c64204e46542047656d73202d2032333031", value: BigInt.parse("-1")),
+                    Asset(
+                      assetName: AssetName.fromHex("464c45534820544f4b454e"),
+                      value: BigInt.parse("-933711559515095").toCborInt(),
+                    ),
                   ],
                 ),
                 MultiAsset(
-                  policyId: "f7206fd0d0df2e14ad6b10d36b0b29231bb3f295880e9c01f43f509e",
+                  policyId: PolicyId.fromHex("9a9693a9a37912a5097918f97918d15240c92ab729a0b7c4aa144d77"),
+                  assets: [Asset(assetName: AssetName.fromHex("53554e444145"), value: BigInt.parse("200").toCborInt())],
+                ),
+                MultiAsset(
+                  policyId: PolicyId.fromHex("e98165a25cd0320b25f22d686268e58e66f855b6d85974947ccd708d"),
                   assets: [
-                    Asset(hexName: "4144415969656c642047656d202d2032393536", value: BigInt.from(-1)),
-                    Asset(hexName: "4144415969656c642047656d202d2034373736", value: BigInt.from(-1)),
+                    Asset(assetName: AssetName.fromHex("414441464f58"), value: BigInt.parse("-834").toCborInt()),
                   ],
                 ),
                 MultiAsset(
-                  policyId: "ff97c85de383ebf0b047667ef23c697967719def58d380caf7f04b64",
-                  assets: [Asset(hexName: "534f554c", value: BigInt.parse("-111"))],
-                ),
-                MultiAsset(
-                  policyId: "44f8fabe04dc11bcf039128131b131b427db582f0e0be041a6b03691",
-                  assets: [Asset(hexName: "534e454b5049435336333037", value: BigInt.parse("-1"))],
-                ),
-                MultiAsset(
-                  policyId: "d5ad382393561e45b7e580415b99562eea6cd120ce6a542a4b8e1e95",
+                  policyId: PolicyId.fromHex("ea2d23f1fa631b414252824c153f2d6ba833506477a929770a4dd9c2"),
                   assets: [
-                    Asset(hexName: "426c657373696e67206f66207468652042756c6c202334303632", value: BigInt.parse("1")),
+                    Asset(assetName: AssetName.fromHex("4d414442554c"), value: BigInt.parse("-333334").toCborInt()),
+                  ],
+                ),
+                MultiAsset(
+                  policyId: PolicyId.fromHex("f3bfa228ccaffa52bbe3f27ef3646516481cd15a80d1435083fe6b6b"),
+                  assets: [
+                    Asset(
+                      assetName: AssetName.fromHex("4144415969656c64204e46542047656d73202d2032333031"),
+                      value: BigInt.parse("-1").toCborInt(),
+                    ),
+                  ],
+                ),
+                MultiAsset(
+                  policyId: PolicyId.fromHex("f7206fd0d0df2e14ad6b10d36b0b29231bb3f295880e9c01f43f509e"),
+                  assets: [
+                    Asset(
+                      assetName: AssetName.fromHex("4144415969656c642047656d202d2032393536"),
+                      value: BigInt.from(-1).toCborInt(),
+                    ),
+                    Asset(
+                      assetName: AssetName.fromHex("4144415969656c642047656d202d2034373736"),
+                      value: BigInt.from(-1).toCborInt(),
+                    ),
+                  ],
+                ),
+                MultiAsset(
+                  policyId: PolicyId.fromHex("ff97c85de383ebf0b047667ef23c697967719def58d380caf7f04b64"),
+                  assets: [Asset(assetName: AssetName.fromHex("534f554c"), value: BigInt.parse("-111").toCborInt())],
+                ),
+                MultiAsset(
+                  policyId: PolicyId.fromHex("44f8fabe04dc11bcf039128131b131b427db582f0e0be041a6b03691"),
+                  assets: [
+                    Asset(
+                      assetName: AssetName.fromHex("534e454b5049435336333037"),
+                      value: BigInt.parse("-1").toCborInt(),
+                    ),
+                  ],
+                ),
+                MultiAsset(
+                  policyId: PolicyId.fromHex("d5ad382393561e45b7e580415b99562eea6cd120ce6a542a4b8e1e95"),
+                  assets: [
+                    Asset(
+                      assetName: AssetName.fromHex("426c657373696e67206f66207468652042756c6c202334303632"),
+                      value: BigInt.parse("1").toCborInt(),
+                    ),
                   ],
                 ),
               ],
@@ -925,35 +1012,41 @@ void main() async {
             ],
             otherWalletUtxoInputs: [],
             thisWalletOutputs: genThisWalletOutputs([
-              Value.v0(lovelace: BigInt.from(112)),
+              Value.v0(lovelace: BigInt.from(112).toCborInt()),
               Value.v1(
-                lovelace: BigInt.from(1),
+                lovelace: BigInt.from(1).toCborInt(),
                 mA: [
                   MultiAsset(
-                    policyId: "b37b1d05794b9c046a584b7a02caea2a4840cb971e63e4ca613592ef",
+                    policyId: PolicyId.fromHex("b37b1d05794b9c046a584b7a02caea2a4840cb971e63e4ca613592ef"),
                     assets: [
-                      Asset(hexName: "5350435b416c69656e5d202331313538", value: BigInt.from(1)),
+                      Asset(
+                        assetName: AssetName.fromHex("5350435b416c69656e5d202331313538"),
+                        value: BigInt.from(1).toCborInt(),
+                      ),
                     ],
                   ),
                   MultiAsset(
-                    policyId: "a1ce0414d79b040f986f3bcd187a7563fd26662390dece6b12262b52",
+                    policyId: PolicyId.fromHex("a1ce0414d79b040f986f3bcd187a7563fd26662390dece6b12262b52"),
                     assets: [
-                      Asset(hexName: "464c45534820544f4b454e", value: BigInt.parse("31718971375682855")),
+                      Asset(
+                        assetName: AssetName.fromHex("464c45534820544f4b454e"),
+                        value: BigInt.parse("31718971375682855").toCborInt(),
+                      ),
                     ],
                   ),
                   MultiAsset(
-                    policyId: "9a9693a9a37912a5097918f97918d15240c92ab729a0b7c4aa144d77",
+                    policyId: PolicyId.fromHex("9a9693a9a37912a5097918f97918d15240c92ab729a0b7c4aa144d77"),
                     assets: [
-                      Asset(hexName: "53554e444145", value: BigInt.parse("200")),
+                      Asset(assetName: AssetName.fromHex("53554e444145"), value: BigInt.parse("200").toCborInt()),
                     ],
                   ),
                 ],
               ),
-              Value.v0(lovelace: BigInt.from(5)),
+              Value.v0(lovelace: BigInt.from(5).toCborInt()),
             ]),
             otherWalletOutputs: genOtherWalletOutputs([
-              Value.v0(lovelace: BigInt.from(192)),
-              Value.v0(lovelace: BigInt.from(192)),
+              Value.v0(lovelace: BigInt.from(192).toCborInt()),
+              Value.v0(lovelace: BigInt.from(192).toCborInt()),
             ]),
             certs: const Certificates(certificates: [], cborTags: [], lengthType: CborLengthType.definite),
             proposalProcedures: [],
@@ -969,12 +1062,12 @@ void main() async {
             ],
             otherWalletUtxoInputs: [],
             thisWalletOutputs: genThisWalletOutputs([
-              Value.v0(lovelace: BigInt.from(14)),
-              Value.v0(lovelace: BigInt.from(5)),
+              Value.v0(lovelace: BigInt.from(14).toCborInt()),
+              Value.v0(lovelace: BigInt.from(5).toCborInt()),
             ]),
             otherWalletOutputs: genOtherWalletOutputs([
-              Value.v0(lovelace: BigInt.from(1922)),
-              Value.v0(lovelace: BigInt.from(2)),
+              Value.v0(lovelace: BigInt.from(1922).toCborInt()),
+              Value.v0(lovelace: BigInt.from(2).toCborInt()),
             ]),
             certs: const Certificates(certificates: [], cborTags: [], lengthType: CborLengthType.definite),
             proposalProcedures: [],
@@ -1018,10 +1111,10 @@ void main() async {
           thisWalletUtxoInputs: [],
           otherWalletUtxoInputs: [otherWalletsUtxos[0]],
           thisWalletOutputs: genThisWalletOutputs([
-            Value.v0(lovelace: BigInt.from(142)),
+            Value.v0(lovelace: BigInt.from(142).toCborInt()),
           ]),
           otherWalletOutputs: genOtherWalletOutputs([
-            Value.v0(lovelace: BigInt.from(1922)),
+            Value.v0(lovelace: BigInt.from(1922).toCborInt()),
           ]),
           certs: const Certificates(certificates: [], cborTags: [], lengthType: CborLengthType.definite),
           proposalProcedures: [],
@@ -1056,35 +1149,41 @@ void main() async {
               otherWalletsUtxos[1],
             ],
             thisWalletOutputs: genThisWalletOutputs([
-              Value.v0(lovelace: BigInt.from(112)),
+              Value.v0(lovelace: BigInt.from(112).toCborInt()),
               Value.v1(
-                lovelace: BigInt.from(1),
+                lovelace: BigInt.from(1).toCborInt(),
                 mA: [
                   MultiAsset(
-                    policyId: "b37b1d05794b9c046a584b7a02caea2a4840cb971e63e4ca613592ef",
+                    policyId: PolicyId.fromHex("b37b1d05794b9c046a584b7a02caea2a4840cb971e63e4ca613592ef"),
                     assets: [
-                      Asset(hexName: "5350435b416c69656e5d202331313538", value: BigInt.from(1)),
+                      Asset(
+                        assetName: AssetName.fromHex("5350435b416c69656e5d202331313538"),
+                        value: BigInt.from(1).toCborInt(),
+                      ),
                     ],
                   ),
                   MultiAsset(
-                    policyId: "a1ce0414d79b040f986f3bcd187a7563fd26662390dece6b12262b52",
+                    policyId: PolicyId.fromHex("a1ce0414d79b040f986f3bcd187a7563fd26662390dece6b12262b52"),
                     assets: [
-                      Asset(hexName: "464c45534820544f4b454e", value: BigInt.parse("31718971375682855")),
+                      Asset(
+                        assetName: AssetName.fromHex("464c45534820544f4b454e"),
+                        value: BigInt.parse("31718971375682855").toCborInt(),
+                      ),
                     ],
                   ),
                   MultiAsset(
-                    policyId: "9a9693a9a37912a5097918f97918d15240c92ab729a0b7c4aa144d77",
+                    policyId: PolicyId.fromHex("9a9693a9a37912a5097918f97918d15240c92ab729a0b7c4aa144d77"),
                     assets: [
-                      Asset(hexName: "53554e444145", value: BigInt.parse("200")),
+                      Asset(assetName: AssetName.fromHex("53554e444145"), value: BigInt.parse("200").toCborInt()),
                     ],
                   ),
                 ],
               ),
-              Value.v0(lovelace: BigInt.from(5)),
+              Value.v0(lovelace: BigInt.from(5).toCborInt()),
             ]),
             otherWalletOutputs: genOtherWalletOutputs([
-              Value.v0(lovelace: BigInt.from(192)),
-              Value.v0(lovelace: BigInt.from(192)),
+              Value.v0(lovelace: BigInt.from(192).toCborInt()),
+              Value.v0(lovelace: BigInt.from(192).toCborInt()),
             ]),
             certs: const Certificates(certificates: [], cborTags: [], lengthType: CborLengthType.definite),
             proposalProcedures: [],
@@ -1097,12 +1196,12 @@ void main() async {
             thisWalletUtxoInputs: [],
             otherWalletUtxoInputs: [otherWalletsUtxos[2]],
             thisWalletOutputs: genThisWalletOutputs([
-              Value.v0(lovelace: BigInt.from(14)),
-              Value.v0(lovelace: BigInt.from(5)),
+              Value.v0(lovelace: BigInt.from(14).toCborInt()),
+              Value.v0(lovelace: BigInt.from(5).toCborInt()),
             ]),
             otherWalletOutputs: genOtherWalletOutputs([
-              Value.v0(lovelace: BigInt.from(1922)),
-              Value.v0(lovelace: BigInt.from(2)),
+              Value.v0(lovelace: BigInt.from(1922).toCborInt()),
+              Value.v0(lovelace: BigInt.from(2).toCborInt()),
             ]),
             certs: const Certificates(certificates: [], cborTags: [], lengthType: CborLengthType.definite),
             proposalProcedures: [],
@@ -1146,10 +1245,10 @@ void main() async {
           thisWalletUtxoInputs: [walletUtxos[0]],
           otherWalletUtxoInputs: [otherWalletsUtxos[0]],
           thisWalletOutputs: genThisWalletOutputs([
-            Value.v0(lovelace: BigInt.parse("1000000000000")),
+            Value.v0(lovelace: BigInt.parse("1000000000000").toCborInt()),
           ]),
           otherWalletOutputs: genOtherWalletOutputs([
-            Value.v0(lovelace: BigInt.from(1922)),
+            Value.v0(lovelace: BigInt.from(1922).toCborInt()),
           ]),
           certs: const Certificates(certificates: [], cborTags: [], lengthType: CborLengthType.definite),
           proposalProcedures: [],
@@ -1189,35 +1288,41 @@ void main() async {
               otherWalletsUtxos[1],
             ],
             thisWalletOutputs: genThisWalletOutputs([
-              Value.v0(lovelace: BigInt.from(112)),
+              Value.v0(lovelace: BigInt.from(112).toCborInt()),
               Value.v1(
-                lovelace: BigInt.from(1),
+                lovelace: BigInt.from(1).toCborInt(),
                 mA: [
                   MultiAsset(
-                    policyId: "b37b1d05794b9c046a584b7a02caea2a4840cb971e63e4ca613592ef",
+                    policyId: PolicyId.fromHex("b37b1d05794b9c046a584b7a02caea2a4840cb971e63e4ca613592ef"),
                     assets: [
-                      Asset(hexName: "5350435b416c69656e5d202331313538", value: BigInt.from(1)),
+                      Asset(
+                        assetName: AssetName.fromHex("5350435b416c69656e5d202331313538"),
+                        value: BigInt.from(1).toCborInt(),
+                      ),
                     ],
                   ),
                   MultiAsset(
-                    policyId: "a1ce0414d79b040f986f3bcd187a7563fd26662390dece6b12262b52",
+                    policyId: PolicyId.fromHex("a1ce0414d79b040f986f3bcd187a7563fd26662390dece6b12262b52"),
                     assets: [
-                      Asset(hexName: "464c45534820544f4b454e", value: BigInt.parse("31718971375682855")),
+                      Asset(
+                        assetName: AssetName.fromHex("464c45534820544f4b454e"),
+                        value: BigInt.parse("31718971375682855").toCborInt(),
+                      ),
                     ],
                   ),
                   MultiAsset(
-                    policyId: "9a9693a9a37912a5097918f97918d15240c92ab729a0b7c4aa144d77",
+                    policyId: PolicyId.fromHex("9a9693a9a37912a5097918f97918d15240c92ab729a0b7c4aa144d77"),
                     assets: [
-                      Asset(hexName: "53554e444145", value: BigInt.parse("200")),
+                      Asset(assetName: AssetName.fromHex("53554e444145"), value: BigInt.parse("200").toCborInt()),
                     ],
                   ),
                 ],
               ),
-              Value.v0(lovelace: BigInt.from(5)),
+              Value.v0(lovelace: BigInt.from(5).toCborInt()),
             ]),
             otherWalletOutputs: genOtherWalletOutputs([
-              Value.v0(lovelace: BigInt.from(192)),
-              Value.v0(lovelace: BigInt.from(192)),
+              Value.v0(lovelace: BigInt.from(192).toCborInt()),
+              Value.v0(lovelace: BigInt.from(192).toCborInt()),
             ]),
             certs: const Certificates(certificates: [], cborTags: [], lengthType: CborLengthType.definite),
             proposalProcedures: [],
@@ -1233,25 +1338,25 @@ void main() async {
             ],
             otherWalletUtxoInputs: [otherWalletsUtxos[2]],
             thisWalletOutputs: genThisWalletOutputs([
-              Value.v0(lovelace: BigInt.from(14)),
+              Value.v0(lovelace: BigInt.from(14).toCborInt()),
               Value.v1(
-                lovelace: BigInt.from(2482546),
+                lovelace: BigInt.from(2482546).toCborInt(),
                 mA: [
                   MultiAsset(
-                    policyId: "f15b1a746b16524305b39b9bb12bb27eafc4121af24f1e443feaec04",
+                    policyId: PolicyId.fromHex("f15b1a746b16524305b39b9bb12bb27eafc4121af24f1e443feaec04"),
                     assets: [
                       Asset(
-                        hexName: "4d442023353520536f6369616c204d6564696120446566656e6465",
-                        value: BigInt.parse("12"),
+                        assetName: AssetName.fromHex("4d442023353520536f6369616c204d6564696120446566656e6465"),
+                        value: BigInt.parse("12").toCborInt(),
                       ),
                     ],
                   ),
                   MultiAsset(
-                    policyId: "b37b1d05794b9c046a584b7a02caea2a4840cb971e63e4ca613592ef",
+                    policyId: PolicyId.fromHex("b37b1d05794b9c046a584b7a02caea2a4840cb971e63e4ca613592ef"),
                     assets: [
                       Asset(
-                        hexName: "5350435b416c69656e5d2023373530",
-                        value: BigInt.parse("1"),
+                        assetName: AssetName.fromHex("5350435b416c69656e5d2023373530"),
+                        value: BigInt.parse("1").toCborInt(),
                       ),
                     ],
                   ),
@@ -1259,8 +1364,8 @@ void main() async {
               ),
             ]),
             otherWalletOutputs: genOtherWalletOutputs([
-              Value.v0(lovelace: BigInt.from(1922)),
-              Value.v0(lovelace: BigInt.from(2)),
+              Value.v0(lovelace: BigInt.from(1922).toCborInt()),
+              Value.v0(lovelace: BigInt.from(2).toCborInt()),
             ]),
             certs: const Certificates(certificates: [], cborTags: [], lengthType: CborLengthType.definite),
             proposalProcedures: [],

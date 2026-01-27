@@ -1,3 +1,23 @@
+## 4.0.0
+
+Web workers built with Flutter 3.38.7 and cardano_dart_types 3.0.0
+
+### ⚠️ BREAKING CHANGES
+
+- **Updated cardano_dart_types to 3.0.0** - This is a major version update that changes several APIs:
+  - `CardanoTransactionOutput` now uses `address` (Address type) instead of `addressBytes` (Uint8List)
+  - `CardanoTransactionInput` now uses `transactionHash` (TransactionHash type) instead of string
+  - `MultiAsset` now uses `policyId` (PolicyId type) instead of string
+  - `Asset` now uses `assetName` (AssetName type) instead of `hexName` string
+  - `Value`, `CardanoTransactionBody` and related types now use `CborInt` instead of `BigInt` for numeric fields (use `.toCborInt()` extension to convert)
+
+### Changed
+
+- Updated cardano_dart_types from 2.12.1 to 3.0.0
+- Updated cbor from ^6.3.7 to ^6.5.0
+- Updated Flutter from 3.38.5 to 3.38.7
+- Re-generated web workers
+
 ## 3.2.1
 
 Web workers built with Flutter 3.38.5 and cardano_dart_types 2.12.1

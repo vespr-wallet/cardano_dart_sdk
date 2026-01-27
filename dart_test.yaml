@@ -1,10 +1,18 @@
-tags:
-  # blockfrost tests require authorization and access to the blockfrost service.
-  blockfrost:
-  # coingecko tests require access to the coingecko service.
-  coingecko:
-
 presets:
   # to include integration tests run: dart test -P itest
   itest:
     filename: "*test.dart"
+
+  # Run tests on JS platform: dart test -P js
+  js:
+    platforms: [chrome]
+
+  # Run tests on WASM platform: dart test -P wasm
+  wasm:
+    platforms: [chrome]
+    compilers: [dart2wasm]
+
+  # Run tests on all platforms: dart test -P all
+  all:
+    platforms: [vm, chrome]
+    compilers: [kernel, dart2js, dart2wasm]

@@ -1,6 +1,5 @@
 import "package:cardano_dart_types/cardano_dart_types.dart";
 import "package:cardano_flutter_sdk/cardano_flutter_sdk.dart";
-import "package:fast_base58/fast_base58.dart";
 import "package:pinenacl/api.dart";
 import "package:test/test.dart";
 
@@ -344,7 +343,7 @@ void main() async {
           ),
           inputs: const CardanoTransactionInputs(data: [], cborTags: []),
           outputs: [],
-          fee: BigInt.one,
+          fee: BigInt.one.toCborInt(),
         ),
         witnessSet: emptyWitnessSet,
         isValidDi: true,
@@ -473,7 +472,7 @@ void main() async {
         body: CardanoTransactionBody.create(
           inputs: const CardanoTransactionInputs(data: [], cborTags: []),
           outputs: [],
-          fee: BigInt.one,
+          fee: BigInt.one.toCborInt(),
         ),
         witnessSet: witnessSet(
           nativeScripts: [
@@ -602,7 +601,7 @@ void main() async {
         body: CardanoTransactionBody.create(
           inputs: const CardanoTransactionInputs(data: [], cborTags: []),
           outputs: [],
-          fee: BigInt.one,
+          fee: BigInt.one.toCborInt(),
         ),
         witnessSet: witnessSet(
           nativeScripts: [
@@ -849,7 +848,7 @@ void main() async {
           collateral: null,
           inputs: const CardanoTransactionInputs(data: [], cborTags: []),
           outputs: [],
-          fee: BigInt.one,
+          fee: BigInt.one.toCborInt(),
           ttl: null,
           validityStartInterval: null,
           metadataHash: null,
@@ -995,7 +994,7 @@ void main() async {
           collateral: null,
           inputs: const CardanoTransactionInputs(data: [], cborTags: []),
           outputs: [],
-          fee: BigInt.one,
+          fee: BigInt.one.toCborInt(),
           ttl: null,
           validityStartInterval: null,
           metadataHash: null,
@@ -1254,7 +1253,7 @@ void main() async {
           collateral: null,
           inputs: const CardanoTransactionInputs(data: [], cborTags: []),
           outputs: [],
-          fee: BigInt.one,
+          fee: BigInt.one.toCborInt(),
           ttl: null,
           validityStartInterval: null,
           metadataHash: null,
@@ -1513,7 +1512,7 @@ void main() async {
           collateral: null,
           inputs: const CardanoTransactionInputs(data: [], cborTags: []),
           outputs: [],
-          fee: BigInt.one,
+          fee: BigInt.one.toCborInt(),
           ttl: null,
           validityStartInterval: null,
           metadataHash: null,
@@ -1772,7 +1771,7 @@ void main() async {
           collateral: null,
           inputs: const CardanoTransactionInputs(data: [], cborTags: []),
           outputs: [],
-          fee: BigInt.one,
+          fee: BigInt.one.toCborInt(),
           ttl: null,
           validityStartInterval: null,
           metadataHash: null,
@@ -2032,7 +2031,7 @@ void main() async {
           collateral: null,
           inputs: const CardanoTransactionInputs(data: [], cborTags: []),
           outputs: [],
-          fee: BigInt.one,
+          fee: BigInt.one.toCborInt(),
           ttl: null,
           validityStartInterval: null,
           metadataHash: null,
@@ -2282,7 +2281,7 @@ void main() async {
           collateral: null,
           inputs: const CardanoTransactionInputs(data: [], cborTags: []),
           outputs: [],
-          fee: BigInt.one,
+          fee: BigInt.one.toCborInt(),
           ttl: null,
           validityStartInterval: null,
           metadataHash: null,
@@ -2658,7 +2657,7 @@ void main() async {
           collateral: null,
           inputs: const CardanoTransactionInputs(data: [], cborTags: []),
           outputs: [],
-          fee: BigInt.one,
+          fee: BigInt.one.toCborInt(),
           ttl: null,
           validityStartInterval: null,
           metadataHash: null,
@@ -2803,7 +2802,7 @@ void main() async {
           collateral: null,
           inputs: const CardanoTransactionInputs(data: [], cborTags: []),
           outputs: [],
-          fee: BigInt.one,
+          fee: BigInt.one.toCborInt(),
           ttl: null,
           validityStartInterval: null,
           metadataHash: null,
@@ -2949,7 +2948,7 @@ void main() async {
           collateral: null,
           inputs: const CardanoTransactionInputs(data: [], cborTags: []),
           outputs: [],
-          fee: BigInt.one,
+          fee: BigInt.one.toCborInt(),
           ttl: null,
           validityStartInterval: null,
           metadataHash: null,
@@ -3093,7 +3092,7 @@ void main() async {
           collateral: null,
           inputs: const CardanoTransactionInputs(data: [], cborTags: []),
           outputs: [],
-          fee: BigInt.one,
+          fee: BigInt.one.toCborInt(),
           ttl: null,
           validityStartInterval: null,
           metadataHash: null,
@@ -3337,7 +3336,7 @@ void main() async {
           collateral: null,
           inputs: const CardanoTransactionInputs(data: [], cborTags: []),
           outputs: [],
-          fee: BigInt.one,
+          fee: BigInt.one.toCborInt(),
           ttl: null,
           validityStartInterval: null,
           metadataHash: null,
@@ -3677,7 +3676,7 @@ void main() async {
         body: CardanoTransactionBody.create(
           inputs: const CardanoTransactionInputs(data: [], cborTags: []),
           outputs: [],
-          fee: BigInt.one,
+          fee: BigInt.one.toCborInt(),
         ),
         witnessSet: emptyWitnessSet,
         isValidDi: true,
@@ -3807,29 +3806,35 @@ void main() async {
         overrideBodyMetadataHash: false,
         body: CardanoTransactionBody.create(
           networkId: NetworkId.mainnet,
-          referenceInputs: const CardanoTransactionInputs(
+          referenceInputs: CardanoTransactionInputs(
             data: [
               CardanoTransactionInput(
-                transactionHash: "f6737ac511665332453e542d918ee3b9acb0b9e96738639fb15eea3939fa80c8",
+                transactionHash: TransactionHash.fromHex(
+                  "f6737ac511665332453e542d918ee3b9acb0b9e96738639fb15eea3939fa80c8",
+                ),
                 index: 1135,
               ),
             ],
             cborTags: [],
           ),
           scriptDataHash: [32, 224, 214, 232, 163, 36, 208, 19, 172, 139].toUint8List(),
-          collateral: const CardanoTransactionInputs(
+          collateral: CardanoTransactionInputs(
             data: [
               CardanoTransactionInput(
-                transactionHash: "f6737ac511665332453e542d918ee3b9acb0b9e96738639fb15eea3939fa80c8",
+                transactionHash: TransactionHash.fromHex(
+                  "f6737ac511665332453e542d918ee3b9acb0b9e96738639fb15eea3939fa80c8",
+                ),
                 index: 125,
               ),
             ],
-            cborTags: [],
+            cborTags: const [],
           ),
-          inputs: const CardanoTransactionInputs(
+          inputs: CardanoTransactionInputs(
             data: [
               CardanoTransactionInput(
-                transactionHash: "f6737ac511665332453e542d918ee3b9acb0b9e96738639fb15eea3939fa80c8",
+                transactionHash: TransactionHash.fromHex(
+                  "f6737ac511665332453e542d918ee3b9acb0b9e96738639fb15eea3939fa80c8",
+                ),
                 index: 1235,
               ),
             ],
@@ -3838,14 +3843,17 @@ void main() async {
           outputs: [
             CardanoTransactionOutput.postAlonzo(
               lengthType: CborLengthType.definite,
-              addressBytes: Base58Decode("Ae2tdPwUPEZMprtyWNF9W49RN2BkWyHMaXtrBRyiVcZHoBe3XgNdfXZBpYS").toUint8List(),
+              address: Address.fromBase58OrBech32("Ae2tdPwUPEZMprtyWNF9W49RN2BkWyHMaXtrBRyiVcZHoBe3XgNdfXZBpYS"),
               value: Value.v1(
-                lovelace: BigInt.parse("1000000000"),
+                lovelace: BigInt.parse("1000000000").toCborInt(),
                 mA: [
                   MultiAsset(
-                    policyId: "96913a1b287987a5f69ddfbd6f5483a95a93dad6d4900c4202161ce7",
+                    policyId: PolicyId.fromHex("96913a1b287987a5f69ddfbd6f5483a95a93dad6d4900c4202161ce7"),
                     assets: [
-                      Asset(hexName: "477564696d52656c6178303739", value: BigInt.from(2)),
+                      Asset(
+                        assetName: AssetName.fromHex("477564696d52656c6178303739"),
+                        value: BigInt.from(2).toCborInt(),
+                      ),
                     ],
                   ),
                 ],
@@ -3864,31 +3872,31 @@ void main() async {
             ),
             CardanoTransactionOutput.legacy(
               lengthType: CborLengthType.definite,
-              addressBytes: Base58Decode(
+              address: Address.fromBase58OrBech32(
                 "DdzFFzCqrhtD8nA6rLDxJ5D3kdFg2iWoQcK7szhC2PLb5RCzzn5mmDWnPQU8TBDL3Xy2hCbZ9WU6utrHiMuKad5kn5VdXWTTTZEpAmyz",
-              ).toUint8List(),
-              value: Value.v0(lovelace: BigInt.parse("3000000000")),
+              ),
+              value: Value.v0(lovelace: BigInt.parse("3000000000").toCborInt()),
               outDatumHash: null,
             ),
             CardanoTransactionOutput.postAlonzo(
               lengthType: CborLengthType.indefinite,
-              addressBytes: Base58Decode(
+              address: Address.fromBase58OrBech32(
                 "DdzFFzCqrhtD8nA6rLDxJ5D3kdFg2iWoQcK7szhC2PLb5RCzzn5mmDWnPQU8TBDL3Xy2hCbZ9WU6utrHiMuKad5kn5VdXWTTTZEpAmyz",
-              ).toUint8List(),
-              value: Value.v1(lovelace: BigInt.parse("3000000000"), mA: const []),
+              ),
+              value: Value.v1(lovelace: BigInt.parse("3000000000").toCborInt(), mA: const []),
               outDatum: null,
               scriptRef: null,
             ),
           ],
-          fee: BigInt.one,
-          ttl: BigInt.from(12513),
-          validityStartInterval: BigInt.from(215),
+          fee: BigInt.one.toCborInt(),
+          ttl: BigInt.from(12513).toCborInt(),
+          validityStartInterval: BigInt.from(215).toCborInt(),
           metadataHash: [5, 324, 2, 1, 432].toUint8List(),
           mint: [
             MultiAsset(
-              policyId: "96913a1b287987a5f69ddfbd6f5483a95a93dad6d4900c4202161ce7",
+              policyId: PolicyId.fromHex("96913a1b287987a5f69ddfbd6f5483a95a93dad6d4900c4202161ce7"),
               assets: [
-                Asset(hexName: "477564696d52656c6178303739", value: BigInt.one),
+                Asset(assetName: AssetName.fromHex("477564696d52656c6178303739"), value: BigInt.one.toCborInt()),
               ],
             ),
           ],
@@ -4033,10 +4041,12 @@ void main() async {
         overrideBodyMetadataHash: false,
         body: CardanoTransactionBody.create(
           networkId: NetworkId.mainnet,
-          referenceInputs: const CardanoTransactionInputs(
+          referenceInputs: CardanoTransactionInputs(
             data: [
               CardanoTransactionInput(
-                transactionHash: "f6737ac511665332453e542d918ee3b9acb0b9e96738639fb15eea3939fa80c8",
+                transactionHash: TransactionHash.fromHex(
+                  "f6737ac511665332453e542d918ee3b9acb0b9e96738639fb15eea3939fa80c8",
+                ),
                 index: 1135,
               ),
             ],
@@ -4044,16 +4054,19 @@ void main() async {
           ),
           collateralReturn: CardanoTransactionOutput.postAlonzo(
             lengthType: CborLengthType.definite,
-            addressBytes:
-                "addr_test1qq54j5r58k7z4u9hlxqv54kq675s0q98rn3439pnuv60lhf8959c07mmj4saf577u34c6s32328v24w9zn3tzhc89y6q6traa6"
-                    .bech32Decode(),
+            address: Address.fromBase58OrBech32(
+              "addr_test1qq54j5r58k7z4u9hlxqv54kq675s0q98rn3439pnuv60lhf8959c07mmj4saf577u34c6s32328v24w9zn3tzhc89y6q6traa6",
+            ),
             value: Value.v1(
-              lovelace: BigInt.parse("1200000000"),
+              lovelace: BigInt.parse("1200000000").toCborInt(),
               mA: [
                 MultiAsset(
-                  policyId: "96913a1b287987a5f69ddfbd6f5483a95a93dad6d4900c4202161ce7",
+                  policyId: PolicyId.fromHex("96913a1b287987a5f69ddfbd6f5483a95a93dad6d4900c4202161ce7"),
                   assets: [
-                    Asset(hexName: "477564610d52656c6178303739", value: BigInt.from(242)),
+                    Asset(
+                      assetName: AssetName.fromHex("477564610d52656c6178303739"),
+                      value: BigInt.from(242).toCborInt(),
+                    ),
                   ],
                 ),
               ],
@@ -4097,21 +4110,25 @@ void main() async {
             ],
             cborTags: [],
           ),
-          totalCollateral: BigInt.from(245232542),
+          totalCollateral: BigInt.from(245232542).toCborInt(),
           scriptDataHash: [32, 224, 214, 232, 163, 36, 208, 19, 172, 139].toUint8List(),
-          collateral: const CardanoTransactionInputs(
+          collateral: CardanoTransactionInputs(
             data: [
               CardanoTransactionInput(
-                transactionHash: "f6737ac511665332453e542d918ee3b9acb0b9e96738639fb15eea3939fa80c8",
+                transactionHash: TransactionHash.fromHex(
+                  "f6737ac511665332453e542d918ee3b9acb0b9e96738639fb15eea3939fa80c8",
+                ),
                 index: 125,
               ),
             ],
             cborTags: [],
           ),
-          inputs: const CardanoTransactionInputs(
+          inputs: CardanoTransactionInputs(
             data: [
               CardanoTransactionInput(
-                transactionHash: "f6737ac511665332453e542d918ee3b9acb0b9e96738639fb15eea3939fa80c8",
+                transactionHash: TransactionHash.fromHex(
+                  "f6737ac511665332453e542d918ee3b9acb0b9e96738639fb15eea3939fa80c8",
+                ),
                 index: 1235,
               ),
             ],
@@ -4120,16 +4137,19 @@ void main() async {
           outputs: [
             CardanoTransactionOutput.postAlonzo(
               lengthType: CborLengthType.auto,
-              addressBytes:
-                  "addr_test1qq54j5r58k7z4u9hlxqv54kq675s0q98rn3439pnuv60lhf8959c07mmj4saf577u34c6s32328v24w9zn3tzhc89y6q6traa6"
-                      .bech32Decode(),
+              address: Address.fromBase58OrBech32(
+                "addr_test1qq54j5r58k7z4u9hlxqv54kq675s0q98rn3439pnuv60lhf8959c07mmj4saf577u34c6s32328v24w9zn3tzhc89y6q6traa6",
+              ),
               value: Value.v1(
-                lovelace: BigInt.parse("1000000000"),
+                lovelace: BigInt.parse("1000000000").toCborInt(),
                 mA: [
                   MultiAsset(
-                    policyId: "96913a1b287987a5f69ddfbd6f5483a95a93dad6d4900c4202161ce7",
+                    policyId: PolicyId.fromHex("96913a1b287987a5f69ddfbd6f5483a95a93dad6d4900c4202161ce7"),
                     assets: [
-                      Asset(hexName: "477564696d52656c6178303739", value: BigInt.from(2)),
+                      Asset(
+                        assetName: AssetName.fromHex("477564696d52656c6178303739"),
+                        value: BigInt.from(2).toCborInt(),
+                      ),
                     ],
                   ),
                 ],
@@ -4147,15 +4167,15 @@ void main() async {
               scriptRef: null,
             ),
           ],
-          fee: BigInt.one,
-          ttl: BigInt.from(12513),
-          validityStartInterval: BigInt.from(215),
+          fee: BigInt.one.toCborInt(),
+          ttl: BigInt.from(12513).toCborInt(),
+          validityStartInterval: BigInt.from(215).toCborInt(),
           metadataHash: [5, 324, 2, 1, 432].toUint8List(),
           mint: [
             MultiAsset(
-              policyId: "96913a1b287987a5f69ddfbd6f5483a95a93dad6d4900c4202161ce7",
+              policyId: PolicyId.fromHex("96913a1b287987a5f69ddfbd6f5483a95a93dad6d4900c4202161ce7"),
               assets: [
-                Asset(hexName: "477564696d52656c6178303739", value: BigInt.one),
+                Asset(assetName: AssetName.fromHex("477564696d52656c6178303739"), value: BigInt.one.toCborInt()),
               ],
             ),
           ],
@@ -4402,10 +4422,12 @@ void main() async {
         overrideBodyMetadataHash: true,
         body: CardanoTransactionBody.create(
           networkId: NetworkId.mainnet,
-          referenceInputs: const CardanoTransactionInputs(
+          referenceInputs: CardanoTransactionInputs(
             data: [
               CardanoTransactionInput(
-                transactionHash: "f6737ac511665332453e542d918ee3b9acb0b9e96738639fb15eea3939fa80c8",
+                transactionHash: TransactionHash.fromHex(
+                  "f6737ac511665332453e542d918ee3b9acb0b9e96738639fb15eea3939fa80c8",
+                ),
                 index: 1135,
               ),
             ],
@@ -4413,16 +4435,19 @@ void main() async {
           ),
           collateralReturn: CardanoTransactionOutput.postAlonzo(
             lengthType: CborLengthType.definite,
-            addressBytes:
-                "addr_test1qq54j5r58k7z4u9hlxqv54kq675s0q98rn3439pnuv60lhf8959c07mmj4saf577u34c6s32328v24w9zn3tzhc89y6q6traa6"
-                    .bech32Decode(),
+            address: Address.fromBase58OrBech32(
+              "addr_test1qq54j5r58k7z4u9hlxqv54kq675s0q98rn3439pnuv60lhf8959c07mmj4saf577u34c6s32328v24w9zn3tzhc89y6q6traa6",
+            ),
             value: Value.v1(
-              lovelace: BigInt.parse("1200000000"),
+              lovelace: BigInt.parse("1200000000").toCborInt(),
               mA: [
                 MultiAsset(
-                  policyId: "96913a1b287987a5f69ddfbd6f5483a95a93dad6d4900c4202161ce7",
+                  policyId: PolicyId.fromHex("96913a1b287987a5f69ddfbd6f5483a95a93dad6d4900c4202161ce7"),
                   assets: [
-                    Asset(hexName: "477564610d52656c6178303739", value: BigInt.from(242)),
+                    Asset(
+                      assetName: AssetName.fromHex("477564610d52656c6178303739"),
+                      value: BigInt.from(242).toCborInt(),
+                    ),
                   ],
                 ),
               ],
@@ -4436,21 +4461,25 @@ void main() async {
             ],
             cborTags: [],
           ),
-          totalCollateral: BigInt.from(245232542),
+          totalCollateral: BigInt.from(245232542).toCborInt(),
           scriptDataHash: [32, 224, 214, 232, 163, 36, 208, 19, 172, 139].toUint8List(),
-          collateral: const CardanoTransactionInputs(
+          collateral: CardanoTransactionInputs(
             data: [
               CardanoTransactionInput(
-                transactionHash: "f6737ac511665332453e542d918ee3b9acb0b9e96738639fb15eea3939fa80c8",
+                transactionHash: TransactionHash.fromHex(
+                  "f6737ac511665332453e542d918ee3b9acb0b9e96738639fb15eea3939fa80c8",
+                ),
                 index: 125,
               ),
             ],
             cborTags: [],
           ),
-          inputs: const CardanoTransactionInputs(
+          inputs: CardanoTransactionInputs(
             data: [
               CardanoTransactionInput(
-                transactionHash: "f6737ac511665332453e542d918ee3b9acb0b9e96738639fb15eea3939fa80c8",
+                transactionHash: TransactionHash.fromHex(
+                  "f6737ac511665332453e542d918ee3b9acb0b9e96738639fb15eea3939fa80c8",
+                ),
                 index: 1235,
               ),
             ],
@@ -4459,16 +4488,19 @@ void main() async {
           outputs: [
             CardanoTransactionOutput.postAlonzo(
               lengthType: CborLengthType.definite,
-              addressBytes:
-                  "addr_test1qq54j5r58k7z4u9hlxqv54kq675s0q98rn3439pnuv60lhf8959c07mmj4saf577u34c6s32328v24w9zn3tzhc89y6q6traa6"
-                      .bech32Decode(),
+              address: Address.fromBase58OrBech32(
+                "addr_test1qq54j5r58k7z4u9hlxqv54kq675s0q98rn3439pnuv60lhf8959c07mmj4saf577u34c6s32328v24w9zn3tzhc89y6q6traa6",
+              ),
               value: Value.v1(
-                lovelace: BigInt.parse("1000000000"),
+                lovelace: BigInt.parse("1000000000").toCborInt(),
                 mA: [
                   MultiAsset(
-                    policyId: "96913a1b287987a5f69ddfbd6f5483a95a93dad6d4900c4202161ce7",
+                    policyId: PolicyId.fromHex("96913a1b287987a5f69ddfbd6f5483a95a93dad6d4900c4202161ce7"),
                     assets: [
-                      Asset(hexName: "477564696d52656c6178303739", value: BigInt.from(2)),
+                      Asset(
+                        assetName: AssetName.fromHex("477564696d52656c6178303739"),
+                        value: BigInt.from(2).toCborInt(),
+                      ),
                     ],
                   ),
                 ],
@@ -4492,15 +4524,15 @@ void main() async {
               scriptRef: null,
             ),
           ],
-          fee: BigInt.one,
-          ttl: BigInt.from(12513),
-          validityStartInterval: BigInt.from(215),
+          fee: BigInt.one.toCborInt(),
+          ttl: BigInt.from(12513).toCborInt(),
+          validityStartInterval: BigInt.from(215).toCborInt(),
           metadataHash: [5, 324, 2, 1, 432].toUint8List(),
           mint: [
             MultiAsset(
-              policyId: "96913a1b287987a5f69ddfbd6f5483a95a93dad6d4900c4202161ce7",
+              policyId: PolicyId.fromHex("96913a1b287987a5f69ddfbd6f5483a95a93dad6d4900c4202161ce7"),
               assets: [
-                Asset(hexName: "477564696d52656c6178303739", value: BigInt.one),
+                Asset(assetName: AssetName.fromHex("477564696d52656c6178303739"), value: BigInt.one.toCborInt()),
               ],
             ),
           ],

@@ -108,7 +108,7 @@ class CardanoWalletImpl extends CardanoWallet {
             TxPreparedForSigning(
               tx: tx,
               txDiff: TxDiff(
-                diff: Value.v0(lovelace: BigInt.zero),
+                diff: Value.v0(lovelace: BigInt.zero.toCborInt()),
                 usedUtxos: [],
                 dRepDeregistration: false,
                 stakeDeregistration: false,
@@ -127,7 +127,7 @@ class CardanoWalletImpl extends CardanoWallet {
           ],
           receiveAddressBech32: firstAddress.bech32Encoded,
           networkId: networkId,
-          totalDiff: Value.v0(lovelace: BigInt.zero),
+          totalDiff: Value.v0(lovelace: BigInt.zero.toCborInt()),
           dRepDeregistration: false,
           stakeDeregistration: false,
           stakeDelegationPoolId: null,
