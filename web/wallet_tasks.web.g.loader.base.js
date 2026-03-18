@@ -55,7 +55,7 @@ self.addEventListener('unhandledrejection', (event) => {
     logger.log('[WASM Loader] Resolved worker URI:', workerUri);
 
     try {
-      let moduleInstance;
+      let instantiatedApp;
       try {
         logger.log('[WASM Loader] Fetching WASM module...');
         const response = await fetch(workerUri);
@@ -65,11 +65,12 @@ self.addEventListener('unhandledrejection', (event) => {
           throw new Error(`Failed to fetch WASM: ${response.status} ${response.statusText}`);
         }
 
-        logger.log('[WASM Loader] Compiling WASM module...');
-        const dartModule = WebAssembly.compileStreaming(response);
-
-        logger.log('[WASM Loader] Instantiating WASM module...');
-        moduleInstance = await self.dart2wasm_runtime.instantiate(dartModule, {});
+        logger.log('[WASM Loader] Compiling and instantiating WASM module...');
+        // Use compileStreaming (not raw WebAssembly.compileStreaming) so the
+        // dart2wasm runtime includes the required {builtins: ['js-string']} option.
+        const compiledApp = await self.dart2wasm_runtime.compileStreaming(response);
+        // instantiate() also calls $setThisModule — required since dart2wasm 3.11.
+        instantiatedApp = await compiledApp.instantiate({});
         logger.log('[WASM Loader] WASM module instantiated successfully');
       } catch (exception) {
         logger.error(
@@ -84,7 +85,7 @@ self.addEventListener('unhandledrejection', (event) => {
       }
       try {
         logger.log('[WASM Loader] Invoking WASM module main...');
-        await self.dart2wasm_runtime.invoke(moduleInstance);
+        instantiatedApp.invokeMain();
         logger.log('[WASM Loader] Successfully loaded and invoked', workerUri);
       } catch (exception) {
         logger.error(
