@@ -16,6 +16,8 @@ analyzer:
     - lib/src/cose/*.g.dart
     - lib/**.g.dart
     - lib/**/*.freezed.dart
+  errors:
+    deprecated_lint: ignore
 
 formatter:
   page_width: 120
