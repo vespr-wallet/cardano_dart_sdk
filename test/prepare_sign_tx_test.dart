@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use_from_same_package
+
 import "dart:typed_data";
 
 import "package:cardano_dart_types/cardano_dart_types.dart";
@@ -1144,10 +1146,7 @@ void main() async {
             thisWalletRewards: BigInt.zero,
             otherWalletRewards: BigInt.zero,
             thisWalletUtxoInputs: [],
-            otherWalletUtxoInputs: [
-              otherWalletsUtxos[0],
-              otherWalletsUtxos[1],
-            ],
+            otherWalletUtxoInputs: [otherWalletsUtxos[1]],
             thisWalletOutputs: genThisWalletOutputs([
               Value.v0(lovelace: BigInt.from(112).toCborInt()),
               Value.v1(
@@ -1283,10 +1282,7 @@ void main() async {
               walletUtxos[33],
               walletUtxos[34],
             ],
-            otherWalletUtxoInputs: [
-              otherWalletsUtxos[0],
-              otherWalletsUtxos[1],
-            ],
+            otherWalletUtxoInputs: [otherWalletsUtxos[1]],
             thisWalletOutputs: genThisWalletOutputs([
               Value.v0(lovelace: BigInt.from(112).toCborInt()),
               Value.v1(

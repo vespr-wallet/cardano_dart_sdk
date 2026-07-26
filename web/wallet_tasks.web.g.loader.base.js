@@ -115,4 +115,3 @@ self.addEventListener('unhandledrejection', (event) => {
       ]);
     }
   })();
-  

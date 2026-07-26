@@ -4,7 +4,7 @@
 part of 'wallet_tasks.dart';
 
 // **************************************************************************
-// Generator: WorkerGenerator 9.0.0+2 (Squadron 7.4.0)
+// Generator: WorkerGenerator 9.3.0 (Squadron 7.4.3)
 // **************************************************************************
 
 // dart format width=80
@@ -156,6 +156,7 @@ extension on WalletTasks {
           $dsr.$4($req.args[4]),
           $dsr.$8($req.args[5]),
           $dsr.$9($req.args[6]),
+          $dsr.$0($req.args[7]),
         );
       } finally {}
       try {
@@ -406,6 +407,7 @@ mixin _$WalletTasks$Invoker on Invoker implements WalletTasks {
     NetworkId networkId,
     List<CardanoTransaction> txs,
     List<Utxo> utxos,
+    List<String> userOwnedAddresses,
   ) async {
     final dynamic $res;
     try {
@@ -420,6 +422,7 @@ mixin _$WalletTasks$Invoker on Invoker implements WalletTasks {
           $sr.$11(networkId),
           $sr.$13(txs),
           $sr.$14(utxos),
+          $sr.$6(userOwnedAddresses),
         ],
       );
     } finally {}
@@ -757,6 +760,7 @@ base class WalletTasksWorkerPool extends WorkerPool<WalletTasksWorker>
     NetworkId networkId,
     List<CardanoTransaction> txs,
     List<Utxo> utxos,
+    List<String> userOwnedAddresses,
   ) => execute(
     (w) => w.prepareTxsForSigningImpl(
       walletBech32Address,
@@ -766,6 +770,7 @@ base class WalletTasksWorkerPool extends WorkerPool<WalletTasksWorker>
       networkId,
       txs,
       utxos,
+      userOwnedAddresses,
     ),
   );
 
