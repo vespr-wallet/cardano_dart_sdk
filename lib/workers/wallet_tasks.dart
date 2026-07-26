@@ -145,62 +145,156 @@ class WalletTasks {
     @networkIdMarshaler NetworkId networkId,
     @cardanoTransactionListMarshaler List<CardanoTransaction> txs,
     @utxoListMarshaler List<Utxo> utxos,
+    @stringListMarshaler List<String> userOwnedAddresses,
   ) async {
     final bech32Address = walletBech32Address;
-
     final txsPreparedForSigning = List<TxPreparedForSigning>.empty(growable: true);
-
-    var walletUtxosBeforeTx = utxos;
+    final receiveAddressHex = Address.fromBase58OrBech32(bech32Address).hexValue;
+    final walletStakeCredential = CardanoAddress.fromBech32OrBase58(bech32Address).stakeCredentialsBytes;
+    final walletDrepCredential = drepCredential.hexDecode();
+    final userOwnedAddressHexes = {
+      receiveAddressHex,
+      ...userOwnedAddresses.map((address) => Address.fromBase58OrBech32(address).hexValue),
+      ...utxos.map((utxo) => utxo.content.address.hexValue),
+    };
+    final walletUtxosById = <UtxoId, Utxo>{
+      for (final utxo in utxos) UtxoId.fromInput(utxo.identifier): utxo,
+    };
 
     for (final CardanoTransaction tx in txs) {
       final txHash = tx.body.blake2bHash256Hex();
-
-      final usedUtxosTxAndId = tx.body.inputs.data.map((e) => "${e.transactionHash}#${e.index}").toSet();
-      final collateralUtxosTxAndId = tx.body.collateral?.data.map((e) => "${e.transactionHash}#${e.index}").toSet();
-
-      final txUtxos = {...usedUtxosTxAndId, ...?collateralUtxosTxAndId};
-      final Set<String> signatureAddresses = walletUtxosBeforeTx
-          // find all wallet utxos used in this tx
-          .where((e) => txUtxos.contains("${e.identifier.transactionHash}#${e.identifier.index}"))
-          // get the wallet addresses needed to sign the used wallet utxos
-          .map((e) => e.content.address.base58OrBech32Value)
+      final walletUtxosBeforeTx = walletUtxosById.values.toList(growable: false);
+      final spendingInputIds = tx.body.inputs.data.map(UtxoId.fromInput).toSet();
+      final collateralInputIds = tx.body.collateral?.data.map(UtxoId.fromInput).toSet() ?? const <UtxoId>{};
+      final signatureInputIds = {...spendingInputIds, ...collateralInputIds};
+      final signatureAddresses = signatureInputIds
+          .map((id) => walletUtxosById[id])
+          .nonNulls
+          .map((utxo) => utxo.content.address.base58OrBech32Value)
           .toSet();
 
-      final List<Utxo> notUsedUserUtxos = walletUtxosBeforeTx
-          .where((e) => !usedUtxosTxAndId.contains("${e.identifier.transactionHash}#${e.identifier.index}"))
-          .toList();
-      final List<Utxo> generatedUserUtxos = tx.body.outputs
-          .mapIndexed<Utxo?>(
-            (utxoIndex, e) => e.address.base58OrBech32Value != bech32Address
-                ? null
-                : Utxo(
-                    identifier: CardanoTransactionInput(
-                      transactionHash: TransactionHash.fromHex(txHash),
-                      index: utxoIndex,
-                    ),
-                    content: e,
-                  ),
-          )
-          .nonNulls
-          .toList();
+      final TxDiff txDiff;
+      final Set<UtxoId> consumedInputIds;
+      final List<Utxo> generatedUserUtxos;
+      if (tx.isValidDi) {
+        final baseTxDiff = tx.diff(
+          receiveAddressBech32: bech32Address,
+          walletUtxos: walletUtxosBeforeTx,
+          drepCredential: drepCredential,
+          constitutionalCommitteeColdCredential: constitutionalCommitteeColdCredential,
+          constitutionalCommitteeHotCredential: constitutionalCommitteeHotCredential,
+        );
+        final certificates = tx.body.certs?.certificates ?? const <Certificate>[];
+        final stakeDeregistration =
+            walletStakeCredential != null &&
+            (certificates.whereType<Certificate_StakeDeRegistrationLegacy>().any(
+                  (certificate) =>
+                      const ListEquality<int>().equals(certificate.stakeCredential.vKeyHash, walletStakeCredential),
+                ) ||
+                certificates.whereType<Certificate_StakeDeRegistration>().any(
+                  (certificate) =>
+                      const ListEquality<int>().equals(certificate.stakeCredential.vKeyHash, walletStakeCredential),
+                ));
+        final dRepDeregistration = certificates.whereType<Certificate_UnregisterDRep>().any(
+          (certificate) => const ListEquality<int>().equals(certificate.dRepCredential.vKeyHash, walletDrepCredential),
+        );
+        final additionalIncoming = tx.body.outputs
+            .where(
+              (output) =>
+                  output.address.hexValue != receiveAddressHex &&
+                  userOwnedAddressHexes.contains(output.address.hexValue),
+            )
+            .fold(
+              Value.v0(lovelace: BigInt.zero.toCborInt()),
+              (value, output) => value + output.value,
+            );
+        txDiff = TxDiff(
+          diff: baseTxDiff.diff + additionalIncoming,
+          usedUtxos: baseTxDiff.usedUtxos,
+          stakeDelegationPoolId: baseTxDiff.stakeDelegationPoolId,
+          dRepDelegation: baseTxDiff.dRepDelegation,
+          dRepRegistration: baseTxDiff.dRepRegistration,
+          dRepUpdate: baseTxDiff.dRepUpdate,
+          authorizeConstitutionalCommitteeHot: baseTxDiff.authorizeConstitutionalCommitteeHot,
+          resignConstitutionalCommitteeCold: baseTxDiff.resignConstitutionalCommitteeCold,
+          votes: baseTxDiff.votes,
+          proposals: baseTxDiff.proposals,
+          dRepDeregistration: dRepDeregistration,
+          stakeDeregistration: stakeDeregistration,
+        );
+        consumedInputIds = spendingInputIds;
+        generatedUserUtxos = tx.body.outputs
+            .mapIndexed<Utxo?>(
+              (utxoIndex, output) => userOwnedAddressHexes.contains(output.address.hexValue)
+                  ? Utxo(
+                      identifier: CardanoTransactionInput(
+                        transactionHash: TransactionHash.fromHex(txHash),
+                        index: utxoIndex,
+                      ),
+                      content: output,
+                    )
+                  : null,
+            )
+            .nonNulls
+            .toList(growable: false);
+      } else {
+        final usedCollateralUtxos =
+            tx.body.collateral?.data
+                .map((input) => walletUtxosById[UtxoId.fromInput(input)])
+                .nonNulls
+                .toList(growable: false) ??
+            const <Utxo>[];
+        final outgoingCollateral = usedCollateralUtxos.fold(
+          Value.v0(lovelace: BigInt.zero.toCborInt()),
+          (value, utxo) => value + utxo.content.value,
+        );
+        final collateralReturn = tx.body.collateralReturn;
+        final incomingCollateral = switch (collateralReturn) {
+          final output? when userOwnedAddressHexes.contains(output.address.hexValue) => output.value,
+          _ => Value.v0(lovelace: BigInt.zero.toCborInt()),
+        };
+        txDiff = TxDiff(
+          diff: incomingCollateral - outgoingCollateral,
+          usedUtxos: usedCollateralUtxos,
+          stakeDelegationPoolId: null,
+          dRepDelegation: null,
+          dRepRegistration: null,
+          dRepUpdate: null,
+          authorizeConstitutionalCommitteeHot: null,
+          resignConstitutionalCommitteeCold: null,
+          votes: const [],
+          proposals: const [],
+          dRepDeregistration: false,
+          stakeDeregistration: false,
+        );
+        consumedInputIds = collateralInputIds;
+        generatedUserUtxos = switch (collateralReturn) {
+          final output? when userOwnedAddressHexes.contains(output.address.hexValue) => [
+            Utxo(
+              identifier: CardanoTransactionInput(
+                transactionHash: TransactionHash.fromHex(txHash),
+                index: tx.body.outputs.length,
+              ),
+              content: output,
+            ),
+          ],
+          _ => const [],
+        };
+      }
 
       txsPreparedForSigning.add(
         TxPreparedForSigning(
           tx: tx,
-          txDiff: tx.diff(
-            receiveAddressBech32: bech32Address,
-            walletUtxos: walletUtxosBeforeTx,
-            drepCredential: drepCredential,
-            constitutionalCommitteeColdCredential: constitutionalCommitteeColdCredential,
-            constitutionalCommitteeHotCredential: constitutionalCommitteeHotCredential,
-          ),
+          txDiff: txDiff,
           utxosBeforeTx: walletUtxosBeforeTx,
           signingAddressesRequired: signatureAddresses,
         ),
       );
 
-      // for next iteration, update the utxos
-      walletUtxosBeforeTx = [...notUsedUserUtxos, ...generatedUserUtxos];
+      consumedInputIds.forEach(walletUtxosById.remove);
+      for (final utxo in generatedUserUtxos) {
+        walletUtxosById[UtxoId.fromInput(utxo.identifier)] = utxo;
+      }
     }
 
     final txsTotalDiff = txsPreparedForSigning.reduceSafe(

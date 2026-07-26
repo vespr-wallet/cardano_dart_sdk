@@ -7,6 +7,7 @@ export "src/hd/wallet_factory.dart";
 
 // PUBLIC API MODELS
 export "src/models/cardano_signer.dart";
+export "src/models/tx_signing_preparation.dart";
 
 // PUBLIC API UTILS
 export "src/utils/blake2b.dart";
