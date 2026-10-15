@@ -4,7 +4,7 @@
 part of 'wallet_tasks.dart';
 
 // **************************************************************************
-// Generator: WorkerGenerator 9.0.0+2 (Squadron 7.4.0)
+// Generator: WorkerGenerator 9.3.2 (Squadron 7.4.4)
 // **************************************************************************
 
 // dart format width=80
@@ -586,6 +586,7 @@ WorkerService $WalletTasksInitializer(WorkerRequest $req) =>
 base class WalletTasksWorker extends Worker
     with _$WalletTasks$Invoker, _$WalletTasks$Facade
     implements WalletTasks {
+  // ignore: use_super_parameters
   WalletTasksWorker({
     PlatformThreadHook? threadHook,
     ExceptionManager? exceptionManager,
@@ -595,6 +596,7 @@ base class WalletTasksWorker extends Worker
          exceptionManager: exceptionManager,
        );
 
+  // ignore: use_super_parameters
   WalletTasksWorker.vm({
     PlatformThreadHook? threadHook,
     ExceptionManager? exceptionManager,
@@ -604,6 +606,7 @@ base class WalletTasksWorker extends Worker
          exceptionManager: exceptionManager,
        );
 
+  // ignore: use_super_parameters
   WalletTasksWorker.js({
     PlatformThreadHook? threadHook,
     ExceptionManager? exceptionManager,
@@ -613,6 +616,7 @@ base class WalletTasksWorker extends Worker
          exceptionManager: exceptionManager,
        );
 
+  // ignore: use_super_parameters
   WalletTasksWorker.wasm({
     PlatformThreadHook? threadHook,
     ExceptionManager? exceptionManager,
@@ -630,6 +634,7 @@ base class WalletTasksWorker extends Worker
 base class WalletTasksWorkerPool extends WorkerPool<WalletTasksWorker>
     with _$WalletTasks$Facade
     implements WalletTasks {
+  // ignore: use_super_parameters
   WalletTasksWorkerPool({
     PlatformThreadHook? threadHook,
     ExceptionManager? exceptionManager,
@@ -643,6 +648,7 @@ base class WalletTasksWorkerPool extends WorkerPool<WalletTasksWorker>
          exceptionManager: exceptionManager,
        );
 
+  // ignore: use_super_parameters
   WalletTasksWorkerPool.vm({
     PlatformThreadHook? threadHook,
     ExceptionManager? exceptionManager,
@@ -656,6 +662,7 @@ base class WalletTasksWorkerPool extends WorkerPool<WalletTasksWorker>
          exceptionManager: exceptionManager,
        );
 
+  // ignore: use_super_parameters
   WalletTasksWorkerPool.js({
     PlatformThreadHook? threadHook,
     ExceptionManager? exceptionManager,
@@ -669,6 +676,7 @@ base class WalletTasksWorkerPool extends WorkerPool<WalletTasksWorker>
          exceptionManager: exceptionManager,
        );
 
+  // ignore: use_super_parameters
   WalletTasksWorkerPool.wasm({
     PlatformThreadHook? threadHook,
     ExceptionManager? exceptionManager,

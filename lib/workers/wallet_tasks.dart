@@ -25,7 +25,6 @@ final WalletTasks cardanoWorker = WalletTasksWorkerPool(
     // --- [in squadrion 6.0.3]
     maxParallel: 4,
   ),
-  // ignore: discarded_futures
 )..start();
 
 // @UseLogger(ConsoleSquadronLogger)
@@ -485,6 +484,7 @@ class WalletTasks {
     );
   }
 
+  // ignore: remove_deprecations_in_breaking_versions
   @Deprecated("Use signDataV2 instead")
   @SquadronMethod()
   @dataSignatureMarshaler
