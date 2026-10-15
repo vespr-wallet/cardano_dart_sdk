@@ -154,19 +154,23 @@ class WalletTasks {
     for (final CardanoTransaction tx in txs) {
       final txHash = tx.body.blake2bHash256Hex();
 
-      final usedUtxosTxAndId = tx.body.inputs.data.map((e) => "${e.transactionHash}#${e.index}").toSet();
-      final collateralUtxosTxAndId = tx.body.collateral?.data.map((e) => "${e.transactionHash}#${e.index}").toSet();
+      // Key on the hash hex, not on TransactionHash.toString(): that would include CBOR metadata (tags, length type)
+      // and a parsed input would not match the same UTxO as held by the wallet.
+      final usedUtxosTxAndId = tx.body.inputs.data.map((e) => "${e.transactionHash.hexValue}#${e.index}").toSet();
+      final collateralUtxosTxAndId = tx.body.collateral?.data
+          .map((e) => "${e.transactionHash.hexValue}#${e.index}")
+          .toSet();
 
       final txUtxos = {...usedUtxosTxAndId, ...?collateralUtxosTxAndId};
       final Set<String> signatureAddresses = walletUtxosBeforeTx
           // find all wallet utxos used in this tx
-          .where((e) => txUtxos.contains("${e.identifier.transactionHash}#${e.identifier.index}"))
+          .where((e) => txUtxos.contains("${e.identifier.transactionHash.hexValue}#${e.identifier.index}"))
           // get the wallet addresses needed to sign the used wallet utxos
           .map((e) => e.content.address.base58OrBech32Value)
           .toSet();
 
       final List<Utxo> notUsedUserUtxos = walletUtxosBeforeTx
-          .where((e) => !usedUtxosTxAndId.contains("${e.identifier.transactionHash}#${e.identifier.index}"))
+          .where((e) => !usedUtxosTxAndId.contains("${e.identifier.transactionHash.hexValue}#${e.identifier.index}"))
           .toList();
       final List<Utxo> generatedUserUtxos = tx.body.outputs
           .mapIndexed<Utxo?>(

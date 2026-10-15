@@ -2,6 +2,10 @@
 
 Web workers built with Flutter 3.47.7 | Dart 3.13.5, Squadron 7.4.4 and cardano_dart_types 3.1.0
 
+### Fix
+
+- `prepareTxsForSigning` matches transaction inputs to wallet UTxOs by transaction hash hex and index. Inputs whose hash carries CBOR tags or a different length type than the wallet's copy were not recognised, so their signing address was not required and the UTxO stayed available to the next transaction in the batch
+
 ## 5.0.0
 
 Web workers built with Flutter 3.47.7 | Dart 3.13.5, Squadron 7.4.4 and cardano_dart_types 3.1.0
