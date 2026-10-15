@@ -1,6 +1,6 @@
 ## 5.0.0
 
-Web workers built with Flutter 3.47.6 | Dart 3.13.5 and cardano_dart_types 3.1.0
+Web workers built with Flutter 3.47.7 | Dart 3.13.5, Squadron 7.4.4 and cardano_dart_types 3.1.0
 
 ### ⚠️ BREAKING CHANGES
 
@@ -10,6 +10,11 @@ Web workers built with Flutter 3.47.6 | Dart 3.13.5 and cardano_dart_types 3.1.0
 ### Fix
 
 - Parsed transactions now re-serialize byte-exact (length types, set tags and key order are preserved), so signatures match the submitted body
+
+### Change
+
+- Bumped squadron to ^7.4.4 (workers regenerated with squadron_builder 9.3.2) and cbor to ^6.5.1
+- Refreshed lint rules for Dart 3.13 (dropped deprecated/removed rules, added new stable ones)
 
 ## 4.0.1+1
 

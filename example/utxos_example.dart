@@ -1,4 +1,3 @@
-// ignore: document_ignores sda
 // ignore_for_file: unused_element, avoid_print
 
 import "package:cardano_dart_types/cardano_dart_types.dart";

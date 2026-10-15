@@ -1,5 +1,3 @@
-// ignore_for_file: omit_local_variable_types
-
 import "package:bip32_ed25519/bip32_ed25519.dart";
 import "package:bip39_plus/bip39_plus.dart" as bip39;
 import "package:cardano_dart_types/cardano_dart_types.dart";

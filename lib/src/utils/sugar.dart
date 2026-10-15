@@ -1,5 +1,5 @@
 extension Sugar<T> on T {
-  void also(Function(T) invoker) => invoker(this);
+  void also(void Function(T) invoker) => invoker(this);
 
   Y let<Y>(Y Function(T) invoker) => invoker(this);
 
