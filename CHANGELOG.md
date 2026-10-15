@@ -6,6 +6,7 @@ Web workers built with Flutter 3.47.7 | Dart 3.13.5, Squadron 7.4.4 and cardano_
 
 - **Updated cardano_dart_types to 3.1.0**:
   - `VotingProcedures.voting` is now `Map<Voter, (Map<GovActionId, VotingProcedure>, CborLengthType)>`
+- Removed deprecated `signDataLegacy` worker method and the `useLegacy` flag of `CardanoWallet.signData` (v2 is always used)
 
 ### Fix
 

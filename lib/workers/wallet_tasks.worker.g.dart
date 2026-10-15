@@ -18,11 +18,10 @@ const int _$deriveAddressKitId = 6;
 const int _$findCardanoSignerId = 7;
 const int _$hexCredentialsDerivationId = 8;
 const int _$prepareTxsForSigningImplId = 9;
-const int _$signDataLegacyId = 10;
-const int _$signDataV2Id = 11;
-const int _$signTransactionsBundleId = 12;
-const int _$toCardanoBaseAddressId = 13;
-const int _$toCardanoRewardAddressId = 14;
+const int _$signDataV2Id = 10;
+const int _$signTransactionsBundleId = 11;
+const int _$toCardanoBaseAddressId = 12;
+const int _$toCardanoRewardAddressId = 13;
 
 /// WorkerService operations for WalletTasks
 extension on WalletTasks {
@@ -161,22 +160,6 @@ extension on WalletTasks {
       try {
         final $sr = _$Ser(contextAware: true);
         return $sr.$7($res);
-      } finally {}
-    },
-    _$signDataLegacyId: ($req) async {
-      final DataSignature $res;
-      try {
-        final $dsr = _$Deser(contextAware: true);
-        $res = await signDataLegacy(
-          $dsr.$10($req.args[0]),
-          $dsr.$7($req.args[1]),
-          $dsr.$7($req.args[2]),
-          $dsr.$1($req.args[3]),
-        );
-      } finally {}
-      try {
-        final $sr = _$Ser(contextAware: true);
-        return $sr.$8($res);
       } finally {}
     },
     _$signDataV2Id: ($req) async {
@@ -426,32 +409,6 @@ mixin _$WalletTasks$Invoker on Invoker implements WalletTasks {
     try {
       final $dsr = _$Deser(contextAware: true);
       return $dsr.$11($res);
-    } finally {}
-  }
-
-  @override
-  Future<DataSignature> signDataLegacy(
-    CardanoWallet wallet,
-    String payloadHex,
-    String requestedSignerRaw,
-    int deriveMaxAddressCount,
-  ) async {
-    final dynamic $res;
-    try {
-      final $sr = _$Ser(contextAware: true);
-      $res = await send(
-        _$signDataLegacyId,
-        args: [
-          $sr.$1(wallet),
-          payloadHex,
-          requestedSignerRaw,
-          deriveMaxAddressCount,
-        ],
-      );
-    } finally {}
-    try {
-      final $dsr = _$Deser(contextAware: true);
-      return $dsr.$16($res);
     } finally {}
   }
 
@@ -774,21 +731,6 @@ base class WalletTasksWorkerPool extends WorkerPool<WalletTasksWorker>
       networkId,
       txs,
       utxos,
-    ),
-  );
-
-  @override
-  Future<DataSignature> signDataLegacy(
-    CardanoWallet wallet,
-    String payloadHex,
-    String requestedSignerRaw,
-    int deriveMaxAddressCount,
-  ) => execute(
-    (w) => w.signDataLegacy(
-      wallet,
-      payloadHex,
-      requestedSignerRaw,
-      deriveMaxAddressCount,
     ),
   );
 
