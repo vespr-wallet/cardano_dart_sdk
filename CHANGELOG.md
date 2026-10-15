@@ -1,3 +1,7 @@
+## 5.1.0
+
+Web workers built with Flutter 3.47.7 | Dart 3.13.5, Squadron 7.4.4 and cardano_dart_types 3.1.0
+
 ## 5.0.0
 
 Web workers built with Flutter 3.47.7 | Dart 3.13.5, Squadron 7.4.4 and cardano_dart_types 3.1.0
