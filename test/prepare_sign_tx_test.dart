@@ -524,34 +524,40 @@ void main() async {
                   Voter(
                     vKeyHash: walletConstitutionalCommitteeHotCredential.vKeyHash,
                     voterType: VoterType.CONSTITUTIONAL_COMMITTEE_HOT_KEY_HASH,
-                  ): {
-                    GovActionId(
-                      transactionId: "940293a1a623a4e70f52575b9a7826faf90e12692eb5432cc859f0de632d4f4a",
-                      govActionIndex: 0,
-                    ): const VotingProcedure(
-                      anchor: null,
-                      vote: Vote.yes,
-                    ),
-                    GovActionId(
-                      transactionId: "940293a1a623a4e70f52575b9a7826faf90e12692eb5432cc859f0de632d4f4b",
-                      govActionIndex: 1,
-                    ): const VotingProcedure(
-                      anchor: null,
-                      vote: Vote.abstain,
-                    ),
-                  },
+                  ): (
+                    {
+                      GovActionId(
+                        transactionId: "940293a1a623a4e70f52575b9a7826faf90e12692eb5432cc859f0de632d4f4a",
+                        govActionIndex: 0,
+                      ): const VotingProcedure(
+                        anchor: null,
+                        vote: Vote.yes,
+                      ),
+                      GovActionId(
+                        transactionId: "940293a1a623a4e70f52575b9a7826faf90e12692eb5432cc859f0de632d4f4b",
+                        govActionIndex: 1,
+                      ): const VotingProcedure(
+                        anchor: null,
+                        vote: Vote.abstain,
+                      ),
+                    },
+                    CborLengthType.definite,
+                  ),
                   Voter(
                     vKeyHash: walletDRepCredential.vKeyHash,
                     voterType: VoterType.DREP_KEY_HASH,
-                  ): {
-                    GovActionId(
-                      transactionId: "940293a1a623a4e70f52575b9a7826faf90e12692eb5432cc859f0de632d4f4c",
-                      govActionIndex: 0,
-                    ): const VotingProcedure(
-                      anchor: null,
-                      vote: Vote.no,
-                    ),
-                  },
+                  ): (
+                    {
+                      GovActionId(
+                        transactionId: "940293a1a623a4e70f52575b9a7826faf90e12692eb5432cc859f0de632d4f4c",
+                        govActionIndex: 0,
+                      ): const VotingProcedure(
+                        anchor: null,
+                        vote: Vote.no,
+                      ),
+                    },
+                    CborLengthType.definite,
+                  ),
                 },
               ),
             );

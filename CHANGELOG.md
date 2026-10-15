@@ -1,3 +1,16 @@
+## 5.0.0
+
+Web workers built with Flutter 3.47.6 | Dart 3.13.5 and cardano_dart_types 3.1.0
+
+### ⚠️ BREAKING CHANGES
+
+- **Updated cardano_dart_types to 3.1.0**:
+  - `VotingProcedures.voting` is now `Map<Voter, (Map<GovActionId, VotingProcedure>, CborLengthType)>`
+
+### Fix
+
+- Parsed transactions now re-serialize byte-exact (length types, set tags and key order are preserved), so signatures match the submitted body
+
 ## 4.0.1+1
 
 Web workers built with Flutter 3.41.4 | Dart 3.11.1 and cardano_dart_types 3.0.0
