@@ -62,8 +62,13 @@ addresses, so the key fix and the collateral transition go there.
 
 ### `diff()` deregistration flags (step 3)
 
-Replace both `.map(...).nonNulls.lastOrNull ?? false` expressions with `.any(...)` over the same
-`switch`. Nothing else changes. The SDK already aggregates per-transaction flags with `.any`.
+Keep the last-certificate idea but make it apply only to certificates that change the wallet
+credential's registration: registrations of the wallet credential map to `false`, deregistrations to
+`true`, everything else to `null` (skipped by `nonNulls`). The last non-null value is the flag, so
+order follows the ledger: deregistration then re-registration in one transaction reads `false`,
+registration then deregistration reads `true`, and a trailing certificate of another credential no
+longer resets the flag. A plain `.any(...)` was considered and rejected because it over-reports the
+re-registration case (user feedback on the step 3 PR).
 
 ### `diff()` for `isValidDi == false` (step 4)
 
@@ -119,11 +124,11 @@ PR titles use `<emoji> [signing-prep-fixes] <description> [step x/8]`. Steps 3 a
 | Step | Repo | Title | Depends on | Status |
 | --- | --- | --- | --- | --- |
 | 1 | sdk | 🌱 [signing-prep-fixes] Add plan for prepareTxsForSigning fixes [step 1/8] | - | merged (#7, titled `[step 1/7]` before the series grew) |
-| 2 | sdk | 🌱 [signing-prep-fixes] Bump to 5.1.0 and open the changelog [step 2/8] | 1 | open |
-| 3 | types | 🌿 [signing-prep-fixes] diff(): deregistration flags survive later certificates [step 3/8] | - | todo |
-| 4 | types | ⚙️ [signing-prep-fixes] diff(): honor isValidDi == false, release 3.1.1 [step 4/8] | 3 | todo |
-| 5 | sdk | 🌿 [signing-prep-fixes] Worker: match UTxOs by hash hex and index [step 5/8] | 2 | todo |
-| 6 | sdk | 🌿 [signing-prep-fixes] Bump cardano_dart_types to 3.1.1 [step 6/8] | 2, 4 published | todo |
+| 2 | sdk | 🌱 [signing-prep-fixes] Bump to 5.1.0 and open the changelog [step 2/8] | 1 | merged (#8) |
+| 3 | types | 🌿 [signing-prep-fixes] diff(): deregistration flags survive later certificates [step 3/8] | - | merged (cardano_dart_types #4) |
+| 4 | types | ⚙️ [signing-prep-fixes] diff(): honor isValidDi == false, release 3.1.1 [step 4/8] | 3 | open (cardano_dart_types #5) |
+| 5 | sdk | 🌿 [signing-prep-fixes] Worker: match UTxOs by hash hex and index [step 5/8] | 2 | open (#9) |
+| 6 | sdk | 🌿 [signing-prep-fixes] Bump cardano_dart_types to 3.1.1 [step 6/8] | 2, 4 published | open |
 | 7 | sdk | ⚙️ [signing-prep-fixes] Worker: invalid transactions consume collateral when chaining [step 7/8] | 5, 6 | todo |
 | 8 | sdk | 🌱 [signing-prep-fixes] Regenerate web workers and finish 5.1.0 [step 8/8] | 7 | todo |
 
@@ -149,12 +154,15 @@ Publishing to pub.dev (after step 4 and after step 8) is done by a human, not by
 
 - **Files:** `lib/src/cardano/transaction.dart` (two expressions), `test/transaction_test.dart`
   (`diff` group), `CHANGELOG.md` with a new `## 3.1.1` heading and this fix under `Bug Fix`.
-- **Tests:** wallet stake deregistration followed by an unrelated certificate reads `true`; DRep
-  unregister followed by an unrelated certificate reads `true`; only unrelated certificates reads
-  `false`; another credential's deregistration reads `false`. Use `txBody(certs: ...)` from
-  `test/test_utils/fixtures.dart` with the existing wallet address constants in the `diff` group.
+- **Tests:** wallet stake deregistration (Conway and legacy) followed by an unrelated certificate
+  reads `true`; DRep unregister followed by an unrelated certificate reads `true`; only unrelated
+  certificates reads `false`; another credential's deregistration reads `false`; deregistration then
+  re-registration reads `false` and registration then deregistration reads `true` (stake and DRep).
+  Use `txBody(certs: ...)` from `test/test_utils/fixtures.dart` with the existing wallet address
+  constants in the `diff` group.
 - **Why:** the flags drive the wallet's deregistration warning.
-- **Risk and test focus:** low; only the two boolean fields change, from last-wins to any-match.
+- **Risk and test focus:** low; only the two boolean fields change, from last-certificate-wins to
+  last-registration-change-wins.
 - **Expected result:** no user-visible change for single-certificate transactions; multi-certificate
   transactions with a wallet deregistration now flag it. No database change.
 

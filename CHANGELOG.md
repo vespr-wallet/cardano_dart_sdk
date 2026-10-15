@@ -2,6 +2,10 @@
 
 Web workers built with Flutter 3.47.7 | Dart 3.13.5, Squadron 7.4.4 and cardano_dart_types 3.1.0
 
+### Change
+
+- Updated cardano_dart_types to 3.1.1: `diff()` deregistration flags follow the last certificate that registers or deregisters the wallet's credential, and a transaction with `isValidDi == false` is summarised as consuming only its collateral
+
 ## 5.0.0
 
 Web workers built with Flutter 3.47.7 | Dart 3.13.5, Squadron 7.4.4 and cardano_dart_types 3.1.0
