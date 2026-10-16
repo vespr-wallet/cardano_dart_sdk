@@ -5,6 +5,8 @@ Replaces [cardano_dart_sdk PR #3](https://github.com/vespr-wallet/cardano_dart_s
 new ownership API, a batch validator, CBOR snapshotting and a deprecation. This plan keeps the bug
 fixes, lands two of them at their source in `cardano_dart_types`, and drops the rest.
 
+Status: completed with step 8 on 2026-10-16; the step table records every PR and publication.
+
 Both repositories are owned by the same team, so steps span both:
 
 - `cardano_dart_types` at `~/FlutterProjects/cardano_dart_types` (published 3.1.0)
@@ -127,15 +129,18 @@ loop.
 
 ### Versions and changelog
 
-- `cardano_dart_types` ships as 3.1.2, `cardano_flutter_sdk` as 5.1.0. 5.0.0 is already published
+- `cardano_dart_types` ships as 3.1.2, `cardano_flutter_sdk` as 5.2.0. 5.0.0 is already published
   and nothing here breaks an API, so it stays published. 3.1.1 was published and then retracted (its
   collateral-only summary is unsafe before signing); its changelog heading is marked `(retracted)`.
+  5.1.0 was published after step 7 and before step 8, with web workers still built from
+  cardano_dart_types 3.1.0 and without step 5, and was retracted; step 8 bumps to 5.2.0 and marks the
+  5.1.0 heading `(retracted)`.
 - Version bumps land first, not in a release PR at the end: step 2 bumps the SDK to 5.1.0 and opens
   the `## 5.1.0` changelog heading; step 3 opens the `## 3.1.1` heading in `cardano_dart_types`, step 4
   bumps its version and step 6 opens `## 3.1.2` and bumps again.
 - Every later PR adds its own line to the open heading (`### Fix` or `### Change`, created on first
-  use). The final step only refreshes the "Web workers built with" line. No PR writes someone else's
-  changelog entry.
+  use). The final step refreshes the "Web workers built with" line and, because of the retraction,
+  renames the heading to `## 5.2.0`. No PR writes someone else's changelog entry.
 
 ## Steps (fixed order and total: 8)
 
@@ -149,10 +154,10 @@ PR titles use `<emoji> [signing-prep-fixes] <description> [step x/8]`. Steps 3, 
 | 2 | sdk | 🌱 [signing-prep-fixes] Bump to 5.1.0 and open the changelog [step 2/8] | 1 | merged (#8) |
 | 3 | types | 🌿 [signing-prep-fixes] diff(): deregistration flags survive later certificates [step 3/8] | - | merged (cardano_dart_types #4) |
 | 4 | types | ⚙️ [signing-prep-fixes] diff(): honor isValidDi == false, release 3.1.1 [step 4/8] | 3 | merged (cardano_dart_types #5); 3.1.1 published, then retracted |
-| 5 | sdk | 🌿 [signing-prep-fixes] Worker: match UTxOs by hash hex and index [step 5/8] | 2 | open (#9) |
+| 5 | sdk | 🌿 [signing-prep-fixes] Worker: match UTxOs by hash hex and index [step 5/8] | 2 | merged (#9) |
 | 6 | types | 🌿 [signing-prep-fixes] diff(): refuse transactions marked invalid by default, release 3.1.2 [step 6/8] | 4 | merged (cardano_dart_types #6); 3.1.2 published |
-| 7 | sdk | 🌿 [signing-prep-fixes] Bump cardano_dart_types to 3.1.2; signing prep refuses transactions marked invalid [step 7/8] | 2, 6 published | open (#10, opened as "Bump cardano_dart_types to 3.1.1 [step 6/8]" before the rework) |
-| 8 | sdk | 🌱 [signing-prep-fixes] Regenerate web workers and finish 5.1.0 [step 8/8] | 5, 7 | todo |
+| 7 | sdk | 🌿 [signing-prep-fixes] Bump cardano_dart_types to 3.1.2; signing prep refuses transactions marked invalid [step 7/8] | 2, 6 published | merged (#10, opened as "Bump cardano_dart_types to 3.1.1 [step 6/8]" before the rework) |
+| 8 | sdk | 🌱 [signing-prep-fixes] Regenerate web workers and finish 5.2.0 [step 8/8] | 5, 7 | open (#12) |
 
 Publishing to pub.dev (after steps 4, 6 and 8) is done by a human, not by the plan worker.
 
@@ -251,19 +256,22 @@ Publishing to pub.dev (after steps 4, 6 and 8) is done by a human, not by the pl
   invalid fails before any summary is produced. Web worker artifacts on `main` are stale from this step
   until step 8; `main` is not published in between. No regenerated worker files.
 
-### Step 8: regenerate web workers, finish 5.1.0 (sdk, 🌱)
+### Step 8: regenerate web workers, finish 5.2.0 (sdk, 🌱)
 
 - **Commands:** `dart run build_runner build --delete-conflicting-outputs` (expected no-op diff),
   `sh ./scripts/gen_js_workers.sh`.
 - **Files:** regenerated `lib/workers/wallet_tasks.web.g.dart.js`, `.mjs`, `.wasm`, loader;
-  `CHANGELOG.md` "Web workers built with" line under `## 5.1.0` updated to the toolchain used
-  (cardano_dart_types 3.1.2); move this directory to `.plan/completed/signing-prep-fixes/`.
-- **Reviewer check:** rerun the two commands on the branch and confirm a clean tree.
+  `pubspec.yaml` version `5.2.0`; `CHANGELOG.md` heading renamed to `## 5.2.0` with the "Web workers
+  built with" line updated to the toolchain used (cardano_dart_types 3.1.2) and a `## 5.1.0 (retracted)`
+  note; this directory moved to `.plan/completed/signing-prep-fixes/`.
+- **Reviewer check:** rerun the two commands on the branch and confirm a clean tree. The compiled
+  `wallet_tasks.web.g.dart.js` contains the `TransactionMarkedInvalidException` message text, which the
+  artifacts shipped in 5.1.0 did not.
 - **Why:** web builds embed the worker and `cardano_dart_types` code; nothing above reaches the web
-  extension until this step.
+  extension until this step. 5.2.0 rather than 5.1.1 is the maintainer's choice.
 - **Risk and test focus:** low in logic, mechanical in size. Run the verification matrix below.
 - **Expected result:** web extension behavior matches VM behavior for all three fixes.
-- **Publish:** after merge, a human runs `dart pub publish` for 5.1.0.
+- **Publish:** after merge, a human runs `dart pub publish` for 5.2.0.
 
 ## Verification
 
@@ -276,6 +284,16 @@ Neither repository has `docs/regression/`; this section is the recorded coverage
 - **Matrix (step 8 only, local, CI has these commented out):** `dart test -P js` and
   `dart test -P wasm` in the SDK, so the regenerated dart2js and dart2wasm workers execute the same
   suites. If either preset cannot run locally, record why in this file before retiring the plan.
+- **Matrix result (step 8, 2026-10-16):** neither preset can run in this repository as configured.
+  Every test file fails at load while provisioning the squadron worker pool, because the generated
+  entry point `lib/workers/wallet_tasks.web.g.dart` loads the worker from
+  `/assets/packages/cardano_flutter_sdk/workers/...`, a Flutter web asset path that the `dart test`
+  Chrome server does not serve. The failure is independent of the artifacts' content and is why CI has
+  both presets commented out. Verified instead: the regeneration is reproducible from the final
+  source (`.g.dart`, `.mjs` and loader unchanged, only `.js` and `.wasm` differ) and the compiled JS
+  contains the `TransactionMarkedInvalidException` message text, which the artifacts of 5.1.0 did not.
+  Running the presets would need a test-only worker entry point or a server mapping for the asset
+  path; not part of this series.
 
 ## Risks, decisions, evidence
 
@@ -322,9 +340,9 @@ Neither repository has `docs/regression/`; this section is the recorded coverage
   "Bump cardano_dart_types to 3.1.1") was retitled and extended into step 7.
 - **No new worker parameters**, so `wallet_tasks.*.g.dart` are untouched and web artifacts are
   regenerated once, in step 8.
-- **Versions.** 3.1.0 and 5.0.0 are both already on pub.dev, so the fixes ship as 3.1.2 and 5.1.0
-  (3.1.1 published and retracted, see above). No API breaks, so 5.0.0 is not retracted. Bumps land
-  first and changelog lines are added per PR (see "Versions and changelog" above).
+- **Versions.** 3.1.0 and 5.0.0 are both already on pub.dev, so the fixes ship as 3.1.2 and 5.2.0
+  (3.1.1 and 5.1.0 published and retracted, see above). No API breaks, so 5.0.0 is not retracted. Bumps
+  land first and changelog lines are added per PR (see "Versions and changelog" above).
 - **Series grew from 7 to 8 steps** when the version bump moved from the last step to its own early
   PR. Only step 1 had been opened at that point; its merged title still reads `[step 1/7]`.
 - **Open CodeRabbit note from PR #3** (eager `drepCredential.hexDecode()`): not applicable, that
@@ -333,7 +351,8 @@ Neither repository has `docs/regression/`; this section is the recorded coverage
 **Accepted risks.**
 
 - Between steps 6 and 8, `main` of the SDK has web worker artifacts older than its Dart source. No
-  release happens in that window.
+  release was meant to happen in that window; 5.1.0 was published from it anyway and retracted the
+  same day. Nothing in the repository enforces the rule.
 - `diff()` under `dangerouslyAssumeOnlyCollateralBurnOnInvalidDi` ignores `totalCollateral`; the actual
   collateral inputs are the authoritative amount and the wallet owns those UTxOs, so the field adds
   nothing.

@@ -1,6 +1,6 @@
-## 5.1.0
+## 5.2.0
 
-Web workers built with Flutter 3.47.7 | Dart 3.13.5, Squadron 7.4.4 and cardano_dart_types 3.1.0
+Web workers built with Flutter 3.47.7 | Dart 3.13.5, Squadron 7.4.4 and cardano_dart_types 3.1.2
 
 ### Fix
 
@@ -10,6 +10,10 @@ Web workers built with Flutter 3.47.7 | Dart 3.13.5, Squadron 7.4.4 and cardano_
 ### Change
 
 - Updated cardano_dart_types to 3.1.2: `diff()` deregistration flags follow the last certificate that registers or deregisters the wallet's credential, and `diff()` takes a `txDiManagement` option that refuses transactions marked invalid by default (the worker passes `TxDiManagement.safeAlwaysReject` explicitly)
+
+## 5.1.0 (retracted)
+
+Published before the fix series was complete and retracted on pub.dev. Its compiled web workers were still built with cardano_dart_types 3.1.0, so neither the refusal of transactions marked invalid nor the deregistration-flag fix applied in web builds, and the UTxO matching fix was missing on every platform. 5.2.0 is the complete release of these changes.
 
 ## 5.0.0
 
