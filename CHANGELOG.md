@@ -5,6 +5,11 @@ Web workers built with Flutter 3.47.7 | Dart 3.13.5, Squadron 7.4.4 and cardano_
 ### Fix
 
 - `prepareTxsForSigning` matches transaction inputs to wallet UTxOs by transaction hash hex and index. Inputs whose hash carries CBOR tags or a different length type than the wallet's copy were not recognised, so their signing address was not required and the UTxO stayed available to the next transaction in the batch
+- `prepareTxsForSigning` refuses a transaction with `isValidDi == false` (`TransactionMarkedInvalidException` from `diff()`, surfaced through the worker boundary) instead of summarising it. The flag is not part of the signed body, so a requester could present a transaction as failing phase-2 validation, get the body signed on a collateral-only summary, and submit it with the flag switched to true; a wallet also has no reason to sign a transaction that, as marked, would only forfeit its collateral
+
+### Change
+
+- Updated cardano_dart_types to 3.1.2: `diff()` deregistration flags follow the last certificate that registers or deregisters the wallet's credential, and `diff()` takes a `txDiManagement` option that refuses transactions marked invalid by default (the worker passes `TxDiManagement.safeAlwaysReject` explicitly)
 
 ## 5.0.0
 

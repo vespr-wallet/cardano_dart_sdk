@@ -190,12 +190,16 @@ class WalletTasks {
       txsPreparedForSigning.add(
         TxPreparedForSigning(
           tx: tx,
+          // This summary is shown before signing. The isValid flag is not part of the signed body and can be switched
+          // after signing, so a transaction marked as failing phase-2 validation is refused rather than summarised.
+          // Stated explicitly even though it is the default; see TxDiManagement.
           txDiff: tx.diff(
             receiveAddressBech32: bech32Address,
             walletUtxos: walletUtxosBeforeTx,
             drepCredential: drepCredential,
             constitutionalCommitteeColdCredential: constitutionalCommitteeColdCredential,
             constitutionalCommitteeHotCredential: constitutionalCommitteeHotCredential,
+            txDiManagement: TxDiManagement.safeAlwaysReject,
           ),
           utxosBeforeTx: walletUtxosBeforeTx,
           signingAddressesRequired: signatureAddresses,
