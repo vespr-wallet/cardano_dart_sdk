@@ -198,6 +198,48 @@ void main() async {
       },
     );
 
+    test("matches wallet utxos by transaction hash hex, ignoring CBOR metadata on the input", () async {
+      // tx1 spends walletUtxos[0] through an input whose hash carries a CBOR tag, which a parsed transaction can
+      // legitimately do. The wallet's own copy of the UTxO has no tag. Before the fix the worker keyed UTxOs on
+      // TransactionHash.toString() and missed the match, so no signing address was required and the UTxO stayed
+      // available to tx2.
+      final spentUtxo = walletUtxos[0];
+      String utxoKey(Utxo utxo) => "${utxo.identifier.transactionHash.hexValue}#${utxo.identifier.index}";
+      final taggedInput = CardanoTransactionInput(
+        transactionHash: TransactionHash(value: spentUtxo.identifier.transactionHash.value, cborTags: const [64]),
+        index: spentUtxo.identifier.index,
+      );
+      final tx1 = cardanoTx(
+        body: txBody(
+          inputs: CardanoTransactionInputs(data: [taggedInput], cborTags: const []),
+          outputs: genThisWalletOutputs([Value.v0(lovelace: BigInt.from(142).toCborInt())]),
+        ),
+      );
+      final tx2 = cardanoTx(
+        body: txBody(
+          inputs: CardanoTransactionInputs(data: [walletUtxos[1].identifier], cborTags: const []),
+          outputs: genThisWalletOutputs([Value.v0(lovelace: BigInt.from(100).toCborInt())]),
+        ),
+      );
+
+      final signingBundle = await SigningUtils.prepareTxsForSigning(
+        txs: [tx1, tx2],
+        walletUtxos: walletUtxos,
+        walletReceiveAddressBech32: wallet.firstAddress.bech32Encoded,
+        drepCredential: wallet.drepId.value.credentialsHex,
+        constitutionalCommitteeColdCredential: wallet.constitutionalCommiteeCold.value.hexCredential,
+        constitutionalCommitteeHotCredential: wallet.constitutionalCommiteeHot.value.hexCredential,
+        networkId: wallet.networkId,
+      );
+
+      expect(signingBundle.txsData.length, equals(2));
+      // cardano_dart_types already matched by hex inside diff(); the worker must agree with it.
+      expect(signingBundle.txsData[0].txDiff.usedUtxos.map(utxoKey), [utxoKey(spentUtxo)]);
+      expect(signingBundle.txsData[0].signingAddressesRequired, {spentUtxo.content.address.base58OrBech32Value});
+      expect(signingBundle.txsData[0].utxosBeforeTx.map(utxoKey), contains(utxoKey(spentUtxo)));
+      expect(signingBundle.txsData[1].utxosBeforeTx.map(utxoKey), isNot(contains(utxoKey(spentUtxo))));
+    });
+
     group(
       "Only wallet utxos",
       () {
