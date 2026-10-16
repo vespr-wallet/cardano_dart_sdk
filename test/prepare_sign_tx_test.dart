@@ -1406,6 +1406,46 @@ void main() async {
         });
       },
     );
+
+    test("refuses a transaction marked as failing phase-2 validation (isValidDi == false)", () async {
+      final validTx = cardanoTx(
+        body: txBody(
+          inputs: CardanoTransactionInputs(data: [walletUtxos[0].identifier], cborTags: const []),
+          outputs: genThisWalletOutputs([Value.v0(lovelace: BigInt.from(142).toCborInt())]),
+        ),
+      );
+      // The flag is not part of the signed body: submitted with the flag switched to true, this body would move the
+      // wallet input to the other wallet. A collateral-only summary would hide that, so the batch is refused.
+      final invalidTx = cardanoTx(
+        isValidDi: false,
+        body: txBody(
+          inputs: CardanoTransactionInputs(data: [walletUtxos[1].identifier], cborTags: const []),
+          outputs: genOtherWalletOutputs([Value.v0(lovelace: BigInt.from(100).toCborInt())]),
+          collateral: CardanoTransactionInputs(data: [walletUtxos[2].identifier], cborTags: const []),
+        ),
+      );
+
+      await expectLater(
+        SigningUtils.prepareTxsForSigning(
+          txs: [validTx, invalidTx],
+          walletUtxos: walletUtxos,
+          walletReceiveAddressBech32: wallet.firstAddress.bech32Encoded,
+          drepCredential: wallet.drepId.value.credentialsHex,
+          constitutionalCommitteeColdCredential: wallet.constitutionalCommiteeCold.value.hexCredential,
+          constitutionalCommitteeHotCredential: wallet.constitutionalCommiteeHot.value.hexCredential,
+          networkId: wallet.networkId,
+        ),
+        // TransactionMarkedInvalidException crosses the squadron worker boundary as a WorkerException carrying its
+        // message, like the other signing exceptions
+        throwsA(
+          isA<Object>().having(
+            (e) => e.toString(),
+            "message",
+            contains("Transaction [${invalidTx.body.blake2bHash256Hex()}] is marked as failing script validation"),
+          ),
+        ),
+      );
+    });
   });
 }
 

@@ -17,10 +17,13 @@ correct deregistration flags, and correct required signing addresses for:
 
 1. inputs whose CBOR hash encoding carries tags or a different length type than the wallet's UTxO;
 2. transactions where a stake or DRep deregistration certificate is followed by another certificate;
-3. transactions flagged `isValidDi == false` (phase-2 failure: collateral is consumed, nothing else
-   happens), including batches that chain through such a transaction.
+3. transactions flagged `isValidDi == false`: refused before signing, because the flag is not part of
+   the signed body and can be switched after signing, so no pre-sign summary of such a transaction can
+   be trusted. `diff()` still offers the on-chain summaries behind explicitly dangerous options for
+   transactions already in a block.
 
-No public API changes. No new worker parameters.
+No API breaks. New in `cardano_dart_types`: an optional `diff()` parameter, the `TxDiManagement` enum
+and `TransactionMarkedInvalidException`. No new worker parameters.
 
 ## Current behavior
 
@@ -58,7 +61,7 @@ SDK 4.0.1+1 today and will pick these fixes up when it moves to 5.x.
 
 Fix at the narrowest owner. `diff()` owns the per-transaction value and certificate semantics, so the
 deregistration and `isValidDi` fixes go there. The worker loop owns UTxO chaining and signing
-addresses, so the key fix and the collateral transition go there.
+addresses, so the key fix goes there; it passes the safe `diff()` option explicitly.
 
 ### `diff()` deregistration flags (step 3)
 
@@ -88,36 +91,55 @@ When `isValidDi` is true, behavior is byte-for-byte what it is today. Implement 
 the top of `diff()` that builds the invalid-transaction `TxDiff` and returns, so the valid path is not
 touched.
 
+Shipped as 3.1.1 and then retracted: this describes the on-chain effect of a transaction that carries
+the flag, but before signing the flag cannot be trusted (see step 6). The computation survives as the
+`dangerouslyAssumeOnlyCollateralBurnOnInvalidDi` option.
+
 ### Worker UTxO keys (step 5)
 
 Use `"${e.transactionHash.hexValue}#${e.index}"` in the three places that build keys. Same key shape
 as `diff()`.
 
-### Worker chaining through invalid transactions (step 7)
+### `diff()` refuses transactions marked invalid by default (step 6)
 
-Inside the loop, branch on `tx.isValidDi`:
+`isValid` is the third element of the transaction envelope, not part of the body, and vkey witnesses
+sign the blake2b-256 hash of the body only. Whoever holds a signed transaction can switch the flag
+without breaking any signature, so a requester can present a transaction as failing phase-2 validation
+(collateral-only summary), obtain the signatures, flip the flag and submit the full body (Codex
+security finding on SDK PR #10). The guard goes where the summary is computed, with a safe default, so
+no consumer can obtain an unsafe summary by accident:
 
-- valid: consumed = `body.inputs` (as today); generated = outputs to the receive address (as today).
-- invalid: consumed = `body.collateral` inputs; generated = `collateralReturn` as a UTxO at index
-  `body.outputs.length` when its address is the receive address, else nothing.
+- `diff()` gains `txDiManagement` (`TxDiManagement`, default `safeAlwaysReject`): a transaction with
+  `isValidDi == false` throws `TransactionMarkedInvalidException` (body hash in the message).
+- `dangerouslyAssumeTrue` summarises the body as if the flag were true (behaviour up to 3.1.0);
+  `dangerouslyAssumeOnlyCollateralBurnOnInvalidDi` is the collateral-only summary of 3.1.1. Both are
+  documented as appropriate only for transactions already on chain, where the flag is authoritative.
+- Valid transactions are summarised identically under every option.
 
-`signingAddressesRequired` keeps using inputs plus collateral for both cases (witnesses are checked in
-phase 1 for the whole body). `utxosBeforeTx` keeps its meaning.
+### Worker passes the safe option explicitly (step 7)
+
+The worker calls `diff()` with `txDiManagement: TxDiManagement.safeAlwaysReject` and a comment stating
+why, so the SDK's policy is visible at the call site rather than inherited from a default. The
+exception thrown inside the squadron worker reaches callers as a `WorkerException` carrying its
+message, like the other signing exceptions. The former step 7 design (chain invalid transactions
+through their collateral inside the loop) is dropped: no transaction marked invalid completes the
+loop.
 
 ### Versions and changelog
 
-- `cardano_dart_types` ships as 3.1.1, `cardano_flutter_sdk` as 5.1.0. 5.0.0 is already published
-  and nothing here breaks an API, so it stays published.
+- `cardano_dart_types` ships as 3.1.2, `cardano_flutter_sdk` as 5.1.0. 5.0.0 is already published
+  and nothing here breaks an API, so it stays published. 3.1.1 was published and then retracted (its
+  collateral-only summary is unsafe before signing); its changelog heading is marked `(retracted)`.
 - Version bumps land first, not in a release PR at the end: step 2 bumps the SDK to 5.1.0 and opens
-  the `## 5.1.0` changelog heading; step 3 opens the `## 3.1.1` heading in `cardano_dart_types` and
-  step 4 bumps its version.
+  the `## 5.1.0` changelog heading; step 3 opens the `## 3.1.1` heading in `cardano_dart_types`, step 4
+  bumps its version and step 6 opens `## 3.1.2` and bumps again.
 - Every later PR adds its own line to the open heading (`### Fix` or `### Change`, created on first
   use). The final step only refreshes the "Web workers built with" line. No PR writes someone else's
   changelog entry.
 
 ## Steps (fixed order and total: 8)
 
-PR titles use `<emoji> [signing-prep-fixes] <description> [step x/8]`. Steps 3 and 4 are in
+PR titles use `<emoji> [signing-prep-fixes] <description> [step x/8]`. Steps 3, 4 and 6 are in
 `cardano_dart_types`; the rest are in this repo. Steps 2 and 5 are independent of the
 `cardano_dart_types` steps and may be opened and merged in parallel with them.
 
@@ -126,13 +148,13 @@ PR titles use `<emoji> [signing-prep-fixes] <description> [step x/8]`. Steps 3 a
 | 1 | sdk | 🌱 [signing-prep-fixes] Add plan for prepareTxsForSigning fixes [step 1/8] | - | merged (#7, titled `[step 1/7]` before the series grew) |
 | 2 | sdk | 🌱 [signing-prep-fixes] Bump to 5.1.0 and open the changelog [step 2/8] | 1 | merged (#8) |
 | 3 | types | 🌿 [signing-prep-fixes] diff(): deregistration flags survive later certificates [step 3/8] | - | merged (cardano_dart_types #4) |
-| 4 | types | ⚙️ [signing-prep-fixes] diff(): honor isValidDi == false, release 3.1.1 [step 4/8] | 3 | open (cardano_dart_types #5) |
+| 4 | types | ⚙️ [signing-prep-fixes] diff(): honor isValidDi == false, release 3.1.1 [step 4/8] | 3 | merged (cardano_dart_types #5); 3.1.1 published, then retracted |
 | 5 | sdk | 🌿 [signing-prep-fixes] Worker: match UTxOs by hash hex and index [step 5/8] | 2 | open (#9) |
-| 6 | sdk | 🌿 [signing-prep-fixes] Bump cardano_dart_types to 3.1.1 [step 6/8] | 2, 4 published | open |
-| 7 | sdk | ⚙️ [signing-prep-fixes] Worker: invalid transactions consume collateral when chaining [step 7/8] | 5, 6 | todo |
-| 8 | sdk | 🌱 [signing-prep-fixes] Regenerate web workers and finish 5.1.0 [step 8/8] | 7 | todo |
+| 6 | types | 🌿 [signing-prep-fixes] diff(): refuse transactions marked invalid by default, release 3.1.2 [step 6/8] | 4 | merged (cardano_dart_types #6); 3.1.2 published |
+| 7 | sdk | 🌿 [signing-prep-fixes] Bump cardano_dart_types to 3.1.2; signing prep refuses transactions marked invalid [step 7/8] | 2, 6 published | open (#10, opened as "Bump cardano_dart_types to 3.1.1 [step 6/8]" before the rework) |
+| 8 | sdk | 🌱 [signing-prep-fixes] Regenerate web workers and finish 5.1.0 [step 8/8] | 5, 7 | todo |
 
-Publishing to pub.dev (after step 4 and after step 8) is done by a human, not by the plan worker.
+Publishing to pub.dev (after steps 4, 6 and 8) is done by a human, not by the plan worker.
 
 ### Step 1: this plan (sdk, 🌱)
 
@@ -196,34 +218,38 @@ Publishing to pub.dev (after step 4 and after step 8) is done by a human, not by
 - **Expected result:** no change for inputs encoded without tags; tagged or indefinite inputs now
   match. No database change. No regenerated worker files (no signature change).
 
-### Step 6: bump `cardano_dart_types` to 3.1.1 (sdk, 🌿)
+### Step 6: `diff()` refuses transactions marked invalid by default, release 3.1.2 (types, 🌿)
 
-- **Files:** `pubspec.yaml` pin `3.1.1`, `pubspec.lock`, `test/prepare_sign_tx_test.dart`,
-  `CHANGELOG.md` line under `## 5.1.0` / `### Change` naming the two `diff()` fixes it brings.
-- **Tests:** one batch where a transaction has a wallet stake deregistration followed by an unrelated
-  certificate; `bundle.stakeDeregistration` is `true`. Proves the step 3 fix through the SDK boundary.
-- **Why:** picks up steps 3 and 4; step 7 tests assert values that depend on the new `diff()`.
-- **Risk and test focus:** low; the whole existing suite runs against the new version in CI.
-- **Expected result:** no user-visible change beyond step 3 and 4 behavior. Web worker artifacts on
-  `main` are stale from this step until step 8; `main` is not published in between.
+- **Files:** `lib/src/hd/signing/signing_types.dart` (`TxDiManagement` enum with the trust-boundary
+  documentation), `lib/src/exceptions/signing_exceptions.dart` (`TransactionMarkedInvalidException`),
+  `lib/src/cardano/transaction.dart` (`txDiManagement` parameter and a switch at the top of `diff()`),
+  `test/transaction_test.dart`, `pubspec.yaml` version `3.1.2`, `CHANGELOG.md` `## 3.1.2` heading
+  recording the retraction of 3.1.1.
+- **Tests:** a transaction marked invalid is refused by default and under `safeAlwaysReject`, with
+  the body hash in the exception; `dangerouslyAssumeTrue` equals the summary of the same body with the
+  flag true; the step 4 collateral-only tests opt into `dangerouslyAssumeOnlyCollateralBurnOnInvalidDi`;
+  a valid transaction gives the same summary under every option.
+- **Why:** the flag is unsigned; a summary that honours it can be defeated after signing.
+- **Risk and test focus:** low; valid path unchanged, three switch branches covered.
+- **Expected result:** `diff()` throws for transactions marked invalid unless a dangerous option is
+  passed. No database change.
+- **Publish:** after merge, a human runs `dart pub publish` for 3.1.2.
 
-### Step 7: worker chaining through invalid transactions (sdk, ⚙️)
+### Step 7: bump `cardano_dart_types` to 3.1.2, signing prep refuses transactions marked invalid (sdk, 🌿)
 
-- **Files:** `lib/workers/wallet_tasks.dart` (branch on `tx.isValidDi` for consumed and generated
-  UTxOs), `test/prepare_sign_tx_test.dart` (extend `gentx` or add a sibling helper that accepts
-  `collateral`, `collateralReturn` and `isValidDi`), `CHANGELOG.md` line under `## 5.1.0` /
-  `### Fix`.
-- **Tests:** batch `[invalid tx with wallet collateral and a return to the wallet, valid tx spending
-  that return]`: the second transaction's signing address is found, `utxosBeforeTx` of the second
-  transaction contains the return and not the collateral, and `totalDiff` equals the sum of the two
-  per-transaction diffs; batch `[invalid tx with a regular wallet input, valid tx spending that same
-  input]`: the input is still available to the second transaction.
-- **Why:** without it a batch that chains through an invalid transaction mis-reports signing
-  addresses and the running UTxO set.
-- **Risk and test focus:** moderate; the loop every batch goes through. Focus on the valid path being
-  unchanged (full `prepare_sign_tx_test.dart`) and on index `outputs.length` for the return.
-- **Expected result:** batches with only valid transactions unchanged; invalid transactions chain
-  through collateral. No database change. No regenerated worker files.
+- **Files:** `pubspec.yaml` pin `3.1.2`, `lib/workers/wallet_tasks.dart` (`txDiManagement:
+  TxDiManagement.safeAlwaysReject` passed explicitly with a comment), `test/prepare_sign_tx_test.dart`,
+  `CHANGELOG.md` lines under `## 5.1.0` (`### Fix` for the refusal, `### Change` for the bump), this
+  plan (reworked series).
+- **Tests:** batch `[valid tx, tx with isValidDi == false]` is refused through
+  `SigningUtils.prepareTxsForSigning` with an error naming the body hash of the flagged transaction;
+  the rest of `prepare_sign_tx_test.dart` is unchanged.
+- **Why:** picks up steps 3 and 6 and makes the SDK's policy explicit at the call site.
+- **Risk and test focus:** low; the whole suite runs against 3.1.2 in CI. Focus on the message
+  surviving the worker boundary.
+- **Expected result:** batches with only valid transactions unchanged; a batch with a transaction marked
+  invalid fails before any summary is produced. Web worker artifacts on `main` are stale from this step
+  until step 8; `main` is not published in between. No regenerated worker files.
 
 ### Step 8: regenerate web workers, finish 5.1.0 (sdk, 🌱)
 
@@ -231,7 +257,7 @@ Publishing to pub.dev (after step 4 and after step 8) is done by a human, not by
   `sh ./scripts/gen_js_workers.sh`.
 - **Files:** regenerated `lib/workers/wallet_tasks.web.g.dart.js`, `.mjs`, `.wasm`, loader;
   `CHANGELOG.md` "Web workers built with" line under `## 5.1.0` updated to the toolchain used
-  (cardano_dart_types 3.1.1); move this directory to `.plan/completed/signing-prep-fixes/`.
+  (cardano_dart_types 3.1.2); move this directory to `.plan/completed/signing-prep-fixes/`.
 - **Reviewer check:** rerun the two commands on the branch and confirm a clean tree.
 - **Why:** web builds embed the worker and `cardano_dart_types` code; nothing above reaches the web
   extension until this step.
@@ -261,7 +287,9 @@ Neither repository has `docs/regression/`; this section is the recorded coverage
 - Deregistration flags: deterministic, ordinary reachable flow (any wallet deregistration followed by
   another certificate in one transaction).
 - Invalid transactions: reachable from any dApp signing request with `isValid = false`. No observed
-  incident; the impact is a wrong balance preview on a security-sensitive screen.
+  incident; the impact is a wrong balance preview on a security-sensitive screen. Honouring the flag in
+  that preview is itself unsafe because the flag is unsigned (Codex security review on SDK PR #10), so
+  `diff()` refuses such transactions by default (step 6).
 
 **Decisions.**
 
@@ -278,11 +306,25 @@ Neither repository has `docs/regression/`; this section is the recorded coverage
   rejects double spends and forward references regardless. Not planned.
 - **Fix at the source.** Deregistration and `isValidDi` semantics live in `diff()`, not as SDK
   workarounds reconstructing `TxDiff`.
+- **Refuse, do not summarise, transactions marked invalid; guard in `diff()`, not in the client.**
+  Replaces the collateral-chaining design of the former step 7 after the Codex security review on SDK
+  PR #10. A client-side check would leave every other consumer exposed, so `diff()` refuses by default
+  and the unsafe summaries are explicit `dangerously*` options. 3.1.1 retracted; 3.1.2 ships the guard
+  together with the deregistration fix.
+- **Collateral exposure in `TxDiff`: deferred.** Codex's second finding on cardano_dart_types #6 is
+  real but outside the flag handling: a transaction presented as valid whose scripts fail still exposes
+  its collateral, and no flag value can tell it from an honest one without evaluating the scripts.
+  Surfacing a collateral figure for every transaction was considered and set aside for now, since
+  collateral inputs are UTxO references and `diff()` can value only the wallet-owned ones. The residual
+  risk is documented on `TxDiManagement`.
+- **Series reworked at step 6.** Steps 1 to 5 kept their numbers and titles; the former SDK step 7 was
+  dropped, the `cardano_dart_types` guard became step 6, and the open SDK PR #10 (opened as step 6
+  "Bump cardano_dart_types to 3.1.1") was retitled and extended into step 7.
 - **No new worker parameters**, so `wallet_tasks.*.g.dart` are untouched and web artifacts are
   regenerated once, in step 8.
-- **Versions.** 3.1.0 and 5.0.0 are both already on pub.dev, so the fixes ship as 3.1.1 and 5.1.0.
-  No API breaks, so 5.0.0 is not retracted. Bumps land first and changelog lines are added per PR
-  (see "Versions and changelog" above).
+- **Versions.** 3.1.0 and 5.0.0 are both already on pub.dev, so the fixes ship as 3.1.2 and 5.1.0
+  (3.1.1 published and retracted, see above). No API breaks, so 5.0.0 is not retracted. Bumps land
+  first and changelog lines are added per PR (see "Versions and changelog" above).
 - **Series grew from 7 to 8 steps** when the version bump moved from the last step to its own early
   PR. Only step 1 had been opened at that point; its merged title still reads `[step 1/7]`.
 - **Open CodeRabbit note from PR #3** (eager `drepCredential.hexDecode()`): not applicable, that
@@ -292,15 +334,18 @@ Neither repository has `docs/regression/`; this section is the recorded coverage
 
 - Between steps 6 and 8, `main` of the SDK has web worker artifacts older than its Dart source. No
   release happens in that window.
-- `diff()` for invalid transactions ignores `totalCollateral`; the actual collateral inputs are the
-  authoritative amount and the wallet owns those UTxOs, so the field adds nothing.
+- `diff()` under `dangerouslyAssumeOnlyCollateralBurnOnInvalidDi` ignores `totalCollateral`; the actual
+  collateral inputs are the authoritative amount and the wallet owns those UTxOs, so the field adds
+  nothing.
 
 ## Complexity budget
 
 - **New persistent state:** none.
-- **New in-memory state:** none. The worker loop keeps its two local lists; `diff()` gains one early
-  branch.
-- **New config, flags, parameters, public types:** none.
+- **New in-memory state:** none. The worker loop keeps its two local lists; `diff()` gains one switch
+  at the top.
+- **New config, flags, parameters, public types:** in `cardano_dart_types`, the optional `diff()`
+  parameter `txDiManagement`, the `TxDiManagement` enum and `TransactionMarkedInvalidException`
+  (step 6).
 - **Deliberately not added:** a `UtxoId` value type (string keys with hash hex are enough and match
   `diff()`), the ownership model, the batch validator, caller-input snapshots.
 
