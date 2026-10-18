@@ -11,13 +11,11 @@ VESPR Wallet is a multi-platform cryptocurrency wallet application built with Fl
 ### Build Commands
 
 ```bash
-# Generate squadron workers dart code
-dart run build_runner build --delete-conflicting-outputs
-
-# Generates the web workers from squadron dart workers
-sh ./scripts/gen_js_workers.sh
-
+# pub get, squadron worker dart code (build_runner) and the web workers (scripts/gen_js_workers.sh)
+make build
 ```
+
+CI (`.github/workflows/build.yml`) runs `make build` and fails if the committed generated files differ.
 
 ### Development Commands
 
@@ -33,8 +31,10 @@ flutter test
 
 ### Build Process Flow
 
+`make build`:
+
 1. dart run build_runner build --delete-conflicting-outputs
-2. sh ./scripts/gen_js_workers.sh
+2. bash ./scripts/gen_js_workers.sh
 
 ### Coding Standards
 

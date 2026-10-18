@@ -1,0 +1,33 @@
+name: Build
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Generated files are up to date
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Install asdf & tools
+        uses: asdf-vm/actions/install@v4
+
+      - name: Build
+        run: make build
+
+      - name: Check committed files match the build
+        run: |
+          git status --porcelain
+          git diff --stat
+          test -z "$(git status --porcelain)" || { echo "::error::Run make build and commit the result"; exit 1; }
