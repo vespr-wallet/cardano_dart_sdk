@@ -29,13 +29,6 @@ flutter test
 
 ## Architecture
 
-### Build Process Flow
-
-`make build`:
-
-1. dart run build_runner build --delete-conflicting-outputs
-2. bash ./scripts/gen_js_workers.sh
-
 ### Coding Standards
 
 - **Line length**: 120 characters
