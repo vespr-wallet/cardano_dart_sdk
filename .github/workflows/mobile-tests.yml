@@ -25,9 +25,10 @@ jobs:
       - name: Install asdf & tools
         uses: asdf-vm/actions/install@v4
 
+      # Upgrade, not get: apps resolve the newest allowed versions, not this package's pubspec.lock
       - name: Install dependencies
         run: |
-          flutter pub get
+          flutter pub upgrade
 
       - name: Analyze code
         run: flutter analyze --no-fatal-infos
