@@ -1,3 +1,11 @@
+## 5.2.1
+
+Web workers built with Flutter 3.47.7 | Dart 3.13.5, Squadron 7.4.4 and cardano_dart_types 3.1.2
+
+### Fix
+
+- The wasm worker starts its nested workers (the address derivation pool used when signing) through `wallet_tasks.web.g.loader.js`, like the app does. 5.1.0 and 5.2.0 compiled the worker before pointing its activator at the loader, so nested workers used Squadron's blob loader, whose `import()` of the `.mjs` Chrome 155+ blocks in MV3 extensions (CSP): signing with a seed-phrase wallet failed with "Failed to load Web Worker … (legacy runtime)". `gen_js_workers.sh` now patches the activator before compiling and fails if the compiled worker lacks the loader entry
+
 ## 5.2.0
 
 Web workers built with Flutter 3.47.7 | Dart 3.13.5, Squadron 7.4.4 and cardano_dart_types 3.1.2
