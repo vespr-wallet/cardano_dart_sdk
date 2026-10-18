@@ -14,7 +14,8 @@ permissions:
 jobs:
   build:
     name: Generated files are up to date
-    runs-on: ubuntu-latest
+    # Apple Silicon, where the workers are built: dart2wasm on Linux x64 emits a different .wasm from the same inputs.
+    runs-on: macos-latest
 
     steps:
       - name: Checkout code
