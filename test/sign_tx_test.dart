@@ -61,6 +61,8 @@ void main() async {
       "chief fiber betray curve tissue output feature jungle adapt smile brown crane accuse gospel plate unlock pull arrow hard february tape soccer patrol fetch";
 
   final wallet = await WalletFactory.fromMnemonic(NetworkId.testnet, mnemonic.split(" "));
+  // Same keys as [wallet], for mainnet transactions
+  final mainnetWallet = await WalletFactory.fromMnemonic(NetworkId.mainnet, mnemonic.split(" "));
 
   group("sign staking key operations", () {
     test("required signers includes staking credentials", () async {
@@ -3924,7 +3926,7 @@ void main() async {
         "addr_test1qrjn5f9jl0hw7w7r4hz4vgsf9nyvzuh66cwzx8gntrjlqge8959c07mmj4saf577u34c6s32328v24w9zn3tzhc89y6qhkdw7e",
       };
 
-      final signature = await wallet.signTransaction(tx: tx, witnessBech32Addresses: witnessBech32Addresses);
+      final signature = await mainnetWallet.signTransaction(tx: tx, witnessBech32Addresses: witnessBech32Addresses);
 
       expect(signature, expected);
     });
@@ -4563,6 +4565,86 @@ void main() async {
       final signature = await wallet.signTransaction(tx: tx, witnessBech32Addresses: witnessBech32Addresses);
 
       expect(signature, expected);
+    });
+  });
+
+  test("native script pub key blobs must match a credential exactly", () async {
+    final tx = CardanoTransaction(
+      overrideBodyMetadataHash: false,
+      body: CardanoTransactionBody.create(
+        inputs: const CardanoTransactionInputs(data: [], cborTags: []),
+        outputs: [],
+        fee: BigInt.one.toCborInt(),
+      ),
+      witnessSet: witnessSet(
+        nativeScripts: [
+          NativeScript.pubKey(blob: <int>[].toUint8List()),
+          NativeScript.pubKey(blob: wallet.firstAddress.credentialsBytes.sublist(0, 4)),
+        ],
+      ),
+      isValidDi: true,
+      auxiliaryData: null,
+    );
+
+    final signature = await wallet.signTransaction(tx: tx, witnessBech32Addresses: {}, deriveMaxAddressCount: 2);
+
+    expect(signature.vkeyWitnesses, isEmpty);
+  });
+
+  group("network binding", () {
+    // The requester asks for the payment key through required signers. Inputs of another network are not among the
+    // wallet's UTxOs, so only the network check stops the signature.
+    CardanoTransaction txRequestingPaymentKey({
+      required List<CardanoTransactionOutput> outputs,
+      required NetworkId? networkId,
+    }) => CardanoTransaction(
+      overrideBodyMetadataHash: false,
+      body: CardanoTransactionBody.create(
+        inputs: CardanoTransactionInputs(
+          data: [CardanoTransactionInput(transactionHash: TransactionHash.fromHex("00" * 32), index: 0)],
+          cborTags: const [],
+        ),
+        outputs: outputs,
+        fee: BigInt.one.toCborInt(),
+        requiredSigners: RequiredSigners(signersBytes: [wallet.firstAddress.credentialsBytes], cborTags: const []),
+        networkId: networkId,
+      ),
+      witnessSet: emptyWitnessSet,
+      isValidDi: true,
+      auxiliaryData: null,
+    );
+
+    CardanoTransactionOutput outputTo(CardanoAddress address) => CardanoTransactionOutput.postAlonzo(
+      address: Address(value: address.bytes),
+      value: Value.v0(lovelace: BigInt.from(1000000).toCborInt()),
+      outDatum: null,
+      scriptRef: null,
+      lengthType: CborLengthType.definite,
+    );
+
+    final throwsNotBound = throwsA(
+      isA<Object>().having((e) => e.toString(), "message", contains("is not bound to the wallet network [testnet]")),
+    );
+
+    test("refuses an output on another network", () async {
+      final tx = txRequestingPaymentKey(outputs: [outputTo(mainnetWallet.firstAddress)], networkId: null);
+      await expectLater(wallet.signTransaction(tx: tx, witnessBech32Addresses: {}), throwsNotBound);
+    });
+
+    test("refuses a body network id of another network", () async {
+      final tx = txRequestingPaymentKey(outputs: [], networkId: NetworkId.mainnet);
+      await expectLater(wallet.signTransaction(tx: tx, witnessBech32Addresses: {}), throwsNotBound);
+    });
+
+    test("refuses inputs with neither a network id nor an output", () async {
+      final tx = txRequestingPaymentKey(outputs: [], networkId: null);
+      await expectLater(wallet.signTransaction(tx: tx, witnessBech32Addresses: {}), throwsNotBound);
+    });
+
+    test("signs a transaction bound to the wallet network", () async {
+      final tx = txRequestingPaymentKey(outputs: [outputTo(wallet.firstAddress)], networkId: null);
+      final signature = await wallet.signTransaction(tx: tx, witnessBech32Addresses: {});
+      expect(signature.vkeyWitnesses, hasLength(1));
     });
   });
 }

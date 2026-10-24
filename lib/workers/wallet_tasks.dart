@@ -152,6 +152,8 @@ class WalletTasks {
     var walletUtxosBeforeTx = utxos;
 
     for (final CardanoTransaction tx in txs) {
+      // Refused before summarising: the summary of a transaction meant for another network is meaningless
+      _requireBoundToNetwork(tx: tx, walletNetwork: networkId);
       final txHash = tx.body.blake2bHash256Hex();
 
       // Key on the hash hex, not on TransactionHash.toString(): that would include CBOR metadata (tags, length type)
@@ -251,6 +253,11 @@ class WalletTasks {
     final HdWallet hdWallet = (wallet as CardanoWalletImpl).hdWallet;
     final networkId = wallet.networkId;
 
+    // Checked here too: signTransaction and hand-built bundles do not go through prepareTxsForSigningImpl
+    for (final e in txs) {
+      _requireBoundToNetwork(tx: e.tx, walletNetwork: networkId);
+    }
+
     final List<Set<Bip32KeyPair>> signAddressesAll = List.generate(txs.length, (index) => {});
     final List<Set<String>> modifiableSpendCredentialsAll = List.generate(
       txs.length,
@@ -340,8 +347,6 @@ class WalletTasks {
         );
         final paymentAddrForIndex = await paymentAddrForIndexFuture;
         final changeAddrForIndex = await changeAddrForIndexFuture;
-        final hexPaymentAddrForIndex = paymentAddrForIndex.address.hexEncoded;
-        final hexChangeAddrForIndex = changeAddrForIndex.address.hexEncoded;
         final bech32PaymentCredsForIndex = paymentAddrForIndex.address.credentials;
         final bech32ChangeCredsForIndex = changeAddrForIndex.address.credentials;
 
@@ -363,12 +368,13 @@ class WalletTasks {
           }
         });
 
+        // Exact match: matching the blob as a substring of the address hex let a short (even empty) blob select a key
         modifiablePubKeyNativeScriptCredentialsAll.forEachIndexed((index, e) {
-          if (e.removeFirstWhere(hexPaymentAddrForIndex.contains)) {
+          if (e.remove(bech32PaymentCredsForIndex)) {
             signAddressesAll[index].add(paymentAddrForIndex);
           }
 
-          if (e.removeFirstWhere(hexChangeAddrForIndex.contains)) {
+          if (e.remove(bech32ChangeCredsForIndex)) {
             signAddressesAll[index].add(changeAddrForIndex);
           }
         });
@@ -550,6 +556,62 @@ List<String> _credsFromNativeScripts(List<NativeScript> scripts) {
   );
 
   return d.flattened.toList();
+}
+
+/// Throws [TransactionNotBoundToWalletNetworkException] unless [tx] is invalid on every network but [walletNetwork].
+///
+/// The ledger rejects a transaction whose body network id or any output address is for another network, so one of
+/// them on the wallet network is enough. A transaction with inputs but neither could be submitted on any network and is
+/// refused; one without inputs is valid nowhere.
+void _requireBoundToNetwork({required CardanoTransaction tx, required NetworkId walletNetwork}) {
+  final body = tx.body;
+  final txNetworks = {
+    ?body.networkId,
+    // Byron addresses do not carry the network in their header
+    ...body.outputs
+        .map((e) => e.address.value)
+        .where((e) => CardanoAddress.getAddressType(e) != AddressType.byron)
+        .map(CardanoAddress.getNetworkId),
+  };
+  if (body.inputs.data.isNotEmpty && !txNetworks.contains(walletNetwork)) {
+    throw TransactionNotBoundToWalletNetworkException(
+      txHash: body.blake2bHash256Hex(),
+      walletNetwork: walletNetwork,
+      txNetworks: txNetworks,
+    );
+  }
+}
+
+/// Thrown by `prepareTxsForSigning` and by transaction signing for a transaction that could be valid on a network
+/// other than the wallet's.
+///
+/// Wallet keys are the same on every network, and the signer also signs with keys the transaction asks for (required
+/// signers, native scripts, certificates, votes, withdrawals). A requester could hand a testnet wallet a body that
+/// spends the user's mainnet UTxOs: they are not among the wallet's testnet UTxOs, so the summary shows nothing leaving
+/// the wallet, yet the witness is valid on mainnet. A transaction with inputs but neither a network id nor a Shelley
+/// output is refused too: on another network its inputs could fund deposits refunded to the requester.
+class TransactionNotBoundToWalletNetworkException extends Error {
+  /// Hex of the blake2b-256 hash of the transaction body.
+  final String txHash;
+  final NetworkId walletNetwork;
+
+  /// Networks of the body network id and of the Shelley output addresses; empty when the transaction has neither.
+  final Set<NetworkId> txNetworks;
+
+  TransactionNotBoundToWalletNetworkException({
+    required this.txHash,
+    required this.walletNetwork,
+    required this.txNetworks,
+  });
+
+  @override
+  String toString() {
+    final found = txNetworks.isEmpty
+        ? "neither a network id nor a Shelley output"
+        : "networks [${txNetworks.map((e) => e.name).join(", ")}]";
+    return "Transaction [$txHash] is not bound to the wallet network [${walletNetwork.name}]: its body has $found. "
+        "Wallet keys are the same on every network, so a signature for it could be used on another network";
+  }
 }
 
 extension ListCertsX on Certificates? {

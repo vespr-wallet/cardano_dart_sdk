@@ -1,3 +1,13 @@
+## 5.2.2
+
+Web workers built with Flutter 3.47.7 | Dart 3.13.5, Squadron 7.4.4 and cardano_dart_types 3.1.2
+
+### Fix
+
+- `prepareTxsForSigning` and transaction signing refuse a transaction that is not bound to the wallet network (`TransactionNotBoundToWalletNetworkException`, surfaced through the worker boundary): one with inputs whose body network id and Shelley output addresses do not include the wallet's network. Keys are the same on every network and the signer also signs for keys the transaction requests (required signers, native scripts), so a requester could hand a testnet wallet a body spending the user's mainnet UTxOs, summarised as moving nothing, and submit the witness on mainnet. The ledger rejects any output or body network id of another network, so one on the wallet's network makes the signature unusable elsewhere
+- Native script pub key blobs select a wallet key only when they equal its credential. They were matched as a substring of the address hex, so a short or empty blob selected the first payment and change keys
+- `example/wallet_factory_example.dart` no longer prints the generated mnemonic on failure
+
 ## 5.2.1
 
 Web workers built with Flutter 3.47.7 | Dart 3.13.5, Squadron 7.4.4 and cardano_dart_types 3.1.2

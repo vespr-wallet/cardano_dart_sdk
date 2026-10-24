@@ -16,7 +16,6 @@ void main() async {
           .then((e) => print(e.firstAddress.bech32Encoded))
           .catchError((e) {
         hasErr = true;
-        print(mnem);
         print(e);
       }),
     );
