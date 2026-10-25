@@ -240,6 +240,35 @@ void main() async {
       expect(signingBundle.txsData[1].utxosBeforeTx.map(utxoKey), isNot(contains(utxoKey(spentUtxo))));
     });
 
+    test("keeps the hash of a body that does not re-serialize to its bytes, which is the one signed", () async {
+      final canonicalHex = cardanoTx(
+        body: txBody(
+          inputs: CardanoTransactionInputs(data: [walletUtxos[0].identifier], cborTags: const []),
+          outputs: genThisWalletOutputs([Value.v0(lovelace: BigInt.from(100).toCborInt())]),
+        ),
+      ).serializeHexString();
+      expect(canonicalHex, startsWith("84a"));
+      // the body's map head (a0 + entry count) as a non-minimal b9 head with a 2-byte entry count
+      final entries = int.parse(canonicalHex.substring(2, 4), radix: 16) & 0x1f;
+      final tx = CardanoTransaction.deserializeFromHex(
+        "84b9${entries.toRadixString(16).padLeft(4, "0")}${canonicalHex.substring(4)}",
+      );
+      final originalHash = tx.body.blake2bHash256Hex();
+      expect(tx.body.computeBlake2bHash256().hexEncode(), isNot(originalHash));
+
+      final signingBundle = await SigningUtils.prepareTxsForSigning(
+        txs: [tx],
+        walletUtxos: walletUtxos,
+        walletReceiveAddressBech32: wallet.firstAddress.bech32Encoded,
+        drepCredential: wallet.drepId.value.credentialsHex,
+        constitutionalCommitteeColdCredential: wallet.constitutionalCommiteeCold.value.hexCredential,
+        constitutionalCommitteeHotCredential: wallet.constitutionalCommiteeHot.value.hexCredential,
+        networkId: wallet.networkId,
+      );
+
+      expect(signingBundle.txsData.single.tx.body.blake2bHash256Hex(), originalHash);
+    });
+
     group(
       "Only wallet utxos",
       () {

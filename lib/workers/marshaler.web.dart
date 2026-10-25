@@ -82,11 +82,12 @@ class _UtxoListMarshaler extends UInt8ListMarshaler<List<Utxo>> {
 class _CardanoTransactionListMarshaler extends UInt8ListMarshaler<List<CardanoTransaction>> {
   const _CardanoTransactionListMarshaler();
 
+  // Not serializeAsBytes: the worker would hash the re-serialization, not the bytes the body was parsed from
   @override
   Uint8List marshalToBytes(List<CardanoTransaction> data) {
     final writer = BinaryWriter();
     writer.writeBytesList(
-      data.map((e) => e.serializeAsBytes()).toList(),
+      data.map((e) => e.marshal()).toList(),
     );
 
     return writer.toBytes();
@@ -96,7 +97,7 @@ class _CardanoTransactionListMarshaler extends UInt8ListMarshaler<List<CardanoTr
   List<CardanoTransaction> unmarshalFromBytes(Uint8List data) {
     return BinaryReader(data)
         .readBytesList() //
-        .map(CardanoTransaction.deserializeBytes)
+        .map(CardanoTransaction.unmarshal)
         .toList();
   }
 }
