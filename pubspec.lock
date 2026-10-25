@@ -117,10 +117,10 @@ packages:
     dependency: "direct main"
     description:
       name: cardano_dart_types
-      sha256: f6a9034bae8d7b19285e194593bde1d4c5e9128d21b9d43be3f2c2534459f4f8
+      sha256: ed0fa0328ab97c8b548fe8c471015a799c30e6acc257cb42f310d34f3f44ddbb
       url: "https://pub.dev"
     source: hosted
-    version: "3.2.0"
+    version: "3.2.1"
   cbor:
     dependency: "direct main"
     description:

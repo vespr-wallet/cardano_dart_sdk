@@ -1,3 +1,11 @@
+## 5.3.1
+
+Web workers built with Flutter 3.47.7 | Dart 3.13.5, Squadron 7.4.4 and cardano_dart_types 3.2.1
+
+### Fix
+
+- cardano_dart_types 3.2.1: `CardanoTransactionBody.copyWith` no longer keeps the parse-time body hash when fields change, so `blake2bHash256Hex()` of an edited body hashes its own serialization
+
 ## 5.3.0
 
 Web workers built with Flutter 3.47.7 | Dart 3.13.5, Squadron 7.4.4 and cardano_dart_types 3.2.0
