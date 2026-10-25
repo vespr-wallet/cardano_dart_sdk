@@ -1,3 +1,12 @@
+## 5.4.0
+
+Web workers built with Flutter 3.47.7 | Dart 3.13.5, Squadron 7.4.4 and cardano_dart_types 3.3.0
+
+### Fix
+
+- cardano_dart_types 3.3.0: a parsed transaction's body hash is of the body bytes as given, which is the transaction id, so witnesses fit a body that does not re-serialize to its bytes (non-minimal integer or length heads, chunked strings). A duplicate map key in the body is refused with `TransactionBodyDuplicateKeyException`
+- On web, `SigningUtils.prepareTxsForSigning` sent transactions to the worker re-serialized, so the worker hashed the re-serialization. The summary and the signatures were then of another hash than the transaction id. Transactions now go to the worker with `CardanoTransaction.marshal`, which keeps the hash
+
 ## 5.3.1
 
 Web workers built with Flutter 3.47.7 | Dart 3.13.5, Squadron 7.4.4 and cardano_dart_types 3.2.1
