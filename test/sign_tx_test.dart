@@ -61,6 +61,8 @@ void main() async {
       "chief fiber betray curve tissue output feature jungle adapt smile brown crane accuse gospel plate unlock pull arrow hard february tape soccer patrol fetch";
 
   final wallet = await WalletFactory.fromMnemonic(NetworkId.testnet, mnemonic.split(" "));
+  // Same keys as [wallet], for mainnet transactions
+  final mainnetWallet = await WalletFactory.fromMnemonic(NetworkId.mainnet, mnemonic.split(" "));
 
   group("sign staking key operations", () {
     test("required signers includes staking credentials", () async {
@@ -3924,7 +3926,7 @@ void main() async {
         "addr_test1qrjn5f9jl0hw7w7r4hz4vgsf9nyvzuh66cwzx8gntrjlqge8959c07mmj4saf577u34c6s32328v24w9zn3tzhc89y6qhkdw7e",
       };
 
-      final signature = await wallet.signTransaction(tx: tx, witnessBech32Addresses: witnessBech32Addresses);
+      final signature = await mainnetWallet.signTransaction(tx: tx, witnessBech32Addresses: witnessBech32Addresses);
 
       expect(signature, expected);
     });
@@ -3968,70 +3970,70 @@ void main() async {
               56,
             ].toUint8List(),
             signature: [
-              228,
-              199,
-              132,
-              69,
-              244,
-              133,
-              118,
-              217,
-              144,
-              209,
-              138,
-              65,
-              241,
-              20,
-              113,
-              87,
-              87,
-              98,
-              227,
-              239,
-              117,
-              213,
-              97,
-              141,
-              0,
-              214,
-              231,
-              246,
-              102,
-              222,
-              66,
-              61,
-              167,
-              26,
-              77,
-              71,
-              115,
-              22,
-              249,
-              162,
-              212,
-              225,
-              11,
-              217,
-              11,
-              191,
-              101,
-              57,
-              24,
-              253,
-              127,
-              16,
-              143,
-              68,
-              139,
-              223,
-              14,
-              217,
-              64,
-              21,
-              212,
-              126,
-              122,
+              59,
               4,
+              238,
+              1,
+              32,
+              240,
+              82,
+              183,
+              141,
+              38,
+              204,
+              215,
+              150,
+              70,
+              111,
+              93,
+              89,
+              163,
+              65,
+              135,
+              211,
+              234,
+              39,
+              83,
+              242,
+              93,
+              199,
+              87,
+              90,
+              241,
+              205,
+              214,
+              193,
+              32,
+              243,
+              201,
+              168,
+              31,
+              57,
+              193,
+              31,
+              34,
+              187,
+              175,
+              207,
+              8,
+              210,
+              244,
+              56,
+              228,
+              149,
+              178,
+              40,
+              90,
+              16,
+              44,
+              166,
+              134,
+              9,
+              204,
+              166,
+              174,
+              218,
+              14,
             ].toUint8List(),
           ),
         ],
@@ -4040,7 +4042,7 @@ void main() async {
       final tx = CardanoTransaction(
         overrideBodyMetadataHash: false,
         body: CardanoTransactionBody.create(
-          networkId: NetworkId.mainnet,
+          networkId: NetworkId.testnet,
           referenceInputs: CardanoTransactionInputs(
             data: [
               CardanoTransactionInput(
@@ -4247,70 +4249,70 @@ void main() async {
               56,
             ].toUint8List(),
             signature: [
-              70,
-              252,
-              191,
-              217,
-              114,
-              58,
-              64,
-              230,
-              249,
-              141,
-              230,
-              81,
-              33,
-              159,
-              255,
-              74,
-              179,
-              26,
-              228,
-              253,
-              158,
-              112,
-              116,
-              159,
-              136,
-              147,
+              125,
               73,
-              239,
-              202,
-              193,
-              188,
-              144,
-              31,
-              211,
-              161,
-              31,
-              190,
-              76,
-              184,
-              218,
-              113,
-              35,
-              159,
-              54,
-              238,
-              124,
-              79,
-              148,
-              15,
-              70,
-              203,
-              12,
-              58,
+              10,
+              197,
+              206,
+              143,
+              204,
+              201,
               220,
-              246,
-              116,
+              46,
+              132,
+              121,
+              132,
+              247,
+              247,
+              148,
+              207,
+              95,
+              234,
+              30,
+              3,
+              121,
+              181,
+              150,
+              213,
+              149,
+              173,
               37,
-              225,
-              34,
-              0,
-              34,
-              5,
-              144,
-              7,
+              25,
+              106,
+              223,
+              197,
+              114,
+              247,
+              239,
+              68,
+              126,
+              195,
+              88,
+              226,
+              156,
+              247,
+              104,
+              29,
+              141,
+              247,
+              211,
+              195,
+              236,
+              106,
+              24,
+              31,
+              142,
+              116,
+              32,
+              104,
+              209,
+              244,
+              141,
+              80,
+              243,
+              117,
+              252,
+              4,
             ].toUint8List(),
           ),
           WitnessVKey(
@@ -4349,70 +4351,70 @@ void main() async {
               10,
             ].toUint8List(),
             signature: [
-              123,
-              207,
-              102,
-              208,
-              23,
-              149,
-              249,
-              209,
-              173,
-              182,
-              10,
-              92,
-              133,
-              224,
-              61,
-              67,
-              127,
-              211,
-              46,
-              183,
-              165,
-              84,
-              174,
-              192,
-              154,
-              22,
-              50,
-              31,
-              14,
-              157,
-              162,
-              101,
-              87,
-              249,
-              77,
-              236,
-              131,
-              136,
-              13,
-              186,
-              95,
-              124,
-              113,
-              213,
-              225,
-              216,
-              241,
-              124,
-              252,
-              64,
-              224,
-              241,
-              140,
-              231,
-              6,
-              195,
-              106,
-              131,
-              82,
-              101,
-              65,
+              247,
+              24,
+              15,
+              90,
               150,
-              244,
-              6,
+              190,
+              199,
+              110,
+              241,
+              184,
+              186,
+              82,
+              50,
+              223,
+              166,
+              86,
+              80,
+              125,
+              48,
+              131,
+              33,
+              104,
+              68,
+              198,
+              9,
+              188,
+              106,
+              10,
+              107,
+              223,
+              233,
+              72,
+              66,
+              228,
+              157,
+              27,
+              198,
+              251,
+              44,
+              68,
+              113,
+              7,
+              26,
+              10,
+              40,
+              96,
+              248,
+              73,
+              61,
+              104,
+              36,
+              204,
+              213,
+              12,
+              125,
+              249,
+              56,
+              26,
+              168,
+              107,
+              180,
+              56,
+              77,
+              9,
             ].toUint8List(),
           ),
         ],
@@ -4421,7 +4423,7 @@ void main() async {
       final tx = CardanoTransaction(
         overrideBodyMetadataHash: true,
         body: CardanoTransactionBody.create(
-          networkId: NetworkId.mainnet,
+          networkId: NetworkId.testnet,
           referenceInputs: CardanoTransactionInputs(
             data: [
               CardanoTransactionInput(
@@ -4563,6 +4565,134 @@ void main() async {
       final signature = await wallet.signTransaction(tx: tx, witnessBech32Addresses: witnessBech32Addresses);
 
       expect(signature, expected);
+    });
+  });
+
+  test("native script pub key blobs must match a credential exactly", () async {
+    final tx = CardanoTransaction(
+      overrideBodyMetadataHash: false,
+      body: CardanoTransactionBody.create(
+        inputs: const CardanoTransactionInputs(data: [], cborTags: []),
+        outputs: [],
+        fee: BigInt.one.toCborInt(),
+      ),
+      witnessSet: witnessSet(
+        nativeScripts: [
+          NativeScript.pubKey(blob: <int>[].toUint8List()),
+          NativeScript.pubKey(blob: wallet.firstAddress.credentialsBytes.sublist(0, 4)),
+        ],
+      ),
+      isValidDi: true,
+      auxiliaryData: null,
+    );
+
+    final signature = await wallet.signTransaction(tx: tx, witnessBech32Addresses: {}, deriveMaxAddressCount: 2);
+
+    expect(signature.vkeyWitnesses, isEmpty);
+  });
+
+  group("network binding", () {
+    // The requester asks for the payment key through required signers. Inputs of another network are not among the
+    // wallet's UTxOs, so only the network check stops the signature.
+    final otherNetworkInput = CardanoTransactionInput(transactionHash: TransactionHash.fromHex("00" * 32), index: 0);
+
+    CardanoTransaction txRequestingPaymentKey({
+      required List<CardanoTransactionInput> inputs,
+      required List<CardanoTransactionOutput> outputs,
+      required List<Withdraw>? withdrawals,
+      required NetworkId? networkId,
+    }) => CardanoTransaction(
+      overrideBodyMetadataHash: false,
+      body: CardanoTransactionBody.create(
+        inputs: CardanoTransactionInputs(data: inputs, cborTags: const []),
+        outputs: outputs,
+        fee: BigInt.one.toCborInt(),
+        withdrawals: withdrawals,
+        requiredSigners: RequiredSigners(signersBytes: [wallet.firstAddress.credentialsBytes], cborTags: const []),
+        networkId: networkId,
+      ),
+      witnessSet: emptyWitnessSet,
+      isValidDi: true,
+      auxiliaryData: null,
+    );
+
+    CardanoTransactionOutput outputTo(CardanoAddress address) => CardanoTransactionOutput.postAlonzo(
+      address: Address(value: address.bytes),
+      value: Value.v0(lovelace: BigInt.from(1000000).toCborInt()),
+      outDatum: null,
+      scriptRef: null,
+      lengthType: CborLengthType.definite,
+    );
+
+    final throwsNotBound = throwsA(
+      isA<Object>().having((e) => e.toString(), "message", contains("is not bound to the wallet network [testnet]")),
+    );
+
+    test("refuses an output on another network", () async {
+      final tx = txRequestingPaymentKey(
+        inputs: [otherNetworkInput],
+        outputs: [outputTo(mainnetWallet.firstAddress)],
+        withdrawals: null,
+        networkId: null,
+      );
+      await expectLater(wallet.signTransaction(tx: tx, witnessBech32Addresses: {}), throwsNotBound);
+    });
+
+    test("refuses outputs on the wallet network and on another network", () async {
+      final tx = txRequestingPaymentKey(
+        inputs: [otherNetworkInput],
+        outputs: [outputTo(wallet.firstAddress), outputTo(mainnetWallet.firstAddress)],
+        withdrawals: null,
+        networkId: null,
+      );
+      await expectLater(wallet.signTransaction(tx: tx, witnessBech32Addresses: {}), throwsNotBound);
+    });
+
+    test("refuses a body network id of another network", () async {
+      final tx = txRequestingPaymentKey(
+        inputs: [otherNetworkInput],
+        outputs: [],
+        withdrawals: null,
+        networkId: NetworkId.mainnet,
+      );
+      await expectLater(wallet.signTransaction(tx: tx, witnessBech32Addresses: {}), throwsNotBound);
+    });
+
+    test("refuses a withdrawal on another network, even without inputs", () async {
+      final tx = txRequestingPaymentKey(
+        inputs: [],
+        outputs: [],
+        withdrawals: [Withdraw(mainnetWallet.stakeAddress.bech32Encoded, BigInt.one)],
+        networkId: null,
+      );
+      await expectLater(wallet.signTransaction(tx: tx, witnessBech32Addresses: {}), throwsNotBound);
+    });
+
+    test("refuses inputs with no network id, output or withdrawal", () async {
+      final tx = txRequestingPaymentKey(inputs: [otherNetworkInput], outputs: [], withdrawals: null, networkId: null);
+      await expectLater(wallet.signTransaction(tx: tx, witnessBech32Addresses: {}), throwsNotBound);
+    });
+
+    test("signs a transaction bound to the wallet network", () async {
+      final tx = txRequestingPaymentKey(
+        inputs: [otherNetworkInput],
+        outputs: [outputTo(wallet.firstAddress)],
+        withdrawals: null,
+        networkId: null,
+      );
+      final signature = await wallet.signTransaction(tx: tx, witnessBech32Addresses: {});
+      expect(signature.vkeyWitnesses, hasLength(1));
+    });
+
+    test("signs a withdrawal on the wallet network without inputs", () async {
+      final tx = txRequestingPaymentKey(
+        inputs: [],
+        outputs: [],
+        withdrawals: [Withdraw(wallet.stakeAddress.bech32Encoded, BigInt.one)],
+        networkId: null,
+      );
+      final signature = await wallet.signTransaction(tx: tx, witnessBech32Addresses: {});
+      expect(signature.vkeyWitnesses, hasLength(2)); // payment key (required signer) and stake key (withdrawal)
     });
   });
 }

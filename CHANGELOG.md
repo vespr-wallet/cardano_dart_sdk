@@ -1,3 +1,15 @@
+## 5.3.0
+
+Web workers built with Flutter 3.47.7 | Dart 3.13.5, Squadron 7.4.4 and cardano_dart_types 3.2.0
+
+### Fix
+
+- cardano_dart_types 3.2.0: `prepareTxsForSigning` refuses a transaction whose collateral puts more than 15 ADA of the wallet at risk, or any of its tokens (`CollateralExposureTooHighException`, surfaced through the worker boundary). The collateral is not part of the summary and is lost if a script fails, which the requester can arrange. The message tells the requester what to change
+
+- `prepareTxsForSigning` and transaction signing refuse a transaction that is not bound to the wallet network (`TransactionNotBoundToWalletNetworkException`, surfaced through the worker boundary): one whose body network id, Shelley output addresses or withdrawal reward addresses include another network, or one with inputs and none of them. Keys are the same on every network and the signer also signs for keys the transaction requests (required signers, native scripts, withdrawals), so a requester could hand a testnet wallet a body spending the user's mainnet UTxOs, summarised as moving nothing, and submit the witness on mainnet. The ledger rejects any of them on another network, so one on the wallet's network makes the signature unusable elsewhere
+- Native script pub key blobs select a wallet key only when they equal its credential. They were matched as a substring of the address hex, so a short or empty blob selected the first payment and change keys
+- `example/wallet_factory_example.dart` no longer prints the generated mnemonic on failure
+
 ## 5.2.1
 
 Web workers built with Flutter 3.47.7 | Dart 3.13.5, Squadron 7.4.4 and cardano_dart_types 3.1.2

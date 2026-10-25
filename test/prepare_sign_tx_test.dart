@@ -1463,7 +1463,6 @@ void main() async {
         body: txBody(
           inputs: CardanoTransactionInputs(data: [walletUtxos[1].identifier], cborTags: const []),
           outputs: genOtherWalletOutputs([Value.v0(lovelace: BigInt.from(100).toCborInt())]),
-          collateral: CardanoTransactionInputs(data: [walletUtxos[2].identifier], cborTags: const []),
         ),
       );
 
@@ -1484,6 +1483,74 @@ void main() async {
             (e) => e.toString(),
             "message",
             contains("Transaction [${invalidTx.body.blake2bHash256Hex()}] is marked as failing script validation"),
+          ),
+        ),
+      );
+    });
+
+    test("refuses collateral that puts wallet tokens at risk", () async {
+      // walletUtxos[2] holds tokens and nothing returns them: a failing script would forfeit them
+      final tx = cardanoTx(
+        body: txBody(
+          inputs: CardanoTransactionInputs(data: [walletUtxos[0].identifier], cborTags: const []),
+          outputs: genThisWalletOutputs([Value.v0(lovelace: BigInt.from(142).toCborInt())]),
+          collateral: CardanoTransactionInputs(data: [walletUtxos[2].identifier], cborTags: const []),
+        ),
+      );
+
+      await expectLater(
+        SigningUtils.prepareTxsForSigning(
+          txs: [tx],
+          walletUtxos: walletUtxos,
+          walletReceiveAddressBech32: wallet.firstAddress.bech32Encoded,
+          drepCredential: wallet.drepId.value.credentialsHex,
+          constitutionalCommitteeColdCredential: wallet.constitutionalCommiteeCold.value.hexCredential,
+          constitutionalCommitteeHotCredential: wallet.constitutionalCommiteeHot.value.hexCredential,
+          networkId: wallet.networkId,
+        ),
+        throwsA(
+          isA<Object>().having(
+            (e) => e.toString(),
+            "message",
+            contains("Transaction [${tx.body.blake2bHash256Hex()}] puts 2.0688 ADA and native tokens of the wallet"),
+          ),
+        ),
+      );
+    });
+
+    test("refuses a transaction with an output on another network", () async {
+      final tx = cardanoTx(
+        body: txBody(
+          inputs: CardanoTransactionInputs(data: [walletUtxos[0].identifier], cborTags: const []),
+          outputs: [
+            CardanoTransactionOutput.postAlonzo(
+              address: Address.fromBase58OrBech32(
+                "addr_test1qrjn5f9jl0hw7w7r4hz4vgsf9nyvzuh66cwzx8gntrjlqge8959c07mmj4saf577u34c6s32328v24w9zn3tzhc89y6qhkdw7e",
+              ),
+              value: Value.v0(lovelace: BigInt.from(142).toCborInt()),
+              outDatum: null,
+              scriptRef: null,
+              lengthType: CborLengthType.definite,
+            ),
+          ],
+        ),
+      );
+
+      await expectLater(
+        SigningUtils.prepareTxsForSigning(
+          txs: [tx],
+          walletUtxos: walletUtxos,
+          walletReceiveAddressBech32: wallet.firstAddress.bech32Encoded,
+          drepCredential: wallet.drepId.value.credentialsHex,
+          constitutionalCommitteeColdCredential: wallet.constitutionalCommiteeCold.value.hexCredential,
+          constitutionalCommitteeHotCredential: wallet.constitutionalCommiteeHot.value.hexCredential,
+          networkId: wallet.networkId,
+        ),
+        throwsA(
+          isA<Object>().having(
+            (e) => e.toString(),
+            "message",
+            contains("Transaction [${tx.body.blake2bHash256Hex()}] is not bound to the wallet network [mainnet]"),
           ),
         ),
       );
