@@ -560,9 +560,10 @@ List<String> _credsFromNativeScripts(List<NativeScript> scripts) {
 
 /// Throws [TransactionNotBoundToWalletNetworkException] unless [tx] is invalid on every network but [walletNetwork].
 ///
-/// The ledger rejects a transaction whose body network id or any output address is for another network, so one of
-/// them on the wallet network is enough. A transaction with inputs but neither could be submitted on any network and is
-/// refused; one without inputs is valid nowhere.
+/// The ledger rejects a transaction whose body network id, any output address or any withdrawal reward address is for
+/// another network, so one of them on the wallet network binds it there, and any of them on another network is
+/// refused. A transaction with inputs but none of them could be submitted on any network and is refused too. One
+/// without inputs spends nothing, and the ledger rejects it anyway (InputSetEmptyUTxO).
 void _requireBoundToNetwork({required CardanoTransaction tx, required NetworkId walletNetwork}) {
   final body = tx.body;
   final txNetworks = {
@@ -572,8 +573,11 @@ void _requireBoundToNetwork({required CardanoTransaction tx, required NetworkId 
         .map((e) => e.address.value)
         .where((e) => CardanoAddress.getAddressType(e) != AddressType.byron)
         .map(CardanoAddress.getNetworkId),
+    ...?body.withdrawals?.map((e) => CardanoAddress.getNetworkId(e.stakeAddressBech32.bech32Decode())),
   };
-  if (body.inputs.data.isNotEmpty && !txNetworks.contains(walletNetwork)) {
+  final hasOtherNetwork = {walletNetwork, ...txNetworks}.length > 1;
+  final hasUnboundInputs = body.inputs.data.isNotEmpty && txNetworks.isEmpty;
+  if (hasOtherNetwork || hasUnboundInputs) {
     throw TransactionNotBoundToWalletNetworkException(
       txHash: body.blake2bHash256Hex(),
       walletNetwork: walletNetwork,
@@ -588,14 +592,15 @@ void _requireBoundToNetwork({required CardanoTransaction tx, required NetworkId 
 /// Wallet keys are the same on every network, and the signer also signs with keys the transaction asks for (required
 /// signers, native scripts, certificates, votes, withdrawals). A requester could hand a testnet wallet a body that
 /// spends the user's mainnet UTxOs: they are not among the wallet's testnet UTxOs, so the summary shows nothing leaving
-/// the wallet, yet the witness is valid on mainnet. A transaction with inputs but neither a network id nor a Shelley
-/// output is refused too: on another network its inputs could fund deposits refunded to the requester.
+/// the wallet, yet the witness is valid on mainnet. A transaction with inputs but no network id, Shelley output or
+/// withdrawal is refused too: on another network its inputs could fund deposits refunded to the requester.
 class TransactionNotBoundToWalletNetworkException extends Error {
   /// Hex of the blake2b-256 hash of the transaction body.
   final String txHash;
   final NetworkId walletNetwork;
 
-  /// Networks of the body network id and of the Shelley output addresses; empty when the transaction has neither.
+  /// Networks of the body network id, the Shelley output addresses and the withdrawal reward addresses; empty when the
+  /// transaction has none of them.
   final Set<NetworkId> txNetworks;
 
   TransactionNotBoundToWalletNetworkException({
@@ -607,7 +612,7 @@ class TransactionNotBoundToWalletNetworkException extends Error {
   @override
   String toString() {
     final found = txNetworks.isEmpty
-        ? "neither a network id nor a Shelley output"
+        ? "no network id, Shelley output or withdrawal"
         : "networks [${txNetworks.map((e) => e.name).join(", ")}]";
     return "Transaction [$txHash] is not bound to the wallet network [${walletNetwork.name}]: its body has $found. "
         "Wallet keys are the same on every network, so a signature for it could be used on another network";
