@@ -95,6 +95,9 @@ void main() async {
     witnessBech32Addresses: {'addr_test1...'},
   );
 
+  // Re-serializing re-encodes the body. For a body that does not re-serialize to its bytes (non-minimal CBOR heads,
+  // chunked strings), the signatures are of the original bytes: return the witness set for those to be submitted with,
+  // as CIP-30 signTx does.
   final signedTx = tx.copyWithAdditionalSignatures(witnessSet);
   print(signedTx.serializeHexString());
 }

@@ -18,10 +18,13 @@ void main() async {
   final witnessSet = await wallet.signTransaction(
     tx: parsedTx,
     witnessBech32Addresses: {
-      "addr_test1qq54j5r58k7z4u9hlxqv54kq675s0q98rn3439pnuv60lhf8959c07mmj4saf577u34c6s32328v24w9zn3tzhc89y6q6traa6"
+      "addr_test1qq54j5r58k7z4u9hlxqv54kq675s0q98rn3439pnuv60lhf8959c07mmj4saf577u34c6s32328v24w9zn3tzhc89y6q6traa6",
     },
   );
 
+  // Re-serializing re-encodes the body. For a body that does not re-serialize to its bytes (non-minimal CBOR heads,
+  // chunked strings), the signatures are of the original bytes: return the witness set for those to be submitted with,
+  // as CIP-30 signTx does.
   final signedTx = parsedTx.copyWithAdditionalSignatures(witnessSet);
 
   print(signedTx.serializeHexString());
