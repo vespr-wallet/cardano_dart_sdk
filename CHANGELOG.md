@@ -1,3 +1,12 @@
+## 5.5.0
+
+Web workers built with Flutter 3.50.0 | Dart 3.14.0, Squadron 7.4.5 and cardano_dart_types 3.3.0
+
+### Change
+
+- The web workers are rebuilt with Dart 3.14.0, and bundle cbor 6.5.2 (fixes DateTime offsets and microseconds; Cardano transactions use no CBOR dates) and Squadron 7.4.5 (no runtime changes). No API or dependency constraint changes
+- The wasm worker, used when the app itself runs as wasm, now needs a browser with WebAssembly JS String Builtins and exception handling with `exnref` (Chrome 137+, Firefox 134+), like any app built to wasm with Dart 3.14. Apps built to JavaScript use the JavaScript worker and are not affected
+
 ## 5.4.0
 
 Web workers built with Flutter 3.47.7 | Dart 3.13.5, Squadron 7.4.4 and cardano_dart_types 3.3.0
