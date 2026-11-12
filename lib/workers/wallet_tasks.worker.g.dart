@@ -4,7 +4,7 @@
 part of 'wallet_tasks.dart';
 
 // **************************************************************************
-// Generator: WorkerGenerator 9.3.2 (Squadron 7.4.4)
+// Generator: WorkerGenerator 9.3.2 (Squadron 7.4.5)
 // **************************************************************************
 
 // dart format width=80

@@ -2,7 +2,7 @@
 // dart format width=80
 
 // **************************************************************************
-// Generator: WorkerGenerator 9.3.2 (Squadron 7.4.4)
+// Generator: WorkerGenerator 9.3.2 (Squadron 7.4.5)
 // **************************************************************************
 
 import 'package:squadron/squadron.dart';
