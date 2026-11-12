@@ -31,7 +31,7 @@ jobs:
           flutter pub upgrade
 
       - name: Analyze code
-        run: flutter analyze --no-fatal-infos
+        run: flutter analyze
 
       - name: Run tests (VM)
         run: dart test
