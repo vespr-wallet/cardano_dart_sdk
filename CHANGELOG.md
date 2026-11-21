@@ -1,3 +1,9 @@
+## Unreleased
+
+### Change
+
+- Tooling: Flutter 3.50.1 (still Dart 3.14.0) for development and CI; `make build` produces the same web workers, so the shipped workers are unchanged
+
 ## 5.5.0
 
 Web workers built with Flutter 3.50.0 | Dart 3.14.0, Squadron 7.4.5 and cardano_dart_types 3.3.0
