@@ -1,5 +1,8 @@
 ## Unreleased
 
+### Change
+
+- Tooling: Flutter 3.50.1 (still Dart 3.14.0) for development and CI; `make build` produces the same web workers, so the shipped workers are unchanged
 - CI: the PR workflow fails on unformatted Dart code (`dart format --set-exit-if-changed`); formatted the `example/` files that failed. No code changes
 
 ## 5.5.0
