@@ -12,9 +12,9 @@ void main() async {
     if (hasErr) break loop;
     final mnem = WalletFactory.generateNewMnemonic();
     unawaited(
-      WalletFactory.fromMnemonic(NetworkId.mainnet, mnem)
-          .then((e) => print(e.firstAddress.bech32Encoded))
-          .catchError((e) {
+      WalletFactory.fromMnemonic(NetworkId.mainnet, mnem).then((e) => print(e.firstAddress.bech32Encoded)).catchError((
+        e,
+      ) {
         hasErr = true;
         print(e);
       }),

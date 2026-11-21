@@ -4,7 +4,6 @@ import "package:bip32_ed25519/api.dart";
 import "package:cardano_dart_types/cardano_dart_types.dart";
 import "package:cardano_flutter_sdk/cardano_flutter_sdk.dart";
 
-
 const addressCount = 50;
 
 Future<void> deriveFromXPub() async {
@@ -32,6 +31,7 @@ Future<void> deriveFromMnemonic() async {
   final end = DateTime.now();
   print(end.difference(start).inMilliseconds);
 }
+
 void main() async {
   await deriveFromMnemonic();
   await deriveFromXPub();
@@ -40,8 +40,7 @@ void main() async {
 // ignore: unreachable_from_main, avoid_void_async
 void main2() async {
   // THIS EXAMPLE CONTAINS SIGNATURE DATA FROM LEDGER
-  final messageHex =
-      "I am logging in to jpg.store. My verification code is: 490398171".utf8ToHex();
+  final messageHex = "I am logging in to jpg.store. My verification code is: 490398171".utf8ToHex();
   const sig =
       "9f7a907dcf5bd765d929354d157dd83d7e9f42ea1dd57cb3c3fb925d8cd24665050a1c25b0bd59ca19ed1ab45fd41dfef3c9bb42122fef01c20d624ad800d00a";
   const addr = "e557890352095f1cf6fd2b7d1a28e3c3cb029f48cf34ff890a28d176";

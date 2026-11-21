@@ -43,8 +43,10 @@ void main() async {
   // final stakeKeyPair = hdWallet.stakeAddressKeys;
   // final stakeAddress = hdWallet.toRewardAddress(spend: stakeKeyPair.verifyKey, networkId: networkId);
 
-  final firstAddressKeyPair =
-      (wallet as CardanoWalletImpl).hdWallet.deriveAddressKeys(role: Bip32KeyRole.payment, index: 0);
+  final firstAddressKeyPair = (wallet as CardanoWalletImpl).hdWallet.deriveAddressKeys(
+    role: Bip32KeyRole.payment,
+    index: 0,
+  );
 
   // final keyFromPub1 = derivator.ckdPub(wallet.hdWallet.accountPublicKey.verifyKey, 0);
   // final keyFromPub2 = derivator.ckdPub(wallet.hdWallet.accountPublicKey.publicKey, 0);

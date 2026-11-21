@@ -1,3 +1,7 @@
+## Unreleased
+
+- CI: the PR workflow fails on unformatted Dart code (`dart format --set-exit-if-changed`); formatted the `example/` files that failed. No code changes
+
 ## 5.5.0
 
 Web workers built with Flutter 3.50.0 | Dart 3.14.0, Squadron 7.4.5 and cardano_dart_types 3.3.0

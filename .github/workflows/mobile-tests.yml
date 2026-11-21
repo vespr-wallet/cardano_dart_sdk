@@ -30,6 +30,9 @@ jobs:
         run: |
           flutter pub upgrade
 
+      - name: Check formatting
+        run: dart format --output=none --set-exit-if-changed .
+
       - name: Analyze code
         run: flutter analyze
 
