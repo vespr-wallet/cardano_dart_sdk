@@ -7,6 +7,9 @@ import "test_utils/fixtures.dart";
 
 void main() async {
   group("reported failures", () {
+    const ashiyapoolTxCbor =
+        "84a500d9010281825820e53823731fd5b7e1fa1166b98f9bb76448b041fd39ff47e97e0a5447851f4a5300018182583901ad02b09b9643135c6ae5ae519f8dde9d1f17c4d8c3033bc1d3cf75652d5854ccbc49b6bdedc774f70bfa2180e636ca289766ca91252df0df1a003b09b9021a0002c95904d901028282008200581c2d5854ccbc49b6bdedc774f70bfa2180e636ca289766ca91252df0df83028200581c2d5854ccbc49b6bdedc774f70bfa2180e636ca289766ca91252df0df581ca79aedbfe592557a1779f521f4b9c7693f89f36d449970c0974efe320758209ce748ae809e9da48d57bc3498c5b1e8a1a0d686564f591499fa2587aaf4e237a0f5a11902a2a1636d7367847744656c656761746520746f2041736869796120506f6f6c7838706f6f6c31353764776d306c396a66326835396d653735736c6677773864796c636e756d64676a766870737968666d6c727934636e343461782b496e636c75646573207374616b6520726567697374726174696f6e20283220414441206465706f736974296e617368697961706f6f6c2e636f6d";
+
     test(
       "from ryan - intersect",
       () async {
@@ -33,10 +36,7 @@ void main() async {
       () async {
         const mnemonic = "huge grid pole system myth shift boring call comic waste cause timber";
 
-        const txCbor =
-            "84a500d9010281825820e53823731fd5b7e1fa1166b98f9bb76448b041fd39ff47e97e0a5447851f4a5300018182583901ad02b09b9643135c6ae5ae519f8dde9d1f17c4d8c3033bc1d3cf75652d5854ccbc49b6bdedc774f70bfa2180e636ca289766ca91252df0df1a003b09b9021a0002c95904d901028282008200581c2d5854ccbc49b6bdedc774f70bfa2180e636ca289766ca91252df0df83028200581c2d5854ccbc49b6bdedc774f70bfa2180e636ca289766ca91252df0df581ca79aedbfe592557a1779f521f4b9c7693f89f36d449970c0974efe320758209ce748ae809e9da48d57bc3498c5b1e8a1a0d686564f591499fa2587aaf4e237a0f5a11902a2a1636d7367847744656c656761746520746f2041736869796120506f6f6c7838706f6f6c31353764776d306c396a66326835396d653735736c6677773864796c636e756d64676a766870737968666d6c727934636e343461782b496e636c75646573207374616b6520726567697374726174696f6e20283220414441206465706f736974296e617368697961706f6f6c2e636f6d";
-
-        final tx = CardanoTransaction.deserializeFromHex(txCbor);
+        final tx = CardanoTransaction.deserializeFromHex(ashiyapoolTxCbor);
         final wallet = await WalletFactory.fromMnemonic(NetworkId.mainnet, mnemonic.split(" "));
 
         final signature = await wallet.signTransaction(
@@ -55,6 +55,18 @@ void main() async {
       },
       timeout: const Timeout(Duration(hours: 6000)),
     );
+    test("refuses a transaction body with a key the parser does not read", () {
+      // The ashiyapool transaction with body key 23 (Dijkstra sub-transactions) added after the auxiliary data hash:
+      // the body map grows from 5 to 6 entries and gains `17 80` (23: []). The witnesses would sign the body bytes,
+      // key included, while a parsed body without it would be summarised as another transaction, so the parse that
+      // signing starts from refuses it.
+      final txCbor = ashiyapoolTxCbor.replaceFirst("84a5", "84a6").replaceFirst("e237a0f5", "e2371780a0f5");
+
+      expect(
+        () => CardanoTransaction.deserializeFromHex(txCbor),
+        throwsA(isA<TransactionBodyUnknownKeyException>().having((e) => e.keys, "keys", equals([23]))),
+      );
+    });
   });
 
   const mnemonic =
