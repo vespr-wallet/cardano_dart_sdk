@@ -41,7 +41,7 @@ Add the following to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  cardano_flutter_sdk: ^5.5.0
+  cardano_flutter_sdk: ^6.0.0
   cardano_dart_types: any
 ```
 

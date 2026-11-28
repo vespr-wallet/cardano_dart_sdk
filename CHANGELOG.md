@@ -1,8 +1,22 @@
-## Unreleased
+## 6.0.0
+
+Web workers built with Flutter 3.50.1 | Dart 3.14.0, Squadron 7.4.5, cbor 6.5.3 and cardano_dart_types 4.0.1
+
+### ⚠️ BREAKING CHANGES
+
+- **Updated cardano_dart_types to 4.0.1** (the SDK pins it exactly, and consumers take the version the SDK pins):
+  - `CardanoTransaction.isValidDi` is now `bool?`, null for a transaction without the isValid flag (the ledger treats it as valid). Code reading it as a `bool` has to handle null; the SDK itself does not read it
+
+### Fix
+
+- cardano_dart_types 4.0.0: parsing refuses a transaction body key it does not read (`TransactionBodyUnknownKeyException`, a `TransactionBodyParseException`), such as the Dijkstra era's sub-transactions (23) or direct deposits (25), and a post-Alonzo output key other than 0 to 3 or a tagged one (`TransactionOutputUnknownKeyException`, a `TransactionOutputParseException`). Before, such a key was left out of the parsed body and of the summary shown before signing, while the witnesses signed the original bytes with it. The signing APIs take a parsed transaction, so such a transaction no longer reaches them
+- cardano_dart_types 4.0.0: transactions without the isValid flag (`[body, witnessSet, auxiliaryData]`, the format Dijkstra recommends for submission) parse; one with auxiliary data used to fail with a type error. Signing treats them as valid; only `isValidDi == false` is refused
+- cbor ^6.5.3 (was ^6.5.1). 6.5.2 dropped tags on decoded integers, so a tagged body key such as `1234(7)` was read as plain key 7 and slipped past cardano_dart_types 4.0.0's refusal of tagged keys. 6.5.3 keeps those tags, and cardano_dart_types 4.0.1 requires it. It also encodes the tags of indefinite-length byte and text strings, which 6.5.2 left out, so a transaction built in code with such a tagged value gets another body hash and signature. A parsed transaction keeps the hash of its body bytes, so its signatures are unchanged
+- The web workers are rebuilt with cardano_dart_types 4.0.1 and cbor 6.5.3, since they bundle their own copy of the parser
 
 ### Change
 
-- Tooling: Flutter 3.50.1 (still Dart 3.14.0) for development and CI; `make build` produces the same web workers, so the shipped workers are unchanged
+- Tooling: Flutter 3.50.1 (still Dart 3.14.0) for development and CI
 - CI: the PR workflow fails on unformatted Dart code (`dart format --set-exit-if-changed`); formatted the `example/` files that failed. No code changes
 
 ## 5.5.0
